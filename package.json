@@ -1,0 +1,20 @@
+{
+  "name": "trunq",
+  "version": "1.0.0",
+  "description": "NPM package for easy client and/or server side graphQL caching.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oslabs-beta/trunQ.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/oslabs-beta/trunQ/issues"
+  },
+  "homepage": "https://github.com/oslabs-beta/trunQ#readme"
+}
