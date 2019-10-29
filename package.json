@@ -4,7 +4,7 @@
   "description": "NPM package for easy client and/or server side graphQL caching.",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node server/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -16,5 +16,10 @@
   "bugs": {
     "url": "https://github.com/oslabs-beta/trunQ/issues"
   },
-  "homepage": "https://github.com/oslabs-beta/trunQ#readme"
+  "homepage": "https://github.com/oslabs-beta/trunQ#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "path": "^0.12.7"
+  }
 }
