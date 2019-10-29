@@ -5,6 +5,8 @@ const app = express();
 const port = 3000
 const bodyParser = require('body-parser')
 const fetch = require('node-fetch');
+// const redis = require('redis')
+//     client = redis.createClient()
 
 // app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
@@ -13,15 +15,22 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static(path.resolve(__dirname, '../src')))
 
 app.post('/graphql', (req, res, next) => {
-    console.log("/graphql req.body", req.body)
+    // console.log("/graphql req.body", req.body)
     const { query } = req.body;
+    console.log(req.body.query)
+    let varRegex = /\(([^()]+)\)/
+    let variables = (req.body.query.match(varRegex)[0])
+    
+
+
     fetch('https://graphql-pokemon.now.sh/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({query: query})
-    }).then(res => res.json()).then(res => console.log(res));
+    }).then(res => res.json())
+    // .then(res => console.log(res));
 })
 
 app.get('/', (req, res, next) => {

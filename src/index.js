@@ -26,10 +26,6 @@ pokeButton1.addEventListener('click', ()=>{
     fetchDatafromFrontend();
 })
 
-pokeButton2.addEventListener('click', ()=>{
-    fetchDatafromBackend();
-})
-
 function fetchDatafromFrontend () {
     console.log("pokebutton clicked");
     startTime = Date.now()
@@ -81,7 +77,22 @@ readCacheData = (poke) => {
 
 
 //backend stuff
-
+pokeButton2.addEventListener('click', ()=>{
+    poke = document.querySelector('#pokeinput').value
+    query = `query {
+        pokemon(name: "${poke}") {
+          attacks {
+            special {
+              name
+            }
+          }
+          evolutions {
+              name
+          }
+        }
+      }`
+    fetchDatafromBackend();
+})
 
 function fetchDatafromBackend () {
     console.log("pokebutton clicked");
