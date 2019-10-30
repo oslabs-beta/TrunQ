@@ -1,0 +1,130 @@
+// this parsing function will take in a query string and return to us a 
+//     1. unique key = pokemon-pikachu
+//          a. be able to tag keys as to strictly equal or not
+
+//     2. children by layers = [ name, image, attacks[special[name]] ]
+//         a: pikachu = {children{children layer 2}}
+
+ 
+const query1 = `query {
+    pokemon(name: "pikachu" id:2size:2) {
+        name
+        image
+        attacks {
+            special {
+                name
+            }
+        }
+    }
+}`
+
+const query2 = `query {
+    artist(id: "mark-rothko") {
+        name
+        artworks (size: 2) {
+            id
+            imageUrl
+        }
+    }
+}`
+
+const types = {
+    unique: (key, input) => key === input
+}
+
+let startIndexFinder = (varStr, varsArr) => {
+    //first sort the varsArr by length of string
+    varsArr.sort((a,b) => b.length - a.length)
+    //second find starting index of longest string
+    let indexArr = []
+    let blackList = []
+    for (var i=0; i<varsArr.length; i++) {
+        let currStr = varsArr[i]
+        let startingI = varStr.indexOf(currStr)
+        //while startingI is not blackListed push it into indexArr
+        while (blackList.includes(startingI)) {
+            startingI = varStr.indexOf(currStr, startingI+1)
+        }
+        indexArr.push(startingI)
+
+        //loop over and blackList the indexes that are part of the str
+        for (var j=0; j<currStr.length; j++) {
+            blackList.push(startingI+j)
+        }
+    }
+    return indexArr.sort((a,b) => a-b)
+}
+
+
+//step 1 - pull a unique key out using regex from the top of the query
+    //use a regex that will only match ** ('anything inside') **
+    //developer inputs unique arguments that will be attached to the key
+let parseVariables = (query, uniques=[], limits=[]) => {
+
+    //return this object full of variables and queryName
+    let output = {}
+
+    //declare our regex
+    let varFinder = /[\w]*\(([^()]+)\)/
+    
+    //run match and use the first value of the array because match acts weird
+    let varString = query.match(varFinder)[0]
+    
+    //now we have a string 'pokemon(name: "pikachu")'.
+    //step 1 is to take out pokemon as the first part of the var
+    let variableArray = varString.split('(') 
+    output.query = variableArray[0]
+
+    //step 2 is to parse out all the search variables included
+    let varStr = variableArray[1].substring(0,variableArray[1].length-1)
+    // console.log(varStr)
+    //variables now equals the string "name: "pikachu" id:2size:2)"
+
+    //we need the variables sorted by length to deal with edge case ("id", "ssid") returning bad searches
+    //find the starting index of each variable - you'll know when you've gotten the full
+        //variable when you hit the next starting index
+    let indexes = startIndexFinder(varStr, [...uniques, ...limits])
+
+    //loop through the array with the starting indexes pushing temps as we go
+    let stringifiedKeyValues = []
+    for (var i=0; i<indexes.length; i++) {
+        let curr = indexes[i]
+        if (i === indexes.length-1) stringifiedKeyValues.push(varStr.substring(curr).trim())
+        else stringifiedKeyValues.push(varStr.substring(curr,indexes[i+1]).trim())
+    }
+
+    //now that we have an array that looks like [ 'name: "pikachu"', 'id:2', 'size:2' ]
+    //we should split this along the ":" colons, trim, then set our output object
+    //keys and values
+    stringifiedKeyValues.forEach(str => {
+        let temp = str.split(':').map(x => {
+            x = x.trim().replace(/"/g, '')
+            if (!isNaN(Number(x))) x = Number(x)
+            return x
+        })
+        output[temp[0]] = temp[1]
+    })
+
+    return output
+}
+
+
+console.log(parseVariables(query1, ['name', 'id'], ['size']))
+console.log(parseVariables(query2, ['id']))
+
+
+//return {
+//     query: "pokemon"
+//     name: "pikachu"
+//     id: 2
+//     size: 2
+// }
+
+//return {
+//     query: "artist"
+//     id: "mark-rothko"
+// }
+
+
+
+
