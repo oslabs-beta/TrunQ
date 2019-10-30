@@ -8,8 +8,10 @@ class ArtContainer extends Component {
             artistNameQuery: null,
             artistName: null,
             numPaintings: null,
-            artistInfo: []
+            artistInfo: [],
+            elapsedTime: []
         }
+        this.timer
         this.handleClick = this.handleClick.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
         this.handleNumChange = this.handleNumChange.bind(this);
@@ -31,11 +33,11 @@ class ArtContainer extends Component {
         .then(res => {
             console.log(res)
             this.setState({ artistName: res.data.match_artist[0].id })
-            this.artFetch()
+            this.artFetch(startTime)
         })
     }
     
-    artFetch () {
+    artFetch (timer) {
         const query = this.queryBuilder(this.state.artistName, this.state.numPaintings)
         fetch('https://metaphysics-production.artsy.net', {
             method: 'POST',
@@ -47,7 +49,9 @@ class ArtContainer extends Component {
         .then(res => res.json())
         .then(info => {
             console.log(info)
-            this.setState({ artistInfo: [...this.state.artistInfo, info] })
+            const elapsedTime = Date.now() - timer;
+            console.log("ELAPSED TIME", elapsedTime)
+            this.setState({ artistInfo: [...this.state.artistInfo, info], elapsedTime: [...this.state.elapsedTime, elapsedTime] })
         })
     }
 
@@ -82,7 +86,7 @@ class ArtContainer extends Component {
     render() {
         let artCardArray = [];
         for (let i = 0; i < this.state.artistInfo.length; i += 1) {
-            artCardArray.push(<ArtCard artistInfo={this.state.artistInfo[i]} />)
+            artCardArray.push(<ArtCard artistInfo={this.state.artistInfo[i]} elapsedTime={this.state.elapsedTime[i]}/>)
         }
         return (
             <div className = "artContainer">

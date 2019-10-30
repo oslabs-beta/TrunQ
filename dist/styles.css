@@ -16,3 +16,12 @@
     width: 49%;
     border: solid;
 }
+
+.artImg {
+    height: 50px;
+    width: 50px;
+}
+
+.artCard {
+    border: 3px solid black;
+}
