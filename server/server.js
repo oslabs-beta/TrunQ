@@ -1,10 +1,13 @@
 const express = require('express')
 const path = require('path')
-const graphql = require('graphql'); 
+const graphql = require('graphql');
 const app = express();
 const port = 3000
 const bodyParser = require('body-parser')
 const fetch = require('node-fetch');
+const redisClient = require('./redis');
+
+console.log(redisClient);
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -22,10 +25,10 @@ app.post('/graphql', (req, res, next) => {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({query: query})
+        body: JSON.stringify({ query: query })
     }).then(res => res.json())
 })
 
-app.listen(port, ()=>{
+app.listen(port, () => {
     console.log('listening on', port)
 })
