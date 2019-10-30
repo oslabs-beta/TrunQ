@@ -5,12 +5,14 @@
 
 .pokeContainer{
     display: flex;
+    flex-direction: column;
     width: 49%;
     border: solid;
 }
 
 .artContainer{
     display: flex;
+    flex-direction: column;
     width: 49%;
     border: solid;
 }
