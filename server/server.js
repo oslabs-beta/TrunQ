@@ -12,7 +12,7 @@ const fetch = require('node-fetch');
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
-app.use(express.static(path.resolve(__dirname, '../src')))
+app.use(express.static(path.resolve(__dirname, '../dist')))
 
 app.post('/graphql', (req, res, next) => {
     // console.log("/graphql req.body", req.body)
@@ -33,9 +33,9 @@ app.post('/graphql', (req, res, next) => {
     // .then(res => console.log(res));
 })
 
-app.get('/', (req, res, next) => {
-    res.sendFile(path.resolve(__dirname, '../src/index.html'))
-})
+// app.get('/', (req, res, next) => {
+//     res.sendFile(path.resolve(__dirname, '../src/index.html'))
+// })
 
 app.listen(port, ()=>{
     console.log('listening on', port)
