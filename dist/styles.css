@@ -1,0 +1,16 @@
+.mainContainer{
+    display: flex;
+    justify-content: space-between;
+}
+
+.pokeContainer{
+    display: flex;
+    width: 49%;
+    border: solid;
+}
+
+.artContainer{
+    display: flex;
+    width: 49%;
+    border: solid;
+}
