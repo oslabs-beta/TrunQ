@@ -5,6 +5,7 @@ class ArtContainer extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            artistNameQuery: null,
             artistName: null,
             numPaintings: null,
             artistInfo: []
@@ -18,8 +19,24 @@ class ArtContainer extends Component {
 
     handleClick () {
         event.preventDefault()
-        const query = this.queryBuilder(this.state.artistName, this.state.numPaintings)
+        const query = this.queryNameBuilder(this.state.artistNameQuery);
         let startTime = Date.now(); 
+        fetch('https://metaphysics-production.artsy.net', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({query: query})
+        }).then(res => res.json())
+        .then(res => {
+            console.log(res)
+            this.setState({ artistName: res.data.match_artist[0].id })
+            this.artFetch()
+        })
+    }
+    
+    artFetch () {
+        const query = this.queryBuilder(this.state.artistName, this.state.numPaintings)
         fetch('https://metaphysics-production.artsy.net', {
             method: 'POST',
             headers: {
@@ -32,7 +49,6 @@ class ArtContainer extends Component {
             console.log(info)
             this.setState({ artistInfo: [...this.state.artistInfo, info] })
         })
-
     }
 
     handleNumChange (e) {
@@ -40,7 +56,15 @@ class ArtContainer extends Component {
     }
 
     handleNameChange (e) {
-        this.setState({artistName: e.target.value});
+        this.setState({artistNameQuery: e.target.value});
+    }
+
+    queryNameBuilder (artist) {
+        return `query{
+            match_artist (term: "${artist}") {
+              id
+            }
+        }`
     }
 
     queryBuilder (artist, number) {
@@ -64,7 +88,7 @@ class ArtContainer extends Component {
             <div className = "artContainer">
                 <h1>art card</h1>
                 <form>
-                    <input id="artistName" value={this.state.artistName} onChange={this.handleNameChange} type="text" />
+                    <input id="artistName" value={this.state.artistNameQuery} onChange={this.handleNameChange} type="text" />
                     <input id="numPaintings" value={this.state.numPaintings} onChange={this.handleNumChange} type="text" />
                     <button onClick={(event) => this.handleClick(event)}>QUERY ARTIST NAME</button>
                 </form>
