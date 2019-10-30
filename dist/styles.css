@@ -1,0 +1,11 @@
+.pokeContainer{
+    width: 40%;
+    border: solid;
+    float: left;
+}
+
+.artContainer{
+    width: 40%;
+    border: solid;
+    float: right;
+}
