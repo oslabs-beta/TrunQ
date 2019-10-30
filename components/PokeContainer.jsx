@@ -85,6 +85,7 @@ class PokeContainer extends Component {
         }
         return (
             <div className = 'pokeContainer'>
+                <h1>poke card</h1>
                 <form>
                     <input id="pokeName" value={this.state.pokeName} onChange={this.handleNameChange} type="text" />
                     <button onClick={(event) => this.handleClick(event)}>QUERY POKEMON NAME</button>

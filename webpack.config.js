@@ -8,13 +8,15 @@ module.exports = {
         path: path.resolve(__dirname, 'dist')
     },
     devServer: {
-        publicPath: '/dist/',
+        contentBase: './dist',
+        // publicPath: './dist/',
+
         hot: true,
         port: 8080,
         proxy: [{
           context: ['/' ,'/graphql'],
           target: 'http://localhost:3000'
-          }]
+        }]
     },
     module: {
         rules: [

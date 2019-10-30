@@ -43,6 +43,8 @@
     "webpack-cli": "^3.3.9"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.6.3"
+    "@babel/preset-env": "^7.6.3",
+    "webpack-dev-server": "^3.9.0",
+    "css-loader": "^3.2.0"
   }
 }
