@@ -4,6 +4,8 @@ const redisClient = redis.createClient();
 
 const the = {};
 
+the.results = null;
+
 redisClient.on('connect', (success) => {
   console.log('Redis connection success: ', success)
 })
@@ -50,5 +52,38 @@ the.testAsync = (query) => new Promise(
     })
   }
 )
+
+const checkRedis = function (queryParam) {
+  return new Promise(resolve => {
+    redisClient.get(queryParam, (err, result) => {
+      if (err) {
+        console.log('error within checkRedis func: ', err)
+      }
+      resolve(result)
+    })
+  })
+}
+
+
+// ****************  NEW TEST  ***********************
+the.checkApi = async (incomingRequest) => {
+
+  console.log('STEP 2 *** made it to checkApi method');
+
+  let { key } = incomingRequest.body;
+  console.log('STEP 3 *** req.body key value: ', key)
+
+  // const checkRedis = await redisClient.get(key, (err, result) => {
+  //   if (err) console.log(err);
+  //   console.log('STEP 4 *** redis query result: ', result)
+  //   return result;
+  // })
+
+  const redisVal = await checkRedis(key);
+
+  console.log('STEP 4 *** checkRedis variable: ', redisVal);
+  return await redisVal;
+}
+
 
 module.exports = the

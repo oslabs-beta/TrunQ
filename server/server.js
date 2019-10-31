@@ -64,11 +64,13 @@ app.get('/redis', (req, res, next) => {
 
 app.get('/test', (req, res, next) => {
     // const { key } = req.body
-    console.log('before i enter testAsync func')
-    the.testAsync(req).then((value) => {
-        console.log('before we send response to client')
-        res.send(value)
-    });
+    console.log('STEP 1 *** before i enter testAsync func')
+    // the.testAsync(req).then((value) => {
+    //     console.log('before we send response to client')
+    //     res.send(value)
+    // });
+
+    res.send(the.checkApi(req));
 })
 
 app.listen(port, () => {
