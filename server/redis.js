@@ -37,18 +37,28 @@ the.checkCache = (reqBody, url, storageTimer) => {
   });
 }
 
-the.testAsync = (query) => new Promise(
-  (resolve, reject) => {
-    let { key } = query.body
-    redisClient.get(key, (err, result) => {
-      if (err) {
-        console.log('error within test')
+the.outer = (inboundQuery) => {
+  console.log('inboundQuery: ', inboundQuery.body);
+  function inner(param) {
+    new Promise(
+      (resolve, reject) => {
+        let { key } = param.body
+        redisClient.get(key, (err, result) => {
+          if (err) {
+            console.log('error within test')
+          }
+          console.log('within the promise resolve')
+          console.log('this is the query result: ', result)
+          resolve(result)
+        })
       }
-      console.log('within the promise resolve')
-      console.log('this is the query result: ', result)
-      resolve(result)
+    ).then(dbResult => {
+      console.log('dbResult: ', dbResult);
+      return dbResult;
     })
   }
-)
+  return inner(inboundQuery)
+  // return queryResult;
+}
 
 module.exports = the
