@@ -4,7 +4,6 @@
 
 //     2. children by layers = [ name, image, attacks[special[name]] ]
 //         a: pikachu = {children{children layer 2}}
-
  
 const query1 = `query {
     pokemon(name: "pikachu" id:2size:2) {
@@ -21,16 +20,13 @@ const query1 = `query {
 const query2 = `query {
     artist(id: "mark-rothko") {
         name
-        artworks (size: 2) {
+        artworks (id: "chapel" size: 2) {
             id
             imageUrl
         }
     }
 }`
 
-const types = {
-    unique: (key, input) => key === input
-}
 
 let startIndexFinder = (varStr, varsArr) => {
     //first sort the varsArr by length of string
@@ -55,6 +51,16 @@ let startIndexFinder = (varStr, varsArr) => {
     return indexArr.sort((a,b) => a-b)
 }
 
+const createUniqueKey = (queryVariablesObject) => {
+    let keyString = queryVariablesObject.query;
+
+    Object.values(queryVariablesObject.uniques).forEach(uniqueValue => {
+        keyString += "-" + uniqueValue;
+    })
+
+    return keyString
+}
+
 
 //step 1 - pull a unique key out using regex from the top of the query
     //use a regex that will only match ** ('anything inside') **
@@ -62,12 +68,19 @@ let startIndexFinder = (varStr, varsArr) => {
 let parseVariables = (query, uniques=[], limits=[]) => {
 
     //return this object full of variables and queryName
-    let output = {}
+    let output = {
+        uniques: {},
+        limits: {}
+    }
 
     //declare our regex
-    let varFinder = /[\w]*\(([^()]+)\)/
+    let varFinder = /[\w]* *\(([^()]+)\)/
     
     //run match and use the first value of the array because match acts weird
+
+    // edge case of if no variables
+    // something like if (uniques.length === 0 && limits.length === 0) don't execute variable stuff
+
     let varString = query.match(varFinder)[0]
     
     //now we have a string 'pokemon(name: "pikachu")'.
@@ -102,22 +115,28 @@ let parseVariables = (query, uniques=[], limits=[]) => {
             if (!isNaN(Number(x))) x = Number(x)
             return x
         })
-        output[temp[0]] = temp[1]
+        if (limits.includes(temp[0])) {
+            output.limits[temp[0]] = temp[1]
+        }
+        else {
+            output.uniques[temp[0]] = temp[1];
+        }
     })
 
-    return output
+    return [createUniqueKey(output), output];
 }
 
 
-console.log(parseVariables(query1, ['name', 'id'], ['size']))
+console.log(trunq.bury(query1, ['name', 'id'], ['size']))
 console.log(parseVariables(query2, ['id']))
 
 
 //return {
 //     query: "pokemon"
-//     name: "pikachu"
-//     id: 2
-//     size: 2
+//     uniques: { name: "pikachu"
+//          id: 2
+//       }
+//      limits: { size: 2 }
 // }
 
 //return {
