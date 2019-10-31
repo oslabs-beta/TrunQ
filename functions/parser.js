@@ -1,32 +1,3 @@
-// this parsing function will take in a query string and return to us a 
-//     1. unique key = pokemon-pikachu
-//          a. be able to tag keys as to strictly equal or not
-
-//     2. children by layers = [ name, image, attacks[special[name]] ]
-//         a: pikachu = {children{children layer 2}}
- 
-const query1 = `query {
-    pokemon(name: "pikachu" id:2size:2) {
-        name
-        image
-        attacks {
-            special {
-                name
-            }
-        }
-    }
-}`
-
-const query2 = `query {
-    artist(id: "mark-rothko") {
-        name
-        artworks (id: "chapel" size: 2) {
-            id
-            imageUrl
-        }
-    }
-}`
-
 
 let startIndexFinder = (varStr, varsArr) => {
     //first sort the varsArr by length of string
@@ -37,6 +8,9 @@ let startIndexFinder = (varStr, varsArr) => {
     for (var i=0; i<varsArr.length; i++) {
         let currStr = varsArr[i]
         let startingI = varStr.indexOf(currStr)
+
+        //if the variable doesn't even exist move on to the next one
+        if (startingI === -1) continue;
         //while startingI is not blackListed push it into indexArr
         while (blackList.includes(startingI)) {
             startingI = varStr.indexOf(currStr, startingI+1)
@@ -55,10 +29,9 @@ const createUniqueKey = (queryVariablesObject) => {
     let keyString = queryVariablesObject.query;
 
     Object.values(queryVariablesObject.uniques).forEach(uniqueValue => {
-        console.log(uniqueValue);
         keyString += "-" + uniqueValue;
     })
-    return keyString
+    return keyString.replace(/[\s]/g, '')
 }
 
 
@@ -127,23 +100,8 @@ let parseVariables = (query, uniques=[], limits=[]) => {
 }
 
 
-console.log(parseVariables(query1, ['name', 'id'], ['size']))
-console.log(parseVariables(query2, ['id']))
-
-
-//return {
-//     query: "pokemon"
-//     uniques: { name: "pikachu"
-//          id: 2
-//       }
-//      limits: { size: 2 }
-// }
-
-//return {
-//     query: "artist"
-//     id: "mark-rothko"
-// }
-
-
+module.exports = {
+    parseVariables  
+} 
 
 

@@ -84,14 +84,9 @@ const emptyCacheObjFromQuery2 = {
     }
   }
 
-"THE 20%"
+// "THE 20%"
 
-const layerQueryChildren = (query, uniques = [], limits = []) => {
-    const queryObject = {
-        data: {}
-    }
-    let removeVars =  /[\w]* *\(([^()]+)\)/g
-    let regexQuery = query.match(removeVars);
+const layerQueryFields = (query, uniques = [], limits = []) => {
 
     let temp = '';
     let cacheObj = {};
@@ -132,4 +127,7 @@ const layerQueryChildren = (query, uniques = [], limits = []) => {
     return globalCacheArr;
 }
 
-layerQueryChildren(query2, ["id"], ["size"]);
+layerQueryFields(query2, ["id"], ["size"]);
+
+
+
