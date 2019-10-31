@@ -22,7 +22,6 @@ const query3 = `query {
     }
 }`
 
-
 const query2 = `query {
     artist(id: "mark-rothko") {
         name
@@ -30,28 +29,62 @@ const query2 = `query {
             id
             imageUrl
         }
+        bullshit
     }
     jazzsaxartist {
         name
     }
 }`
-// artist-mark-rothko: {
-//   data: {
-//     artist: {
-//         name: {}
-//         artworks: {
-//             trunQlimits: {
-//                 id: chapel
-//                 size: 2
-//             }
-//             [{id: {}, imageUrl1: {}},
-//             {id2: {}, imageUrl2: {}}]
-//         }
-//      }
-//   }
-// }
 
+const cache = { 
+  "artist-mark-rothko": {
+    data: {
+      artist: {
+        name: "Mark Rothko",
+        artworks: {
+            trunQlimits: {
+                id: "chapel",
+                size: 2
+            },
+            trunQarrays: 
+                [{id: "UntitledMasterpiece", imageUrl1: "www.awesomeart.com"},
+                {id2: "EvenBetterPainting", imageUrl2: "www.radArt.com"}]
+        }
+      }
+    }
+  },
+  "jazzsaxartist": {
+    data: {
+        name: "Ron Swanson"
+    }
+  }
+}
 
+const emptyCacheObjFromQuery2 = { 
+    "artist-mark-rothko": {
+      data: {
+        artist: {
+          name: {},
+          artworks: {
+              trunQlimits: {
+                  id: "chapel",
+                  size: 2
+              },
+              trunQarrays: 
+                  [{id: {}, imageUrl1: {}},
+                  {id2: {}, imageUrl2: {}}]
+          }
+        }
+      }
+    },
+    "jazzsaxartist": {
+      data: {
+          name: {}
+      }
+    }
+  }
+
+"THE 20%"
 
 const layerQueryChildren = (query, uniques = [], limits = []) => {
     const queryObject = {
@@ -61,67 +94,42 @@ const layerQueryChildren = (query, uniques = [], limits = []) => {
     let regexQuery = query.match(removeVars);
 
     let temp = '';
-    let arr = [];
-
-    let parenStack = [];
+    let cacheObj = {};
+    const globalCacheArr = []
+    let level = -1;
 
     for (let i = 0; i < query.length; i += 1) {
-        if (query[i] === '}') {
-            parenStack.pop();
+        if (query[i] === '{') {
+            level += 1;
+            temp = temp.replace(/[\n]/g, '').trim();
+            temp = temp.replace(/[\s]+/g, ' ');
+            if (temp !== "") {
+                cacheObj[temp] = level;
+            }
+            temp = ''
         }
-        else if (query[i] === '{') {
-            arr.push([parenStack.length, temp]);
-            temp = '';
-            parenStack.push('{');
+        else if (query[i] === '}') {
+            temp = temp.replace(/[\n]/g, '').trim();
+            temp = temp.replace(/[\s]+/g, ' ');
+            if (temp !== "") {
+                cacheObj[temp] = level + 1;
+            }
+            temp = ''
+            level -= 1;
+            if (level === 0) {
+                globalCacheArr.push(cacheObj)
+                cacheObj = {}
+            }
         }
-        else if (parenStack.length > 0) {
+        else if (level > -1) {
             temp += query[i];
         }
-        if (i === query.length - 1) {
-            arr.push([parenStack.length, temp]);
-        }
+
     }
 
-    // let whitespaceRegex = /[\r\n]/g;
-    // arr = arr.map(el => {
-    //     return el.replace(whitespaceRegex, '').trim();
-    // })
-    console.log(arr)
+    console.log(globalCacheArr);
 
-    return queryObject;
+    return globalCacheArr;
 }
 
-layerQueryChildren(query2, ["id"], ["size"])
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// artist-mark-rothko: {
-//     "data": {
-//       "artist": {
-//         "name": "Mark Rothko",
-//         "artworks": [
-//           {
-//             "id": "mark-rothko-untitled-2",
-//             "imageUrl": "https://d32dm0rphc51dk.cloudfront.net/TrITRbfwKGs9a4YHf74UJg/square.jpg"
-//           },
-//           {
-//             "id": "mark-rothko-number-10",
-//             "imageUrl": "https://d32dm0rphc51dk.cloudfront.net/_SJ9ViOWmrEMch8hegHrtg/square.jpg"
-//           }
-//         ]
-//       }
-//     }
-//   }
-//
+layerQueryChildren(query2, ["id"], ["size"]);

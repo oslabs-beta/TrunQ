@@ -55,9 +55,9 @@ const createUniqueKey = (queryVariablesObject) => {
     let keyString = queryVariablesObject.query;
 
     Object.values(queryVariablesObject.uniques).forEach(uniqueValue => {
+        console.log(uniqueValue);
         keyString += "-" + uniqueValue;
     })
-
     return keyString
 }
 
@@ -127,7 +127,7 @@ let parseVariables = (query, uniques=[], limits=[]) => {
 }
 
 
-console.log(trunq.bury(query1, ['name', 'id'], ['size']))
+console.log(parseVariables(query1, ['name', 'id'], ['size']))
 console.log(parseVariables(query2, ['id']))
 
 
