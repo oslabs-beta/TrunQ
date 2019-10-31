@@ -4,7 +4,15 @@ const redisClient = redis.createClient();
 
 const the = {};
 
-the.checkCache = async (reqBody, url, storageTimer) => {
+redisClient.on('connect', (success) => {
+  console.log('Redis connection success: ', success)
+})
+
+redisClient.on('error', (err) => {
+  console.log("Redis connection failure: " + err)
+});
+
+the.checkCache = (reqBody, url, storageTimer) => {
   // key = incoming request query
   const { key } = reqBody;
   const response = {};
@@ -23,19 +31,24 @@ the.checkCache = async (reqBody, url, storageTimer) => {
       // response.key = key;
       // response.value = result;
       // return response;
-      return result
+      result
     }
     // res.send(result);
   });
-
 }
 
-the.getWithoutFrontEnd = (req, res, next) => {
-  //parsing logic
-
-  // query
-  // fetch
-  // res
-}
+the.testAsync = (query) => new Promise(
+  (resolve, reject) => {
+    let { key } = query.body
+    redisClient.get(key, (err, result) => {
+      if (err) {
+        console.log('error within test')
+      }
+      console.log('within the promise resolve')
+      console.log('this is the query result: ', result)
+      resolve(result)
+    })
+  }
+)
 
 module.exports = the

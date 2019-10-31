@@ -7,29 +7,6 @@ const bodyParser = require('body-parser')
 const fetch = require('node-fetch');
 
 const the = require('./redis');
-// const redisClient = require('./redis');
-
-// console.log('**************** REDIS CLIENT *******************\n', redisClient);
-
-// ************************************************************
-
-// const redis = require('redis');
-
-// const redisClient = redis.createClient();
-
-// redisClient.addOne = function (val) {
-//     return 1 + val
-// }
-
-// redisClient.on('connect', (success) => {
-//     console.log('Redis connection success: ', success)
-// })
-
-// redisClient.on('error', (err) => {
-//     console.log("Redis connection failure: " + err)
-// });
-
-// ************************************************************
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -73,20 +50,25 @@ app.post('/redis', (req, res, next) => {
 app.get('/redis', (req, res, next) => {
     // res.locals.response = the.checkCache(req.body, 'test', 12000);
     let resPromise = new Promise((resolve, reject) => {
-        resolve(the.checkCache(req.body, 'test', 1000))
+        the.checkCache(req.body, 'test', 1000)
+        // resolve('test');
         reject('query did not work!');
     });
 
-    // let resPromise = new Promise((the.checkCache, reject) => the.checkCache(req.body, 'test', 1000))
-
-    // console.log('res.locals obj: ', res.locals);
-
-    // res.send(res.locals.response);
     resPromise.then((queryResponse) => {
         console.log('server.js file query response in .then: ', queryResponse);
         res.send(queryResponse);
     });
     // console.log('the redis returned value: ', value);
+})
+
+app.get('/test', (req, res, next) => {
+    // const { key } = req.body
+    console.log('before i enter testAsync func')
+    the.testAsync(req).then((value) => {
+        console.log('before we send response to client')
+        res.send(value)
+    });
 })
 
 app.listen(port, () => {
