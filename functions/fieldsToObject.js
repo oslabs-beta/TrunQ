@@ -35,7 +35,7 @@ let input = [
 let fieldsToObject = (arr, uniques=[], limits = []) => {
     //declare object to output
     let dummyObj = {}
-    let output = dummyObj
+    let output = {}
     let levels = []
     let count = -1
     //declare current level we are on
@@ -56,18 +56,9 @@ let fieldsToObject = (arr, uniques=[], limits = []) => {
                 if (parensReg.test(curr)) {
                     let parsedArr = parser.parseVariables(curr, uniques, limits)
                     let uniqueKey = parsedArr[0]
-                    levels.push(uniqueKey)
-                    count++
-
                     output[uniqueKey] = {}
                     output[uniqueKey].trunQVariables = trunqifyVariables(parsedArr)
-                    output = dummyObj[levels[count]]
-
                     output[parsedArr[1].query] = {}
-                    levels.push(parsedArr[1].query)
-                    count++
-
-                    output = output[levels[count]]
                 }
                 else {
                     //lastly give it the original query aka "artist"
@@ -94,10 +85,7 @@ let fieldsToObject = (arr, uniques=[], limits = []) => {
                         let parsedArr = parser.parseVariables(curr, uniques, limits)
                         output[latestQuery].trunQVariables = trunqifyVariables(parsedArr)
                         j = curr.length+1
-
                         levels.push(latestQuery)
-                        count++
-                        output = output[levels[count]]
                     }
                     else {
                         temp += curr[j]
@@ -105,17 +93,13 @@ let fieldsToObject = (arr, uniques=[], limits = []) => {
 
                     if(j === curr.length-1) {
                         output[temp] = {}
-                        levels.pop()
-                        count--
                     }
 
                 }
             }
-        }
-        output = dummyObj        
+        }      
     }
-    console.log(levels)
-    return dummyObj
+    return output
 }
 
 let test = fieldsToObject(input, ['id', 'name'], ['size'])
