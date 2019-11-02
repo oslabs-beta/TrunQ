@@ -35,13 +35,13 @@ const trunQify = (query, uniques, limits, endpointName) => {
             fetch(endpointName, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ query: trunQKey[key] })
+                body: JSON.stringify({ trunQKey: trunQKey })
             })
-            .then(res => res.json())
-            .then(res => {
-                console.log(res)   
-                sessionStorage.setItem(key, JSON.stringify(res))
-            })
+                .then(res => res.json())
+                .then(res => {
+                    console.log(res)
+                    sessionStorage.setItem(key, JSON.stringify(res))
+                })
         })
     }
     else {
@@ -49,7 +49,7 @@ const trunQify = (query, uniques, limits, endpointName) => {
         return cachedResults
     }
     console.log("CACHED RESULTS", cachedResults, "\n\nTRUNQKEY", trunQKey)
-} 
+}
 
-export default trunQify  
+export default trunQify
 
