@@ -53,7 +53,7 @@ let parseVariables = (query, uniques=[], limits=[]) => {
 
     // edge case of if no variables
     // something like if (uniques.length === 0 && limits.length === 0) don't execute variable stuff
-
+    
     let varString = query.match(varFinder)[0]
     
     //now we have a string 'pokemon(name: "pikachu")'.
@@ -99,9 +99,7 @@ let parseVariables = (query, uniques=[], limits=[]) => {
     return [createUniqueKey(output), output];
 }
 
+export default parseVariables  
 
-module.exports = {
-    parseVariables  
-} 
 
 

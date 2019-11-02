@@ -1,5 +1,5 @@
-const parser = require('./parser')
-let tester = parser.parseVariables('artist(id: "mark-rothko")', ['id', 'name'], ['size'])
+import parser from './parser'
+// let tester = parser.parseVariables('artist(id: "mark-rothko")', ['id', 'name'], ['size'])
 
 //the goal of trunqify variables is to take the variables out of the parenthesis and turn it into the appropriate object
 
@@ -80,20 +80,20 @@ function innerTrunQify (output, levels, trunQSize, keysArr, i, uniques, limits, 
     return i;
 }
 
-let input = [ 
-    { 'artist(id: "mark-rothko")': 1,
-        'name artworks (name: "chapel" size: 2)': 2,
-            'id imageUrl': 3,
-                // 'hello': 4,
-        bullshit: 2 
-    },
+// let input = [ 
+//     { 'artist(id: "mark-rothko")': 1,
+//         'name artworks (name: "chapel" size: 2)': 2,
+//             'id imageUrl': 3,
+//                 // 'hello': 4,
+//         bullshit: 2 
+//     },
 
-    { jazzsaxartist: 1, 
-        name2: 2 
-    } 
-]
+//     { jazzsaxartist: 1, 
+//         name2: 2 
+//     } 
+// ]
 
-let fieldsToObject = (arr, uniques=[], limits = []) => {
+let queryObjectBuilder = (arr, uniques=[], limits = []) => {
     let output = {}
     let levels = []
     let previousLevel = 0;
@@ -187,38 +187,41 @@ let fieldsToObject = (arr, uniques=[], limits = []) => {
             // previousLevel = input[curr];
         levels=[]
     }
-    return output["artist-mark-rothko"].artist.artworks
+    return output
 }
 
 
 
-let test = fieldsToObject(input, ['id', 'name'], ['size'])
-console.log(test)
+// let test = fieldsToObject(input, ['id', 'name'], ['size'])
+// console.log(test)
 
-//this is the final output
-const emptyCacheObjFromQuery2 = { 
-    "artist-mark-rothko": {
-        trunQVariables: {
-            id: 'mark-rothko'
-        },
-        artist: {
-            name: {},
-            artworks: {
-                trunQVariables: {
-                    id: "chapel",
-                    size: 2
-                },
-                trunQarrays: 
-                    [{id: {}, imageUrl1: {}},
-                    {id2: {}, imageUrl2: {}}]
+// //this is the final output
+// const emptyCacheObjFromQuery2 = { 
+//     "artist-mark-rothko": {
+//         trunQVariables: {
+//             id: 'mark-rothko'
+//         },
+//         artist: {
+//             name: {},
+//             artworks: {
+//                 trunQVariables: {
+//                     id: "chapel",
+//                     size: 2
+//                 },
+//                 trunQarrays: 
+//                     [{id: {}, imageUrl1: {}},
+//                     {id2: {}, imageUrl2: {}}]
                 
-            },
-            bullshit: {}
-        }
-    },
-    "jazzsaxartist": {
-      jazzsaxartist: {
-          name2: {}
-      }
-    }
-  }
+//             },
+//             bullshit: {}
+//         }
+//     },
+//     "jazzsaxartist": {
+//       jazzsaxartist: {
+//           name2: {}
+//       }
+//     }
+//   }
+
+export default queryObjectBuilder  
+ 

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PokeCard from './PokeCard.jsx'
+import trunQify from '../functions/trunQify'
 
 class PokeContainer extends Component {
     constructor(props) {
@@ -21,20 +22,22 @@ class PokeContainer extends Component {
         event.preventDefault()
         const query = this.pokeQueryBuilder(this.state.pokeName, this.state.evolutionBool);
         let startTime = Date.now(); 
-        fetch('https://graphql-pokemon.now.sh/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({query: query})
-        })
-        .then(res => res.json())
-        .then(info => {
-            let pokeArray = [...this.state.pokeInfo, info]
-            let elapsedTime = Date.now() - startTime;
-            let timeArray = [...this.state.fetchTime, elapsedTime];
-            this.setState({ pokeInfo: pokeArray, fetchTime: timeArray })
-        })
+        // TRUNQIFY THIS SHIT
+        trunQify(query, ["name"], [], 'https://graphql-pokemon.now.sh/');
+        // fetch('https://graphql-pokemon.now.sh/', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({query: query})
+        // })
+        // .then(res => res.json())
+        // .then(info => {
+        //     let pokeArray = [...this.state.pokeInfo, info]
+        //     let elapsedTime = Date.now() - startTime;
+        //     let timeArray = [...this.state.fetchTime, elapsedTime];
+        //     this.setState({ pokeInfo: pokeArray, fetchTime: timeArray })
+        // })
     }
 
     handleNameChange (e) {
