@@ -31,11 +31,11 @@ let searchTrunQ = (trunQVariables, limits) => {
 }
 
 function innerTrunQify (output, levels, trunQSize, keysArr, i, uniques, limits, latestQuery) {
-    let curr = keysArr[++i]
-    console.log(curr, i)
+    let curr = keysArr[i]
     let dummyObj = output
     for (let z = 0; z < levels.length; z += 1) {
         dummyObj = dummyObj[levels[z]];
+        // console.log(dummyObj, levels[z]);
     }
     for (let k = 0; k < trunQSize; k += 1) {
         let temp = ''
@@ -61,7 +61,8 @@ function innerTrunQify (output, levels, trunQSize, keysArr, i, uniques, limits, 
                 levels.push(latestQuery)
                 if (innertrunQSize > 0) {
                     tempObj[latestQuery].trunQLimits = []
-                    i = innerTrunQify (tempObj[latestQuery], levels, innertrunQSize, keysArr[++i], uniques, limits, latestQuery)
+                    i++;
+                    i = innerTrunQify (tempObj[latestQuery], levels, innertrunQSize, keysArr, i, uniques, limits, latestQuery)
                     trunQSize = 0;
                 }
                 //maybe run another iteration of this if innertrunqsize is greater than 0
@@ -70,6 +71,7 @@ function innerTrunQify (output, levels, trunQSize, keysArr, i, uniques, limits, 
                 temp += curr[j]
             }
             if(j === curr.length-1) {
+                levels.pop();
                 tempObj[temp] = {}
             }
         }
@@ -81,8 +83,8 @@ function innerTrunQify (output, levels, trunQSize, keysArr, i, uniques, limits, 
 let input = [ 
     { 'artist(id: "mark-rothko")': 1,
         'name artworks (name: "chapel" size: 2)': 2,
-            'id imageUrl (size: 2)': 3,
-                'hello': 4,
+            'id imageUrl': 3,
+                // 'hello': 4,
         bullshit: 2 
     },
 
