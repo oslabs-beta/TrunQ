@@ -8,7 +8,7 @@
 
 import parseVariables from './parser'
 
-function keyedQueries (query, uniques, limits) {
+function keyedQueries(query, uniques, limits) {
     const braceStack = [];
     const arrayofQueries = [];
     let temp = '';
@@ -45,7 +45,7 @@ function keyedQueries (query, uniques, limits) {
                 // console.log(temp)
                 let queryObj = {}
                 temp = temp.replace(/[\n]( )+/g, ' ');
-                queryObj[uniqueKey] = typeofQuery + "{ " + temp;
+                queryObj[uniqueKey] = typeofQuery + "{ " + temp + " }";
                 arrayofQueries.push(queryObj)
                 temp = '';
                 uniqueKey = '';

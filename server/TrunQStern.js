@@ -14,30 +14,43 @@ class TrunQStern {
 
   async getAllData(req, res, next) {
     // deconstruct the req obj
-    const { key } = req.body;
-    console.log('1 **** incoming graphQL query: ', key);
+    const { trunQKey } = req.body;
+    console.log('1 **** incoming graphQL query: ', trunQKey);
+
+    let cacheKey = Object.keys(trunQKey)[0];
+    let graphQLQuery = Object.values(trunQKey)[0];
+    console.log('1-a **** parsed unique redis query key: ', cacheKey);
+    console.log('1-b **** parsed front-end graphQL query: ', graphQLQuery)
+
     // await the returned result of invoking the checkRedis function
     // assign the returned result to a variable
-    const redisResult = await this.checkRedis(key);
+    const redisResult = await this.checkRedis(cacheKey);
+
     console.log('2 **** redisResult before conditional: ', redisResult);
+    // save 
+    const clientResObj = {};
+
     // check if the redis query returned a valid response
     if (redisResult === null) {
+      console.log('2a **** confirm if logic before api request');
       // await the returned result of querying the third party api
-      const apiResult = await this.checkApi(key, this.apiURL);
+      const apiResult = await this.checkApi(graphQLQuery, this.apiURL);
       console.log('4 **** returned api data: ', apiResult);
-      // this.data = apiResult;
-      this.data = "charmander";
+      clientResObj[cacheKey] = apiResult;
+      this.data = clientResObj;
+      // this.data = "charmander";
       return next();
     } else {
+      clientResObj[cacheKey] = redisResult;
       // assign the returned query result to the obj data property
-      this.data = redisResult;
+      this.data = clientResObj;
       return next();
     }
   }
 
-  checkRedis(query) {
+  checkRedis(uniqueKeyQuery) {
     return new Promise(resolve => {
-      this.redisClient.get(query, (err, result) => {
+      this.redisClient.get(uniqueKeyQuery, (err, result) => {
         if (err) {
           console.log('error within checkRedis func: ', err);
         }
@@ -46,17 +59,17 @@ class TrunQStern {
     })
   }
 
-  checkApi(query, apiURL) {
+  checkApi(graphQLQuery, apiURL) {
     return new Promise(resolve => {
       fetch(apiURL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: query // incoming query is already in string form
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: graphQLQuery }) // incoming query is already in string form
       })
         .then(res => res.json())
         .then(data => {
           // this.redisClient.set(query, JSON.stringify(data));
-          this.redisClient.set(query, 'pikachu');
+          // this.redisClient.set(query, 'pikachu');
           // send set request to redis database
           console.log('3 **** api response data: ', data)
           resolve(data);
