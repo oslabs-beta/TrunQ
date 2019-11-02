@@ -84,18 +84,18 @@ class PokeContainer extends Component {
                 name
                 image
             }
+            pokemon(name: "Raichu") {
+                name
+                image
+            }
+            pokemon(name: "Eevee") {
+                name
+                image
+            }
         }`
         return query;
     }
 
-    // 'pokemon(name: "Raichu") {
-    //     name
-    //     image
-    // }
-    // pokemon(name: "Eevee") {
-    //     name
-    //     image
-    // }'
     render() {
         const pokeCards = []
         for (let i = 0; i < this.state.pokeInfo.length; i += 1) {

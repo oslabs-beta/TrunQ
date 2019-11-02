@@ -35,12 +35,12 @@ const trunQify = (query, uniques, limits, endpointName) => {
         fetch(endpointName, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ query: trunQKey[key] })
+            body: JSON.stringify({ trunQKey: trunQKey })
         })
         .then(res => res.json())
         .then(res => {
             console.log(res)   
-            sessionStorage.setItem(key, JSON.stringify(res))
+            sessionStorage.setItem('res', JSON.stringify(res))
             return ;
         })
     }
