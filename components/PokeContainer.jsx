@@ -53,32 +53,47 @@ class PokeContainer extends Component {
     }
 
     pokeQueryBuilder (pokeName, evolutions = false) {
-        let query = `query {
-                    pokemon(name: "${pokeName}") {
-                      name
-                      image
-                      attacks {
-                        special {
-                          name
-                        }
-                      }`
+        // let query = `query {
+        //             pokemon(name: "${pokeName}") {
+        //               name
+        //               image
+        //               attacks {
+        //                 special {
+        //                   name
+        //                 }
+        //               }`
 
-            if (evolutions) {
-                query +=(`
-                evolutions {
-                    name
-                }
-              }
-          }`)
+        //     if (evolutions) {
+        //         query +=(`
+        //         evolutions {
+        //             name
+        //         }
+        //       }
+        //   }`)
+        //     }
+        //     else{
+        //         query +=(
+        //           `  }
+        //         }`  
+        //         )
+        //     }
+        // console.log(query)
+        // return query      
+        let query = `query {
+            pokemon(name: "Pikachu") {
+                name
+                image
             }
-            else{
-                query +=(
-                  `  }
-                }`  
-                )
+            pokemon(name: "Raichu") {
+                name
+                image
             }
-        console.log(query)
-        return query        
+            pokemon(name: "Eevee") {
+                name
+                image
+            }
+        }`
+        return query;
     }
 
     render() {
