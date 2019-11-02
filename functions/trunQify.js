@@ -18,6 +18,7 @@ const trunQify = (query, uniques, limits, endpointName) => {
             trunQKey[currentKey] = keyedQueriesArray[i][currentKey];
         }
     }
+
     // if (Object.keys(trunQKey)) {
     //     fetch(endpointName, {
     //         method: "POST",
@@ -31,17 +32,16 @@ const trunQify = (query, uniques, limits, endpointName) => {
     // }
 
     if (Object.keys(trunQKey).length > 0) {
-        Object.keys(trunQKey).forEach(key => {
-            fetch(endpointName, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ trunQKey: trunQKey })
-            })
-                .then(res => res.json())
-                .then(res => {
-                    console.log(res)
-                    sessionStorage.setItem(key, JSON.stringify(res))
-                })
+        fetch(endpointName, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ query: trunQKey[key] })
+        })
+        .then(res => res.json())
+        .then(res => {
+            console.log(res)   
+            sessionStorage.setItem(key, JSON.stringify(res))
+            return ;
         })
     }
     else {
@@ -49,7 +49,7 @@ const trunQify = (query, uniques, limits, endpointName) => {
         return cachedResults
     }
     console.log("CACHED RESULTS", cachedResults, "\n\nTRUNQKEY", trunQKey)
-}
+} 
 
-export default trunQify
+export default trunQify  
 
