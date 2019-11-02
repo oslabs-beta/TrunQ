@@ -79,16 +79,16 @@ class PokeContainer extends Component {
         //     }
         // console.log(query)
         // return query      
+                // pokemon(name: "Raichu") {
+                //     name
+                //     image
+                // }
+                // pokemon(name: "Eevee") {
+                //     name
+                //     image
+                // }
         let query = `query {
             pokemon(name: "charmander") {
-                name
-                image
-            }
-            pokemon(name: "Raichu") {
-                name
-                image
-            }
-            pokemon(name: "Eevee") {
                 name
                 image
             }
