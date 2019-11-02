@@ -31,18 +31,18 @@ const trunQify = (query, uniques, limits, endpointName) => {
     // }
 
     if (Object.keys(trunQKey).length > 0) {
-        Object.keys(trunQKey).forEach(key => {
+        // Object.keys(trunQKey).forEach(key => {
             fetch(endpointName, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ query: trunQKey[key] })
+                body: JSON.stringify({ trunQKey })
             })
             .then(res => res.json())
             .then(res => {
                 console.log(res)   
-                sessionStorage.setItem(key, JSON.stringify(res))
+                sessionStorage.setItem('res', JSON.stringify(res))
             })
-        })
+        // })
     }
     else {
         console.log(cachedResults)
