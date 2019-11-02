@@ -1,20 +1,20 @@
 const fetch = require('node-fetch');
 
-class Middleware {
+class TrunQStern {
   constructor(apiURL, redisClient, port = 6379) {
     this.apiURL = apiURL;
     this.port = port;
     this.redisClient = redisClient;
     this.data = "check if this is correct";
-    this.checkRedisMiddleware = this.checkRedisMiddleware.bind(this);
-    this.masterCache = this.masterCache.bind(this);
+    this.getAllData = this.getAllData.bind(this);
+    this.getRedisData = this.getRedisData.bind(this);
     this.checkRedis = this.checkRedis.bind(this);
     this.checkApi = this.checkApi.bind(this);
   }
 
-  async masterCache(req, res, next) {
+  async getAllData(req, res, next) {
     // deconstruct the req obj
-    const { trunQKey } = req.body;
+    const { key } = req.body;
     console.log('1 **** incoming graphQL query: ', key);
     // await the returned result of invoking the checkRedis function
     // assign the returned result to a variable
@@ -64,7 +64,7 @@ class Middleware {
     })
   }
 
-  checkRedisMiddleware(req, res, next) {
+  getRedisData(req, res, next) {
 
     const { key } = req.body; // get value on "key" property of request body
 
@@ -84,4 +84,4 @@ class Middleware {
 
 // graphQL query 	"key": "query { pokemon(name: Dragonite) { name image attacks { special { name } }"
 
-module.exports = Middleware;
+module.exports = TrunQStern;
