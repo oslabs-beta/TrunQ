@@ -7,7 +7,7 @@ class PokeContainer extends Component {
         super(props);
         this.state = {
             pokeInfo: [],
-            pokeName: null, 
+            pokeName: null,
             fetchTime: [],
             evolutionBool: false
         }
@@ -18,12 +18,12 @@ class PokeContainer extends Component {
 
     }
 
-    handleClick (event) {
+    handleClick(event) {
         event.preventDefault()
         const query = this.pokeQueryBuilder(this.state.pokeName, this.state.evolutionBool);
-        let startTime = Date.now(); 
+        let startTime = Date.now();
         // TRUNQIFY THIS SHIT
-        trunQify(query, ["name"], [], 'https://graphql-pokemon.now.sh/');
+        trunQify(query, ["name"], [], '/graphql');
         // fetch('https://graphql-pokemon.now.sh/', {
         //     method: 'POST',
         //     headers: {
@@ -40,19 +40,19 @@ class PokeContainer extends Component {
         // })
     }
 
-    handleNameChange (e) {
-        this.setState({pokeName: e.target.value});
+    handleNameChange(e) {
+        this.setState({ pokeName: e.target.value });
     }
 
-    handleTruth () {
+    handleTruth() {
         let truth
         if (this.state.evolutionBool) truth = false
-        else {truth = true}
-        this.setState({evolutionBool: truth})
+        else { truth = true }
+        this.setState({ evolutionBool: truth })
         console.log(this.state.evolutionBool)
     }
 
-    pokeQueryBuilder (pokeName, evolutions = false) {
+    pokeQueryBuilder(pokeName, evolutions = false) {
         // let query = `query {
         //             pokemon(name: "${pokeName}") {
         //               name
@@ -80,15 +80,7 @@ class PokeContainer extends Component {
         // console.log(query)
         // return query      
         let query = `query {
-            pokemon(name: "Pikachu") {
-                name
-                image
-            }
-            pokemon(name: "Raichu") {
-                name
-                image
-            }
-            pokemon(name: "Eevee") {
+            pokemon(name: "charmander") {
                 name
                 image
             }
@@ -96,20 +88,28 @@ class PokeContainer extends Component {
         return query;
     }
 
+    // 'pokemon(name: "Raichu") {
+    //     name
+    //     image
+    // }
+    // pokemon(name: "Eevee") {
+    //     name
+    //     image
+    // }'
     render() {
         const pokeCards = []
         for (let i = 0; i < this.state.pokeInfo.length; i += 1) {
-            pokeCards.push(<PokeCard pokeInfo={this.state.pokeInfo[i]} fetchTime={this.state.fetchTime[i]}/>)
+            pokeCards.push(<PokeCard pokeInfo={this.state.pokeInfo[i]} fetchTime={this.state.fetchTime[i]} />)
         }
         return (
-            <div className = 'pokeContainer'>
+            <div className='pokeContainer'>
                 <h1>poke card</h1>
                 <form>
                     <input id="pokeName" value={this.state.pokeName} onChange={this.handleNameChange} type="text" />
                     <button onClick={(event) => this.handleClick(event)}>QUERY POKEMON NAME</button>
                     <input type='checkbox' onChange={this.handleTruth}></input>
                 </form>
-                    {pokeCards}
+                {pokeCards}
             </div>
         )
     }
