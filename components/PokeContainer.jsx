@@ -80,7 +80,7 @@ class PokeContainer extends Component {
         // console.log(query)
         // return query      
         let query = `query {
-            pokemon(name: "Pikachu") {
+            pokemon(name: "charmander") {
                 name
                 image
             }
