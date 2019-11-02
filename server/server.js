@@ -8,10 +8,46 @@ const fetch = require('node-fetch');
 
 const the = require('./redis');
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
 
-app.use(express.static(path.resolve(__dirname, '../dist')))
+// TESTING CLASS BASED SOLUTION ******************
+const redis = require('redis');
+
+const redisClient = redis.createClient();
+
+redisClient.on('connect', (success) => {
+    console.log('Redis connection success: ', success)
+})
+
+redisClient.on('error', (err) => {
+    console.log("Redis connection failure: " + err)
+});
+
+const MiddleWare = require('./testClass');
+
+const that = new MiddleWare('https://graphql-pokemon.now.sh/', redisClient);
+// console.log(that);
+
+// ***********************************************
+
+
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(express.static(path.resolve(__dirname, '../dist')));
+
+
+
+// CLASS BASED SOLUTION MIDDLEWARE ***************
+that.data = 'anything';
+app.get('/classPoint', that.masterCache, (req, res, next) => {
+    console.log('5 **** that.data before response to client: ', that.data);
+    res.json(that.data);
+    // res.send(res.locals.message);
+})
+
+// ***********************************************
+
 
 // developer deconstructs backend function
 // and places function within graphql endpoint
@@ -64,16 +100,6 @@ app.get('/redis', (req, res, next) => {
 
 app.get('/test', (req, res, next) => {
     // const { key } = req.body
-<<<<<<< HEAD
-    console.log('before i enter testAsync func')
-    the.testAsync(req)
-        .then((value) => {
-            console.log('before we send response to client')
-            res.send(value)
-        });
-    // let resValue = the.testAsync(req);
-    // res.send(the.outer(req));
-=======
     console.log('STEP 1 *** before i enter testAsync func')
     // the.testAsync(req).then((value) => {
     //     console.log('before we send response to client')
@@ -81,7 +107,6 @@ app.get('/test', (req, res, next) => {
     // });
 
     res.send(the.checkApi(req));
->>>>>>> tmp
 })
 
 app.listen(port, () => {

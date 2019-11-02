@@ -1,18 +1,18 @@
-const redis = require('redis');
+// const redis = require('redis');
 
-const redisClient = redis.createClient();
+// const redisClient = redis.createClient();
 
 const the = {};
 
 the.results = null;
 
-redisClient.on('connect', (success) => {
-  console.log('Redis connection success: ', success)
-})
+// redisClient.on('connect', (success) => {
+//   console.log('Redis connection success: ', success)
+// })
 
-redisClient.on('error', (err) => {
-  console.log("Redis connection failure: " + err)
-});
+// redisClient.on('error', (err) => {
+//   console.log("Redis connection failure: " + err)
+// });
 
 the.checkCache = (reqBody, url, storageTimer) => {
   // key = incoming request query
