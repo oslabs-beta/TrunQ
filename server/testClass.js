@@ -14,7 +14,7 @@ class Middleware {
 
   async masterCache(req, res, next) {
     // deconstruct the req obj
-    const { key } = req.body;
+    const { trunQKey } = req.body;
     console.log('1 **** incoming graphQL query: ', key);
     // await the returned result of invoking the checkRedis function
     // assign the returned result to a variable
@@ -70,17 +70,15 @@ class Middleware {
 
     this.redisClient.get(key, (err, result) => {
 
-      if (err) {
-        console.log('something went wrong')
-      }
+      if (err) { console.log('something went wrong') };
       if (result === 'nil') {
         return next(); //will be in api call function
       } else {
         this.data = result; //results is stringified query results
         return next();
-      }
-    })
-  }
+      };
+    });
+  };
 };
 
 
