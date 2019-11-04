@@ -32,17 +32,27 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
             .then(res => res.json())
             .then(res => {
                 console.log("\nRESPONSE FROM SERVER:", res);
-                let outputObj = {}
+                let returnDataObj = [];
                 for (let i = 0; i < Object.keys(res.trunQKey).length; i += 1) {
-                    if (storageLocation === 'bow') sessionStorage.setItem(Object.keys(res.trunQKey)[i], JSON.stringify(res.trunQKey[Object.keys(res.trunQKey)[i]]));
-                    outputObj.data = res.trunQKey[Object.keys(res.trunQKey)[i]].data
+                    let outputObj = { data: {} }
+                    let currentUniqueKey = Object.keys(res.trunQKey)[i];
+                    if (storageLocation === 'bow') sessionStorage.setItem(currentUniqueKey, JSON.stringify(res.trunQKey[currentUniqueKey]));
+
+                    // we need outputObj.data.pokemon
+                    outputObj.data = res.trunQKey[currentUniqueKey].data;
+                    returnDataObj.push(outputObj)
+                    console.log("INSIDE FETCH", res.trunQKey[currentUniqueKey], outputObj, returnDataObj)
+                    // outputObj.data = {}
+                    // outputObj[Object.keys(res.trunQKey)[i]] = res.trunQKey[Object.keys(res.trunQKey)[i]]
                 }
-                return resolve(outputObj);
+                console.log("OUTPUTOBJ", returnDataObj)
+                return resolve(returnDataObj);
             })
             .catch(error => {
                 console.log('ERROR FETCHING IN TRUNQIFY', error)
             })
         })
+        console.log("FETCHED PROMISES - IS ARRAY?", fetchedPromises);
         fetchedPromises.push(fetchingPromise)
     }
     else {
@@ -57,7 +67,11 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
 
     return Promise.all([...fetchedPromises])
     .then(function(values) {
-        return values;
+        console.log("VALUES", values)
+        return values.reduce((arr, val) => {
+            arr.push(...val);
+            return arr;
+        }, [])
     })
     .catch(err => {
         console.log(err);
