@@ -37,16 +37,10 @@ class TrunQStern {
     let resultArray = redisResult.map((redisVal, index) => {
       console.log('2z **** redisVal within map function: ', redisVal)
       if (redisVal === null) {
-        console.log('2a **** confirm if logic before api request');
-        // await the returned result of querying the third party api
-        // const apiResult = await this.checkApi(cacheKey[index], graphQLQuery[index], this.apiURL); // the position of redisResult => graphQLQuery position
-        // console.log('4 **** returned api data: ', apiResult);
-        return this.checkApi(cacheKey[index], graphQLQuery[index], this.apiURL)
-        //add data to applicable objects
-        // queryResponses[cacheKey] = apiResult;
+
+        return this.checkApi(cacheKey[index], graphQLQuery[index], this.apiURL);
+
       } else {
-        //add data to applicable objects
-        // queryResponses[cacheKey] = redisResult;
         return redisVal;
       }
     });
@@ -55,6 +49,7 @@ class TrunQStern {
       .then((valArr) => {
         console.log('4 **** valArr within Promise.all before for loop: ', valArr);
         for (let i = 0; i < cacheKey.length; i++) {
+          console.log(`4a **** valArr[${i}]: `, valArr[i]);
           queryResponses[cacheKey[i]] = valArr[i];
         }
         clientResObj[outerKey] = queryResponses;
@@ -63,14 +58,6 @@ class TrunQStern {
         return next();
       });
 
-    // console.log('4 **** resultArray before for loop: ', resultArray);
-    // for (let i = 0; i < cacheKey.length; i++) {
-    //   queryResponses[cacheKey[i]] = resultArray[i];
-    // }
-    // clientResObj[outerKey] = queryResponses;
-
-    // this.data = clientResObj;
-    // return next();
   }
 
   checkRedis(uniqueKeyQuery) {
@@ -94,10 +81,8 @@ class TrunQStern {
       })
         .then(res => res.json())
         .then(data => {
-          data = JSON.stringify(data);
           // this.redisClient.set(uniqueKey, JSON.stringify(data));
-          // this.redisClient.set(query, 'pikachu');
-          // send set request to redis database
+
           console.log('3 **** api response data: ', data)
           resolve(data);
         })

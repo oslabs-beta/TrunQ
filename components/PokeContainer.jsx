@@ -39,21 +39,6 @@ class PokeContainer extends Component {
 
         // TRUNQIFY THIS SHIT
         let info;
-<<<<<<< HEAD
-        
-        info = await trunQify(query, ["name"], [], '/graphql', 'stern')
-        let elapsedTime = []
-        console.log("here info", info)
-        info = info.reduce((pokeResArray,pokeResInfo) => { 
-            console.log(pokeResInfo);
-            if (pokeResInfo.data.pokemon !== null) pokeResArray.push(pokeResInfo)
-            return pokeResArray
-        },[])
-
-        console.log(info)
-        info.forEach((res) => {
-                elapsedTime.push(Date.now() - startTime);
-=======
 
         info = await trunQify(query, ["name"], [], '/graphql', 'bow')
         let elapsedTime = []
@@ -66,7 +51,6 @@ class PokeContainer extends Component {
         console.log(info)
         info.forEach((res, i) => {
             elapsedTime.push(Date.now() - startTime);
->>>>>>> gordonMichael/MultiQuery
         })
         console.log(elapsedTime)
 
@@ -135,33 +119,4 @@ class PokeContainer extends Component {
     }
 }
 
-<<<<<<< HEAD
 export default PokeContainer;                 
-=======
-export default PokeContainer;
-
-
-// fetch('https://graphql-pokemon.now.sh/', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({query: query})
-        // })
-        // .then(res => res.json())
-        // .then(info => {
-        //     let pokeArray = [...this.state.pokeInfo, info]
-        //     let elapsedTime = Date.now() - startTime;
-        //     let timeArray = [...this.state.fetchTime, elapsedTime];
-        //     this.setState({ pokeInfo: pokeArray, fetchTime: timeArray })
-        // })
-        // .then(info => {
-        //     let pokeArray = [...this.state.pokeInfo, info]
-        //     let elapsedTime = Date.now() - startTime;
-        //     let timeArray = [...this.state.fetchTime, elapsedTime];
-        //     this.setState({ pokeInfo: pokeArray, fetchTime: timeArray })
-        // })
-
-
-
->>>>>>> gordonMichael/MultiQuery
