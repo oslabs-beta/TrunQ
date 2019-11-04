@@ -42,19 +42,13 @@ class PokeContainer extends Component {
         
         info = await trunQify(query, ["name"], [], '/graphql', 'bow')
         let elapsedTime = []
-        console.log("here info", info)
         info = info.reduce((pokeResArray,pokeResInfo) => { 
-            console.log(pokeResInfo);
             if (pokeResInfo.data.pokemon !== null) pokeResArray.push(pokeResInfo)
             return pokeResArray
         },[])
-
-        console.log(info)
         info.forEach((res) => {
                 elapsedTime.push(Date.now() - startTime);
         })
-        console.log(elapsedTime)
-
         let timeArray = [...this.state.fetchTime, ...elapsedTime];
         let pokeArray = [...this.state.pokeInfo, ...info]
         this.setState({ pokeInfo: pokeArray, fetchTime: timeArray })
