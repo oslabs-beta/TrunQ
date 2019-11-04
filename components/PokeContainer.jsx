@@ -7,10 +7,6 @@ class PokeContainer extends Component {
         super(props);
         this.state = {
             pokeInfo: [],
-<<<<<<< HEAD
-            pokeName: null,
-=======
->>>>>>> frontend-caching
             fetchTime: [],
             evolutionBool: false
         }
@@ -22,28 +18,6 @@ class PokeContainer extends Component {
         this.pokeSection = React.createRef();
     }
 
-<<<<<<< HEAD
-    handleClick(event) {
-        event.preventDefault()
-        const query = this.pokeQueryBuilder(this.state.pokeName, this.state.evolutionBool);
-        let startTime = Date.now();
-        // TRUNQIFY THIS SHIT
-        trunQify(query, ["name"], [], '/graphql');
-        // fetch('https://graphql-pokemon.now.sh/', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({query: query})
-        // })
-        // .then(res => res.json())
-        // .then(info => {
-        //     let pokeArray = [...this.state.pokeInfo, info]
-        //     let elapsedTime = Date.now() - startTime;
-        //     let timeArray = [...this.state.fetchTime, elapsedTime];
-        //     this.setState({ pokeInfo: pokeArray, fetchTime: timeArray })
-        // })
-=======
     async handleClick (event) {
         event.preventDefault()
         let pokeNames = []
@@ -84,62 +58,12 @@ class PokeContainer extends Component {
         let pokeArray = [...this.state.pokeInfo, ...info]
         this.setState({ pokeInfo: pokeArray, fetchTime: timeArray })
 
->>>>>>> frontend-caching
     }
 
     handleNameChange(e) {
         this.setState({ pokeName: e.target.value });
     }
 
-<<<<<<< HEAD
-    handleTruth() {
-        let truth
-        if (this.state.evolutionBool) truth = false
-        else { truth = true }
-        this.setState({ evolutionBool: truth })
-        console.log(this.state.evolutionBool)
-    }
-
-    pokeQueryBuilder(pokeName, evolutions = false) {
-        // let query = `query {
-        //             pokemon(name: "${pokeName}") {
-        //               name
-        //               image
-        //               attacks {
-        //                 special {
-        //                   name
-        //                 }
-        //               }`
-
-        //     if (evolutions) {
-        //         query +=(`
-        //         evolutions {
-        //             name
-        //         }
-        //       }
-        //   }`)
-        //     }
-        //     else{
-        //         query +=(
-        //           `  }
-        //         }`  
-        //         )
-        //     }
-        // console.log(query)
-        // return query      
-                // pokemon(name: "Raichu") {
-                //     name
-                //     image
-                // }
-                // pokemon(name: "Eevee") {
-                //     name
-                //     image
-                // }
-        let query = `query {
-            pokemon(name: "charmander") {
-                name
-                image
-=======
     //handles evolution toggle
     handleTruth () {
         let truth
@@ -168,7 +92,6 @@ class PokeContainer extends Component {
             }
             else{
                 query +=`}`    
->>>>>>> frontend-caching
             }
         console.log(query)
         return query  
@@ -177,17 +100,10 @@ class PokeContainer extends Component {
     render() {
         const pokeCards = []
         for (let i = 0; i < this.state.pokeInfo.length; i += 1) {
-<<<<<<< HEAD
-            pokeCards.push(<PokeCard pokeInfo={this.state.pokeInfo[i]} fetchTime={this.state.fetchTime[i]} />)
-        }
-        return (
-            <div className='pokeContainer'>
-=======
             pokeCards.push(<PokeCard key={`pokeCard${i}`} pokeInfo={this.state.pokeInfo[i]} fetchTime={this.state.fetchTime[i]}/>)
         }
         return (
             <div className = 'pokeContainer' ref={this.pokeSection}>
->>>>>>> frontend-caching
                 <h1>poke card</h1>
                 <form>
                     <input id="pokeName1" className="pokeInput"  onChange={this.handleNameChange} type="text" />

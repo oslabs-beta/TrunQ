@@ -19,36 +19,9 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
             trunQKey[currentKey] = keyedQueriesArray[i][currentKey];
         }
     }
-<<<<<<< HEAD
-
-    // if (Object.keys(trunQKey)) {
-    //     fetch(endpointName, {
-    //         method: "POST",
-    //         headers: { "Content-Type": "application/json" },
-    //         body: JSON.stringify({ trunQKey: trunQKey })
-    //     })
-    //     .then(res => res.json())
-    //     .then(res => {
-    //         return Object.values(cachedResults).length !== 0 ? res + cachedResults : res
-    //     })
-    // }
-=======
->>>>>>> frontend-caching
 
     //if the length is greater than 0 that means we have keys to go fetch because they weren't in cache (trunQKey holds not found items)
     if (Object.keys(trunQKey).length > 0) {
-<<<<<<< HEAD
-        fetch(endpointName, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ trunQKey: trunQKey })
-        })
-        .then(res => res.json())
-        .then(res => {
-            console.log(res)   
-            sessionStorage.setItem('res', JSON.stringify(res))
-            return ;
-=======
         //declare the promise to be pushed - it returns the result of a fetch
         let fetchingPromise = new Promise (function (resolve, reject) {
             fetch(endpointName, {
@@ -64,7 +37,6 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
             .catch(error => {
                 console.log('bad stuff', error)
             })
->>>>>>> frontend-caching
         })
         fetchedPromises.push(fetchingPromise)
     }
