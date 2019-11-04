@@ -36,6 +36,9 @@ const trunQify = (query, uniques, limits, endpointName) => {
                     sessionStorage.setItem(key, JSON.stringify(res))
                     return resolve(res);
                 })
+                .catch(error => {
+                    console.log('bad stuff', error)
+                })
             })
             fetchedPromises.push(fetchingPromise)
         })
