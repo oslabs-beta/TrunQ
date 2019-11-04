@@ -4,7 +4,7 @@ import layerQueryFields from './layerQueryFields'
 import queryObjectBuilder from './queryObjectBuilder'
 
 const trunQify = (query, uniques, limits, endpointName) => {
-    let cachedResults = {}
+    let cachedResults = []
     let trunQKey = {}
     let fetchedPromises = [];
     // get unique keys based on query, use these keys to check against local cache
@@ -13,23 +13,12 @@ const trunQify = (query, uniques, limits, endpointName) => {
         let currentKey = Object.keys(keyedQueriesArray[i])
         let cachedResult = sessionStorage.getItem(currentKey)
         if (cachedResult !== null) {
-            cachedResults[currentKey] = cachedResult;
+            cachedResults.push(JSON.parse(cachedResult))
         }
         else {
             trunQKey[currentKey] = keyedQueriesArray[i][currentKey];
         }
     }
-    // if (Object.keys(trunQKey)) {
-    //     fetch(endpointName, {
-    //         method: "POST",
-    //         headers: { "Content-Type": "application/json" },
-    //         body: JSON.stringify({ trunQKey: trunQKey })
-    //     })
-    //     .then(res => res.json())
-    //     .then(res => {
-    //         return Object.values(cachedResults).length !== 0 ? res + cachedResults : res
-    //     })
-    // }
 
     //if the length is greater than 0 that means we have keys to go fetch because they weren't in cache (trunQKey holds not found items)
     if (Object.keys(trunQKey).length > 0) {
@@ -52,23 +41,37 @@ const trunQify = (query, uniques, limits, endpointName) => {
         })
     }
     else {
-        console.log(cachedResults)
-        return [cachedResults];
+        return cachedResults;
     }
+
     console.log("CACHED RESULTS", cachedResults, "\n\nTRUNQKEY", trunQKey)
-    console.log("fetched promises", [...fetchedPromises])
+
     for (let j = 0; j < Object.keys(cachedResults).length; j += 1) {
         fetchedPromises.push(cachedResults[Object.keys(cachedResults)[j]])
     }
-    Promise.all([...fetchedPromises])
+
+    return Promise.all([...fetchedPromises])
     .then(function(values) {
-        console.log("PROMISE.ALL VALS", values);
         return values;
     })
     .catch(err => {
         console.log(err);
     })
+   
 } 
 
 export default trunQify  
 
+
+
+    // if (Object.keys(trunQKey)) {
+    //     fetch(endpointName, {
+    //         method: "POST",
+    //         headers: { "Content-Type": "application/json" },
+    //         body: JSON.stringify({ trunQKey: trunQKey })
+    //     })
+    //     .then(res => res.json())
+    //     .then(res => {
+    //         return Object.values(cachedResults).length !== 0 ? res + cachedResults : res
+    //     })
+    // }

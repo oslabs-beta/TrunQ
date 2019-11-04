@@ -5,9 +5,9 @@ class ArtContainer extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            artistNameQuery: null,
-            artistName: null,
-            numPaintings: null,
+            artistNameQuery: '',
+            artistName: '',
+            numPaintings: 0,
             artistInfo: [],
             elapsedTime: []
         }
