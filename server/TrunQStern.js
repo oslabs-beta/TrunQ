@@ -16,6 +16,7 @@ class TrunQStern {
     // deconstruct the req obj
     const { trunQKey } = req.body;
     console.log('1 **** incoming graphQL query: ', trunQKey);
+    const outerKey = 'trunQkey';
 
     let cacheKey = Object.keys(trunQKey)[0];
     let graphQLQuery = Object.values(trunQKey)[0];
@@ -40,7 +41,7 @@ class TrunQStern {
 
       //add data to applicable objects
       queryResponses[cacheKey] = apiResult;
-      clientResObj[trunQKey] = queryResponses;
+      clientResObj[outerKey] = queryResponses;
 
       // assign the returned query result to the obj data property
       this.data = clientResObj;
@@ -49,7 +50,7 @@ class TrunQStern {
 
       //add data to applicable objects
       queryResponses[cacheKey] = redisResult;
-      clientResObj[trunQKey] = queryResponses;
+      clientResObj[outerKey] = queryResponses;
 
       // assign the returned query result to the obj data property
       this.data = clientResObj;
