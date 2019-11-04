@@ -28,17 +28,24 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
             fetch(endpointName, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ trunQKey: trunQKey })
+                body: JSON.stringify({ 
+                    trunQKey: trunQKey,
+                    flag: storageLocation
+                })
             })
             .then(res => res.json())
             .then(res => {
-                console.log("\nRESPONSE FROM SERVER:", res);
-                let outputObj = {}
+                // console.log("\nRESPONSE FROM SERVER:", res);
+                let returnDataObj = [];
                 for (let i = 0; i < Object.keys(res.trunQKey).length; i += 1) {
-                    if (storageLocation === 'bow') sessionStorage.setItem(Object.keys(res.trunQKey)[i], JSON.stringify(res.trunQKey[Object.keys(res.trunQKey)[i]]));
-                    outputObj.data = res.trunQKey[Object.keys(res.trunQKey)[i]].data
+                    let outputObj = { data: {} }
+                    let currentUniqueKey = Object.keys(res.trunQKey)[i];
+                    if (storageLocation === 'bow') sessionStorage.setItem(currentUniqueKey, JSON.stringify(res.trunQKey[currentUniqueKey]));
+
+                    outputObj.data = res.trunQKey[currentUniqueKey].data;
+                    returnDataObj.push(outputObj);
                 }
-                return resolve(outputObj);
+                return resolve(returnDataObj);
             })
             .catch(error => {
                 console.log('ERROR FETCHING IN TRUNQIFY', error)
@@ -58,10 +65,13 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
 
     return Promise.all([...fetchedPromises])
     .then(function(values) {
-        return values;
+        return values.reduce((arr, val) => {
+            arr.push(...val);
+            return arr;
+        }, [])
     })
     .catch(err => {
-        console.log(err);
+        console.log("ERROR IN RESOLVING PROMISE.ALL", err);
     })
 } 
 

@@ -18,7 +18,7 @@ class PokeContainer extends Component {
         this.pokeSection = React.createRef();
     }
 
-    async handleClick (event) {
+    async handleClick(event) {
         event.preventDefault()
         let pokeNames = []
         //step 1: take all the inputs and push them into the pokeNames Array
@@ -26,35 +26,29 @@ class PokeContainer extends Component {
         inputArr.forEach(x => pokeNames.push(x.value))
 
         //step 2: build the query by concatting strings
-        let query = 'query {' 
+        let query = 'query {'
         pokeNames.forEach(name => {
             if (name.length > 0) {
                 query += this.pokeQueryBuilder(name, this.state.evolutionBool)
             }
         })
         query += '}'
-        
+
         // const query = this.pokeQueryBuilder(this.state.pokeName, this.state.evolutionBool);
-        let startTime = Date.now(); 
+        let startTime = Date.now();
 
         // TRUNQIFY THIS SHIT
         let info;
         
-        info = await trunQify(query, ["name"], [], '/graphql', 'stern')
+        info = await trunQify(query, ["name"], [], '/graphql', 'bow')
         let elapsedTime = []
-        console.log("here info", info)
         info = info.reduce((pokeResArray,pokeResInfo) => { 
-            console.log(pokeResInfo);
             if (pokeResInfo.data.pokemon !== null) pokeResArray.push(pokeResInfo)
             return pokeResArray
         },[])
-
-        console.log(info)
         info.forEach((res) => {
                 elapsedTime.push(Date.now() - startTime);
         })
-        console.log(elapsedTime)
-
         let timeArray = [...this.state.fetchTime, ...elapsedTime];
         let pokeArray = [...this.state.pokeInfo, ...info]
         this.setState({ pokeInfo: pokeArray, fetchTime: timeArray })
@@ -66,15 +60,15 @@ class PokeContainer extends Component {
     }
 
     //handles evolution toggle
-    handleTruth () {
+    handleTruth() {
         let truth
         if (this.state.evolutionBool) truth = false
-        else {truth = true}
-        this.setState({evolutionBool: truth})
+        else { truth = true }
+        this.setState({ evolutionBool: truth })
     }
 
-    pokeQueryBuilder (pokeName, evolutions = false) {
-          let query = `
+    pokeQueryBuilder(pokeName, evolutions = false) {
+        let query = `
                     pokemon(name: "${pokeName}") {
                       name
                       image
@@ -84,32 +78,32 @@ class PokeContainer extends Component {
                         }
                       }`
 
-            if (evolutions) {
-                query +=`
+        if (evolutions) {
+            query += `
                 evolutions {
                     name
                 }
               }`
-            }
-            else{
-                query +=`}`    
-            }
+        }
+        else {
+            query += `}`
+        }
         console.log(query)
-        return query  
+        return query
     }
 
     render() {
         const pokeCards = []
         for (let i = 0; i < this.state.pokeInfo.length; i += 1) {
-            pokeCards.push(<PokeCard key={`pokeCard${i}`} pokeInfo={this.state.pokeInfo[i]} fetchTime={this.state.fetchTime[i]}/>)
+            pokeCards.push(<PokeCard key={`pokeCard${i}`} pokeInfo={this.state.pokeInfo[i]} fetchTime={this.state.fetchTime[i]} />)
         }
         return (
-            <div className = 'pokeContainer' ref={this.pokeSection}>
+            <div className='pokeContainer' ref={this.pokeSection}>
                 <h1>poke card</h1>
                 <form>
-                    <input id="pokeName1" className="pokeInput"  onChange={this.handleNameChange} type="text" />
-                    <input id="pokeName2" className="pokeInput"  onChange={this.handleNameChange} type="text" />
-                    <input id="pokeName3" className="pokeInput"  onChange={this.handleNameChange} type="text" />
+                    <input id="pokeName1" className="pokeInput" onChange={this.handleNameChange} type="text" />
+                    <input id="pokeName2" className="pokeInput" onChange={this.handleNameChange} type="text" />
+                    <input id="pokeName3" className="pokeInput" onChange={this.handleNameChange} type="text" />
 
                     <button onClick={(event) => this.handleClick(event)}>QUERY POKEMON NAME</button>
                     <input type='checkbox' onChange={this.handleTruth}></input>
