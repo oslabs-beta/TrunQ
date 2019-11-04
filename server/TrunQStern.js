@@ -16,7 +16,7 @@ class TrunQStern {
     // deconstruct the req obj
     const { trunQKey } = req.body;
     console.log('1 **** incoming graphQL query: ', trunQKey);
-    const outerKey = 'trunQkey';
+    const outerKey = 'trunQKey';
 
     let cacheKey = Object.keys(trunQKey)[0];
     let graphQLQuery = Object.values(trunQKey)[0];
