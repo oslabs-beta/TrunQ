@@ -23,7 +23,11 @@ class PokeContainer extends Component {
         const query = this.pokeQueryBuilder(this.state.pokeName, this.state.evolutionBool);
         let startTime = Date.now(); 
         // TRUNQIFY THIS SHIT
-        trunQify(query, ["name"], [], 'https://graphql-pokemon.now.sh/');
+        let info;
+        async function tester () {
+             info = trunQify(query, ["name"], [], 'https://graphql-pokemon.now.sh/');
+        }
+        tester().then(console.log("OUTSIDE OF THE FETCHING", info))
         // fetch('https://graphql-pokemon.now.sh/', {
         //     method: 'POST',
         //     headers: {
@@ -38,6 +42,10 @@ class PokeContainer extends Component {
         //     let timeArray = [...this.state.fetchTime, elapsedTime];
         //     this.setState({ pokeInfo: pokeArray, fetchTime: timeArray })
         // })
+        let pokeArray = [...this.state.pokeInfo, info]
+        let elapsedTime = Date.now() - startTime;
+        let timeArray = [...this.state.fetchTime, elapsedTime];
+        this.setState({ pokeInfo: pokeArray, fetchTime: timeArray })
     }
 
     handleNameChange (e) {
