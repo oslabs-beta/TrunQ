@@ -23,6 +23,7 @@ class ArtContainer extends Component {
         event.preventDefault()
         const query = this.queryNameBuilder(this.state.artistNameQuery);
         let startTime = Date.now(); 
+
         fetch('https://metaphysics-production.artsy.net', {
             method: 'POST',
             headers: {

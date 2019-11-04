@@ -3,7 +3,7 @@ import parser from './parser'
 import layerQueryFields from './layerQueryFields'
 import queryObjectBuilder from './queryObjectBuilder'
 
-const trunQify = (query, uniques, limits, endpointName) => {
+const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
     let cachedResults = []
     let trunQKey = {}
     let fetchedPromises = [];
@@ -22,26 +22,23 @@ const trunQify = (query, uniques, limits, endpointName) => {
 
     //if the length is greater than 0 that means we have keys to go fetch because they weren't in cache (trunQKey holds not found items)
     if (Object.keys(trunQKey).length > 0) {
-        //for Each of the keys that we need to go fetch, we create a promise to then push into an array - the goal is to run promise.all() later
-        Object.keys(trunQKey).forEach(key => {
-            //declare the promise to be pushed - it returns the result of a fetch
-            let fetchingPromise = new Promise (function (resolve, reject) {
-                fetch(endpointName, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ query: trunQKey[key] })
-                })
-                .then(res => res.json())
-                .then(res => {
-                    sessionStorage.setItem(key, JSON.stringify(res))
-                    return resolve(res);
-                })
-                .catch(error => {
-                    console.log('bad stuff', error)
-                })
+        //declare the promise to be pushed - it returns the result of a fetch
+        let fetchingPromise = new Promise (function (resolve, reject) {
+            fetch(endpointName, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ trunQKey: trunQKey })
             })
-            fetchedPromises.push(fetchingPromise)
+            .then(res => res.json())
+            .then(res => {
+                if (storageLocation === 'bow') sessionStorage.setItem(key, JSON.stringify(res));
+                return resolve(res);
+            })
+            .catch(error => {
+                console.log('bad stuff', error)
+            })
         })
+        fetchedPromises.push(fetchingPromise)
     }
     else {
         return cachedResults;
@@ -63,18 +60,4 @@ const trunQify = (query, uniques, limits, endpointName) => {
    
 } 
 
-export default trunQify  
-
-
-
-    // if (Object.keys(trunQKey)) {
-    //     fetch(endpointName, {
-    //         method: "POST",
-    //         headers: { "Content-Type": "application/json" },
-    //         body: JSON.stringify({ trunQKey: trunQKey })
-    //     })
-    //     .then(res => res.json())
-    //     .then(res => {
-    //         return Object.values(cachedResults).length !== 0 ? res + cachedResults : res
-    //     })
-    // }
+export default trunQify  ;

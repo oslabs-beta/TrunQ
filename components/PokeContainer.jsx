@@ -40,16 +40,11 @@ class PokeContainer extends Component {
         // TRUNQIFY THIS SHIT
         let info;
         
-        info = await trunQify(query, ["name"], [], 'https://graphql-pokemon.now.sh/')
+        info = await trunQify(query, ["name"], [], '/graphql', 'bow')
         let elapsedTime = []
         console.log(info)
-        info = info.reduce( (a,b) => {
-            if (b.data.pokemon === null) {
-                console.log('hit null')
-            }
-            else{
-                a.push(b)
-            }
+        info = info.reduce( (a,b) => { 
+            if (b.data.pokemon !== null) a.push(b)
             return a
         },[])
 
