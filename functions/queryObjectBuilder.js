@@ -80,18 +80,18 @@ function innerTrunQify (output, levels, trunQSize, keysArr, i, uniques, limits, 
     return i;
 }
 
-// let input = [ 
-//     { 'artist(id: "mark-rothko")': 1,
-//         'name artworks (name: "chapel" size: 2)': 2,
-//             'id imageUrl': 3,
-//                 // 'hello': 4,
-//         bullshit: 2 
-//     },
+let input = [ 
+    { 'artist(id: "mark-rothko")': 1,
+        'name artworks (name: "chapel" size: 2)': 2,
+            'id imageUrl': 3,
+                // 'hello': 4,
+        bullshit: 2 
+    },
 
-//     { jazzsaxartist: 1, 
-//         name2: 2 
-//     } 
-// ]
+    { jazzsaxartist: 1, 
+        name2: 2 
+    } 
+]
 
 let queryObjectBuilder = (arr, uniques=[], limits = []) => {
     let output = {}
@@ -208,10 +208,9 @@ let queryObjectBuilder = (arr, uniques=[], limits = []) => {
 //                     id: "chapel",
 //                     size: 2
 //                 },
-//                 trunQarrays: 
+//                 trunQArrays: 
 //                     [{id: {}, imageUrl1: {}},
-//                     {id2: {}, imageUrl2: {}}]
-                
+//                     {id2: {}, imageUrl2: {}}] 
 //             },
 //             bullshit: {}
 //         }

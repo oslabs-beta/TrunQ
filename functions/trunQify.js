@@ -2,6 +2,7 @@ import keyedQueries from './keyedQueries'
 import parser from './parser'
 import layerQueryFields from './layerQueryFields'
 import queryObjectBuilder from './queryObjectBuilder'
+import partialMatcher from './partialMatcher.js'
 
 const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
     let cachedResults = []
