@@ -18,15 +18,10 @@ class TrunQStern {
     console.log('1 **** incoming graphQL query: ', trunQKey);
     const outerKey = 'trunQKey';
 
-    // let cacheKey = Object.keys(trunQKey)[0];
-    // let graphQLQuery = Object.values(trunQKey)[0];
-    // console.log('1-a **** parsed unique redis query key: ', cacheKey);
-    // console.log('1-b **** parsed front-end graphQL query: ', graphQLQuery);
-
-    // ********* VERSION 2 ***********
-    // pull out the incoming requet into 2D array of [ [cacheKey, graphQLQuery], ... ]
-    const batchedReqArr = Object.entries(trunQKey);
-    console.log('1a **** array of tuples: ', batchedReqArr);
+    let cacheKey = Object.keys(trunQKey);
+    let graphQLQuery = Object.values(trunQKey);
+    console.log('1-a **** parsed unique redis query key: ', cacheKey);
+    console.log('1-b **** parsed front-end graphQL query: ', graphQLQuery);
 
     // ************* VERSION 1 *************
     // await the returned result of invoking the checkRedis function
@@ -39,43 +34,58 @@ class TrunQStern {
     const clientResObj = {};
 
     // check if the redis query returned a valid response
-    if (redisResult === null) {
-      console.log('2a **** confirm if logic before api request');
-      // await the returned result of querying the third party api
-      const apiResult = await this.checkApi(graphQLQuery, this.apiURL);
-      console.log('4 **** returned api data: ', apiResult);
+    let resultArray = redisResult.map((redisVal, index) => {
+      console.log('2z **** redisVal within map function: ', redisVal)
+      if (redisVal === null) {
+        console.log('2a **** confirm if logic before api request');
+        // await the returned result of querying the third party api
+        // const apiResult = await this.checkApi(cacheKey[index], graphQLQuery[index], this.apiURL); // the position of redisResult => graphQLQuery position
+        // console.log('4 **** returned api data: ', apiResult);
+        return this.checkApi(cacheKey[index], graphQLQuery[index], this.apiURL)
+        //add data to applicable objects
+        // queryResponses[cacheKey] = apiResult;
+      } else {
+        //add data to applicable objects
+        // queryResponses[cacheKey] = redisResult;
+        return redisVal;
+      }
+    });
 
-      //add data to applicable objects
-      queryResponses[cacheKey] = apiResult;
-      clientResObj[outerKey] = queryResponses;
+    Promise.all(resultArray)
+      .then((valArr) => {
+        console.log('4 **** valArr within Promise.all before for loop: ', valArr);
+        for (let i = 0; i < cacheKey.length; i++) {
+          queryResponses[cacheKey[i]] = valArr[i];
+        }
+        clientResObj[outerKey] = queryResponses;
 
-      // assign the returned query result to the obj data property
-      this.data = clientResObj;
-      return next();
-    } else {
+        this.data = clientResObj;
+        return next();
+      });
 
-      //add data to applicable objects
-      queryResponses[cacheKey] = redisResult;
-      clientResObj[outerKey] = queryResponses;
+    // console.log('4 **** resultArray before for loop: ', resultArray);
+    // for (let i = 0; i < cacheKey.length; i++) {
+    //   queryResponses[cacheKey[i]] = resultArray[i];
+    // }
+    // clientResObj[outerKey] = queryResponses;
 
-      // assign the returned query result to the obj data property
-      this.data = clientResObj;
-      return next();
-    }
+    // this.data = clientResObj;
+    // return next();
   }
 
   checkRedis(uniqueKeyQuery) {
     return new Promise(resolve => {
-      this.redisClient.get(uniqueKeyQuery, (err, result) => {
+      this.redisClient.mget(...uniqueKeyQuery, (err, result) => {
         if (err) {
           console.log('error within checkRedis func: ', err);
         }
+        console.log('result inside the checkRedis helper func: ', result);
         resolve(result);
       })
     })
   }
 
-  checkApi(graphQLQuery, apiURL) {
+  checkApi(uniqueKey, graphQLQuery, apiURL) {
     return new Promise(resolve => {
       fetch(apiURL, {
         method: "POST",
@@ -84,7 +94,8 @@ class TrunQStern {
       })
         .then(res => res.json())
         .then(data => {
-          // this.redisClient.set(query, JSON.stringify(data));
+          data = JSON.stringify(data);
+          // this.redisClient.set(uniqueKey, JSON.stringify(data));
           // this.redisClient.set(query, 'pikachu');
           // send set request to redis database
           console.log('3 **** api response data: ', data)
