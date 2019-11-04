@@ -28,6 +28,7 @@ class TrunQStern {
 
     console.log('2 **** redisResult before conditional: ', redisResult);
     // save 
+    const queryResponses = {};
     const clientResObj = {};
 
     // check if the redis query returned a valid response
@@ -36,12 +37,20 @@ class TrunQStern {
       // await the returned result of querying the third party api
       const apiResult = await this.checkApi(graphQLQuery, this.apiURL);
       console.log('4 **** returned api data: ', apiResult);
-      clientResObj[cacheKey] = apiResult;
+
+      //add data to applicable objects
+      queryResponses[cacheKey] = apiResult;
+      clientResObj[trunQKey] = queryResponses;
+
+      // assign the returned query result to the obj data property
       this.data = clientResObj;
-      // this.data = "charmander";
       return next();
     } else {
-      clientResObj[cacheKey] = redisResult;
+
+      //add data to applicable objects
+      queryResponses[cacheKey] = redisResult;
+      clientResObj[trunQKey] = queryResponses;
+
       // assign the returned query result to the obj data property
       this.data = clientResObj;
       return next();
