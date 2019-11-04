@@ -5,9 +5,9 @@ class ArtContainer extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            artistNameQuery: null,
-            artistName: null,
-            numPaintings: null,
+            artistNameQuery: '',
+            artistName: '',
+            numPaintings: 0,
             artistInfo: [],
             elapsedTime: []
         }
@@ -23,6 +23,7 @@ class ArtContainer extends Component {
         event.preventDefault()
         const query = this.queryNameBuilder(this.state.artistNameQuery);
         let startTime = Date.now(); 
+
         fetch('https://metaphysics-production.artsy.net', {
             method: 'POST',
             headers: {
