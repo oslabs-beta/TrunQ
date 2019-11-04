@@ -11,11 +11,11 @@ const redis = require('redis');
 const redisClient = redis.createClient();
 
 redisClient.on('connect', (success) => {
-    console.log('Redis connection success: ', success)
+    console.log('Redis connection success')
 })
 
 redisClient.on('error', (err) => {
-    console.log("Redis connection failure: " + err)
+    console.log("Redis connection failure")
 });
 
 const TrunQStern = require('./TrunQStern');

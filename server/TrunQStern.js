@@ -17,11 +17,17 @@ class TrunQStern {
     const { trunQKey } = req.body;
     console.log('1 **** incoming graphQL query: ', trunQKey);
 
-    let cacheKey = Object.keys(trunQKey)[0];
-    let graphQLQuery = Object.values(trunQKey)[0];
-    console.log('1-a **** parsed unique redis query key: ', cacheKey);
-    console.log('1-b **** parsed front-end graphQL query: ', graphQLQuery)
+    // let cacheKey = Object.keys(trunQKey)[0];
+    // let graphQLQuery = Object.values(trunQKey)[0];
+    // console.log('1-a **** parsed unique redis query key: ', cacheKey);
+    // console.log('1-b **** parsed front-end graphQL query: ', graphQLQuery);
 
+    // ********* VERSION 2 ***********
+    // pull out the incoming requet into 2D array of [ [cacheKey, graphQLQuery], ... ]
+    const batchedReqArr = Object.entries(trunQKey);
+    console.log('1a **** array of tuples: ', batchedReqArr);
+
+    // ************* VERSION 1 *************
     // await the returned result of invoking the checkRedis function
     // assign the returned result to a variable
     const redisResult = await this.checkRedis(cacheKey);
