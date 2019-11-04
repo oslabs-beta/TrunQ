@@ -40,16 +40,17 @@ class PokeContainer extends Component {
         // TRUNQIFY THIS SHIT
         let info;
         
-        info = await trunQify(query, ["name"], [], '/graphql', 'bow')
+        info = await trunQify(query, ["name"], [], '/graphql', 'stern')
         let elapsedTime = []
-        console.log(info)
-        info = info.reduce( (a,b) => { 
-            if (b.data.pokemon !== null) a.push(b)
-            return a
+        console.log("here info", info)
+        info = info.reduce((pokeResArray,pokeResInfo) => { 
+            console.log(pokeResInfo);
+            if (pokeResInfo.data.pokemon !== null) pokeResArray.push(pokeResInfo)
+            return pokeResArray
         },[])
 
         console.log(info)
-        info.forEach((res, i) => {
+        info.forEach((res) => {
                 elapsedTime.push(Date.now() - startTime);
         })
         console.log(elapsedTime)
@@ -119,30 +120,4 @@ class PokeContainer extends Component {
     }
 }
 
-export default PokeContainer;
-
-
-// fetch('https://graphql-pokemon.now.sh/', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({query: query})
-        // })
-        // .then(res => res.json())
-        // .then(info => {
-        //     let pokeArray = [...this.state.pokeInfo, info]
-        //     let elapsedTime = Date.now() - startTime;
-        //     let timeArray = [...this.state.fetchTime, elapsedTime];
-        //     this.setState({ pokeInfo: pokeArray, fetchTime: timeArray })
-        // })
-        // .then(info => {
-        //     let pokeArray = [...this.state.pokeInfo, info]
-        //     let elapsedTime = Date.now() - startTime;
-        //     let timeArray = [...this.state.fetchTime, elapsedTime];
-        //     this.setState({ pokeInfo: pokeArray, fetchTime: timeArray })
-        // })
-
-
-
-                  
+export default PokeContainer;                 

@@ -31,11 +31,16 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
             })
             .then(res => res.json())
             .then(res => {
-                if (storageLocation === 'bow') sessionStorage.setItem(key, JSON.stringify(res));
-                return resolve(res);
+                console.log("\nRESPONSE FROM SERVER:", res);
+                let outputObj = {}
+                for (let i = 0; i < Object.keys(res.trunQKey).length; i += 1) {
+                    if (storageLocation === 'bow') sessionStorage.setItem(Object.keys(res.trunQKey)[i], JSON.stringify(res.trunQKey[Object.keys(res.trunQKey)[i]]));
+                    outputObj.data = res.trunQKey[Object.keys(res.trunQKey)[i]].data
+                }
+                return resolve(outputObj);
             })
             .catch(error => {
-                console.log('bad stuff', error)
+                console.log('ERROR FETCHING IN TRUNQIFY', error)
             })
         })
         fetchedPromises.push(fetchingPromise)
@@ -57,7 +62,6 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
     .catch(err => {
         console.log(err);
     })
-   
 } 
 
-export default trunQify  ;
+export default trunQify;
