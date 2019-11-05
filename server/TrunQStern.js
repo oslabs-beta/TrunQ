@@ -15,6 +15,7 @@ class TrunQStern {
   async getAllData(req, res, next) {
     // deconstruct the req obj
     const { trunQKey } = req.body;
+    const { flag } = req.body;
     console.log('1 **** incoming graphQL query: ', trunQKey);
     const outerKey = 'trunQKey';
 
@@ -37,9 +38,19 @@ class TrunQStern {
     let resultArray = redisResult.map((redisVal, index) => {
       console.log('2z **** redisVal within map function: ', redisVal)
       if (redisVal === null) {
+<<<<<<< HEAD
 
         return this.checkApi(cacheKey[index], graphQLQuery[index], this.apiURL);
 
+=======
+        console.log('2a **** confirm if logic before api request');
+        // await the returned result of querying the third party api
+        // const apiResult = await this.checkApi(cacheKey[index], graphQLQuery[index], this.apiURL); // the position of redisResult => graphQLQuery position
+        // console.log('4 **** returned api data: ', apiResult);
+        return this.checkApi(cacheKey[index], graphQLQuery[index], this.apiURL, flag)
+        //add data to applicable objects
+        // queryResponses[cacheKey] = apiResult;
+>>>>>>> dev
       } else {
         return redisVal;
       }
@@ -72,7 +83,7 @@ class TrunQStern {
     })
   }
 
-  checkApi(uniqueKey, graphQLQuery, apiURL) {
+  checkApi(uniqueKey, graphQLQuery, apiURL, flag) {
     return new Promise(resolve => {
       fetch(apiURL, {
         method: "POST",
@@ -81,8 +92,10 @@ class TrunQStern {
       })
         .then(res => res.json())
         .then(data => {
-          // this.redisClient.set(uniqueKey, JSON.stringify(data));
-
+          // data = JSON.stringify(data);
+          if (flag.toLowerCase() === 'stern' || flag.toLowerCase() === 'ship') this.redisClient.set(uniqueKey, data);
+          // this.redisClient.set(query, 'pikachu');
+          // send set request to redis database
           console.log('3 **** api response data: ', data)
           resolve(data);
         })
