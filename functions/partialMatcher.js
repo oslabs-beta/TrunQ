@@ -104,12 +104,15 @@ const layerQueryFields = (query, uniques = [], limits = []) => {
   let cacheObj = {};
   const globalCacheArr = []
   let level = -1;
+  let whiteSpaceBeforeParenRegex = /(?<=[\w]) (?=\()/;
 
   for (let i = 0; i < query.length; i += 1) {
       if (query[i] === '{') {
           level += 1;
           temp = temp.replace(/[\n]/g, '').trim();
           temp = temp.replace(/[\s]+/g, ' ');
+          temp = temp.replace(whiteSpaceBeforeParenRegex, '');
+
           if (temp !== "") {
               cacheObj[temp] = level;
           }
@@ -118,6 +121,7 @@ const layerQueryFields = (query, uniques = [], limits = []) => {
       else if (query[i] === '}') {
           temp = temp.replace(/[\n]/g, '').trim();
           temp = temp.replace(/[\s]+/g, ' ');
+          temp = temp.replace(whiteSpaceBeforeParenRegex, '');
           if (temp !== "") {
               cacheObj[temp] = level + 1;
           }
@@ -335,7 +339,9 @@ let queryObjectBuilder = (arr, uniques=[], limits = []) => {
                       temp = ''
                   }
                   else if(curr[j] === '(') {
-
+                      dummyObj[temp] = {}
+                      latestQuery = temp
+                      temp = ''
                       let parsedArr = parseVariables(curr, uniques, limits)
                       let trunQVars = trunqifyVariables(parsedArr)
                       dummyObj[latestQuery].trunQVariables = trunQVars
@@ -470,7 +476,7 @@ function partialMatcher (query, cachedResult, currentKey, uniques=[], limits=[])
   let layers = layerQueryFields(query, uniques, limits)
   let skeleton = queryObjectBuilder(layers, uniques, limits);
 
-  let futureQueries = ['query']
+  let futureQueries = [];
   //get to layer one of the reponse object
   cachedObj = cachedResult.data 
 
@@ -484,11 +490,56 @@ function partialMatcher (query, cachedResult, currentKey, uniques=[], limits=[])
   //loops over all of the skeleton keys to see what we can match up
   recursiveHelper(skeleton[currentKey], skeletonKeys, limits, uniques, futureQueries, cachedObj)
 
-  // console.log('final skeleton', skeleton['artist-mark-rothko'])
-  // console.log('string skeleton', JSON.stringify(skeleton))
+//   console.log('final skeleton', skeleton['artist-mark-rothko'])
+  console.log('string skeleton', JSON.stringify(skeleton))
+  console.log(layers)
   console.log('final queries', futureQueries)
+  graphQLQueryMaker (futureQueries, layers)
   // return [futureQueries, skeleton]
 
+}
+
+// LAYERS WILL BE AN ARRAY CONTAINING OBJECTS OF EACH GRAPHQL QUERY
+// MAKE SURE THIS IS HANDLED
+
+function graphQLQueryMaker (futureQueries, layers) {
+    console.log("FUTURE QUERIES", futureQueries)
+    let graphQLString = 'query {';
+    let q = 0
+    for (let z = 0; z < layers.length; z += 1) {
+        let currentLevels = Object.keys(layers[z])
+        for (let i = 0; i < currentLevels.length; i += 1) {
+            let currentQuery = futureQueries[q]; // going to be artist
+            if (currentLevels[i].includes(currentQuery)) {  
+                // if the currentQuery exists inside the current level
+                // format the current level to be part of graphQLString
+
+                let temp = ''
+                for (let j = 0; j < currentLevels[i].length; j += 1) {
+                    let currentLetter = currentLevels[i][j];
+                    if (currentLetter === '(' && temp === currentQuery) {
+                        graphQLString += " " + temp + currentLevels[i].slice(j) + " {"
+                        currentQuery = futureQueries[++q];
+                        console.log("query in (", currentQuery)
+                        j = currentLevels[i].length
+                        temp = '';
+                    }
+                    else if (currentLetter === ' ' && temp === currentQuery) {
+                        graphQLString += " " + temp;
+                        currentQuery = futureQueries[++q];
+                        console.log("query in space match", currentQuery)
+                        temp = '';
+                    }
+                    else if (currentLetter === ' ' && temp !== currentQuery) {
+                        temp = '';
+                    }
+                    else {
+                        temp += currentLetter;
+                    }
+                }
+            }
+        }
+    }
 }
 
 let expected = ['query', 'artist(id: "mark-rothko")', 'address', 'bullshit', 'artworks (size: 2)', 'bullshit', 'bullshit']
@@ -555,32 +606,5 @@ RESPONSE - from cache
   }
 }
 */
-
-
-// { 
-  //     "artist-mark-rothko": {
-  //         trunQVariables: {
-  //             id: 'mark-rothko'
-  //         },
-  //         artist: {
-  //             name: {},
-  //             artworks: {
-  //                 trunQVariables: {
-  //                     id: "chapel",
-  //                     size: 2
-  //                 },
-  //                 trunQLimits: 
-  //                     [{id: {}, imageUrl1: {}},
-  //                     {id2: {}, imageUrl2: {}}] 
-  //             },
-  //             bullshit: {}
-  //         }
-  //     },
-  //     "jazzsaxartist": {
-  //       jazzsaxartist: {
-  //           name2: {}
-  //       }
-  //     }
-  //   }
 
 // export default partialMatcher;
