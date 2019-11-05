@@ -38,11 +38,6 @@ class TrunQStern {
     let resultArray = redisResult.map((redisVal, index) => {
       console.log('2z **** redisVal within map function: ', redisVal)
       if (redisVal === null) {
-<<<<<<< HEAD
-
-        return this.checkApi(cacheKey[index], graphQLQuery[index], this.apiURL);
-
-=======
         console.log('2a **** confirm if logic before api request');
         // await the returned result of querying the third party api
         // const apiResult = await this.checkApi(cacheKey[index], graphQLQuery[index], this.apiURL); // the position of redisResult => graphQLQuery position
@@ -50,7 +45,6 @@ class TrunQStern {
         return this.checkApi(cacheKey[index], graphQLQuery[index], this.apiURL, flag)
         //add data to applicable objects
         // queryResponses[cacheKey] = apiResult;
->>>>>>> dev
       } else {
         return redisVal;
       }
