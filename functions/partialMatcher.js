@@ -73,7 +73,7 @@ let recursiveHelper = (skeleton, skeletonKeys, limits, uniques, futureQueries, c
   
   
   
-  function partialMatcher (query, cachedResult, currentKey, uniques=[], limits=[]) {
+function partialMatcher (query, cachedResult, currentKey, uniques=[], limits=[]) {
     let layers = layerQueryFields(query, uniques, limits)
     let skeleton = queryObjectBuilder(layers, uniques, limits);
   

@@ -1,3 +1,22 @@
+/**
+* ***********************************
+*
+* @module trunQify
+* @author Ben Ray, Brian Haller 
+* @date 11/5/2019
+* @params query (string), uniques (array), limits(array)
+*           endpoint (string), storageLocation (string)
+* @description takes a graphQL query from a client and checks the query against tagged keys
+*           in sessionStorage, rebuilds a new graphQL request based on data found in sessionStorage
+*           and then performs a fetch to the route specified in parameters. If the query is tagged
+*           for front end caching, the results of the query are then cached in sessionStorage
+*           This function returns a Promise.all resolution of both cached and fetched data as an array.
+*           The returned response is formatted indentically to the graphIQL of the API.
+*
+* ***********************************
+*/
+
+// Import parser functionalities.
 import keyedQueries from './keyedQueries'
 import parser from './parser'
 import layerQueryFields from './layerQueryFields'
@@ -14,6 +33,7 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
         let currentKey = Object.keys(keyedQueriesArray[i])
         let cachedResult = sessionStorage.getItem(currentKey)
 
+        // console.log("PARTIAL MATCHER", partialMatcher(query, cachedResult, currentKey, uniques, limits))
         //if the cached result exists push it into the cachedResults array for later
         //run the partial matcher here - partial matcher should return 2 things
             //1. an object of all the cached data that matches
