@@ -1,15 +1,26 @@
 const fetch = require('node-fetch');
+const redis = require('redis'); // will the npm package grab this?
 
 class TrunQStern {
-  constructor(apiURL, redisClient, port = 6379) {
+  constructor(apiURL, port = 6379) {
     this.apiURL = apiURL;
     this.port = port;
-    this.redisClient = redisClient;
+    //this.redisClient = redisClient;
     this.data = "check if this is correct";
     this.getAllData = this.getAllData.bind(this);
     this.getRedisData = this.getRedisData.bind(this);
     this.checkRedis = this.checkRedis.bind(this);
     this.checkApi = this.checkApi.bind(this);
+
+    this.redisClient = redis.createClient();
+
+    this.redisClient.on('connect', (success) => {
+        console.log('Redis connection success')
+    })
+    this.redisClient.on('error', (err) => {
+        console.log("Redis connection failure")
+    });
+
   }
 
   async getAllData(req, res, next) {
