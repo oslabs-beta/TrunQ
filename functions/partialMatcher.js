@@ -448,9 +448,6 @@ let recursiveHelper = (skeleton, skeletonKeys, limits, uniques, futureQueries, c
         //if it is an object you'll want to recurse through
       if (typeof cachedObj[skeletonKey] === 'object') {
         let newKeys = Object.keys(skeleton[skeletonKey])
-        console.log('look here consider pushing this', skeletonKey)
-        if (skeleton.trunQVariables) console.log('something' ,skeleton.trunQVariables)
-        if (skeleton[skeletonKey].trunQVariables) console.log('something2' ,skeleton[skeletonKey].trunQVariables)
 
         futureQueries.push(skeletonKey)
         recursiveHelper(skeleton[skeletonKey], newKeys, limits, uniques, futureQueries, cachedObj[skeletonKey])
@@ -491,11 +488,14 @@ function partialMatcher (query, cachedResult, currentKey, uniques=[], limits=[])
   recursiveHelper(skeleton[currentKey], skeletonKeys, limits, uniques, futureQueries, cachedObj)
 
 //   console.log('final skeleton', skeleton['artist-mark-rothko'])
-  console.log('string skeleton', JSON.stringify(skeleton))
-  console.log(layers)
-  console.log('final queries', futureQueries)
-  graphQLQueryMaker (futureQueries, layers, uniques, limits)
-  // return [futureQueries, skeleton]
+  // console.log('string skeleton', JSON.stringify(skeleton))
+  // console.log(layers)
+  // console.log('final queries', futureQueries)
+  let queryToReturn = graphQLQueryMaker(futureQueries, layers, uniques, limits)
+  return {
+    query: queryToReturn,
+    skeleton: skeleton
+  }
 
 }
 
@@ -503,8 +503,8 @@ function partialMatcher (query, cachedResult, currentKey, uniques=[], limits=[])
 // MAKE SURE THIS IS HANDLED
 
 function graphQLQueryMaker (futureQueries, layers, uniques, limits) {debugger;
-    console.log("FUTURE QUERIES", futureQueries)
-    let graphQLString = 'query {';
+
+  let graphQLString = 'query {';
     let q = 0
     for (let z = 0; z < layers.length; z += 1) {
         let currentLevels = Object.keys(layers[z])
@@ -531,14 +531,14 @@ function graphQLQueryMaker (futureQueries, layers, uniques, limits) {debugger;
                         }
                         currentQuery = futureQueries[++q];
 
-                        console.log("query in (", currentQuery)
+                        // console.log("query in (", currentQuery)
                         j = currentLevels[i].length
                         temp = '';
                     }
                     else if (currentLetter === ' ' && temp === currentQuery) {
                         graphQLString += " " + temp;
                         currentQuery = futureQueries[++q];
-                        console.log("query in space match", currentQuery)
+                        // console.log("query in space match", currentQuery)
                         temp = '';
                     }
                     else if (currentLetter === ' ' && temp !== currentQuery) {
@@ -551,7 +551,7 @@ function graphQLQueryMaker (futureQueries, layers, uniques, limits) {debugger;
                     if (j === currentLevels[i].length - 1 && temp === currentQuery) {
                         graphQLString += " " + temp;
                         currentQuery = futureQueries[++q];
-                        console.log("query in space match", currentQuery)
+                        // console.log("query in space match", currentQuery)
                         temp = '';
                     }
                 }
@@ -565,8 +565,8 @@ function graphQLQueryMaker (futureQueries, layers, uniques, limits) {debugger;
         let braceGen = graphQLString.match(openBrace).length - graphQLString.match(closeBrace).length;
         // console.log("STRING", graphQLString, "BRACEGEN", braceGen);
         graphQLString += "}".repeat(braceGen);
-        console.log("Valid string?", graphQLString)
     }
+    return graphQLString
 }
 
 let expected = ['query', 'artist(id: "mark-rothko")', 'address', 'bullshit', 'artworks (size: 2)', 'bullshit', 'bullshit']
@@ -582,9 +582,7 @@ const query = `query {
         imageUrl
       }
     }
-    bullshit {
-        hopeitworks
-    }
+
   }`
 
 
@@ -607,9 +605,9 @@ let response =
   }
 }
 
-// console.log(partialMatcher(query, response, 'artist-mark-rothko', ["id"], ["size"]))
+console.log(partialMatcher(query, response, 'artist-mark-rothko', ["id"], ["size"]))
 
-console.log(keyedQueries(query, ["id"], ["size"]))
+// console.log(keyedQueries(query, ["id"], ["size"]))
 /* SKELETON - from layers
 { 'artist-mark-rothko': 
    { trunQVariables: { id: 'mark-rothko' },
