@@ -1,16 +1,20 @@
-const request = require('supertest');
+const supertest = require('supertest');
+const app = require('../server/server');
 
-const server = 'http://localhost:3000';
+const goodData = { "trunQKey": { "pokemon-pikachu": "jest" } };
+const badData = { "wrongKey": { "pokemon-pikachu": "jest" } };
 
 describe('/graphl', function () {
-  it('end point responds with json', function (done) {
-    request(server)
-      .get('/graphql')
-      .expect('Content-Type', /json/)
+  it('API responds with status 200 on valid request', () => {
+    return supertest(app)
+      .post('/graphql')
+      .send(goodData)
       .expect(200)
-      .end((err, res) => {
-        console.log('supertest');
-        if (err) throw err;
-      });
   });
+  it('API responds with status 400 on invalid request object', () => {
+    return supertest(app)
+      .post('/graphql')
+      .send(badData)
+      .expect(400)
+  })
 });

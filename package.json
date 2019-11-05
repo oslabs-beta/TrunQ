@@ -4,9 +4,9 @@
   "description": "NPM package for easy client and/or server side graphQL caching.",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=production nodemon server/server.js",
+    "start": "NODE_ENV=production nodemon server/startServer.js",
     "build": "webpack",
-    "dev": "NODE_ENV=development node server/server.js & webpack-dev-server --open",
+    "dev": "NODE_ENV=development node server/startServer.js & webpack-dev-server --open",
     "test": "jest --verbose"
   },
   "repository": {
