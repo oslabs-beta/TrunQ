@@ -2,18 +2,17 @@ const fetch = require('node-fetch');
 const redis = require('redis'); // will the npm package grab this?
 
 class TrunQStern {
-  constructor(apiURL, port = 6379) {
+  constructor(apiURL, port, expire = 30) {
     this.apiURL = apiURL;
-    this.port = port;
-    //this.redisClient = redisClient;
+    this.port = port === null ? 6379 : port;
+    this.redisClient = redis.createClient();
     this.data = "check if this is correct";
     this.getAllData = this.getAllData.bind(this);
     this.getRedisData = this.getRedisData.bind(this);
     this.checkRedis = this.checkRedis.bind(this);
     this.checkApi = this.checkApi.bind(this);
-
-    this.redisClient = redis.createClient();
-
+    this.expire = expire;
+    
     this.redisClient.on('connect', (success) => {
         console.log('Redis connection success')
     })
@@ -107,7 +106,7 @@ class TrunQStern {
         .then(res => res.json())
         .then(data => {
           // data = JSON.stringify(data);
-          if (flag.toLowerCase() === 'stern' || flag.toLowerCase() === 'ship') this.redisClient.set(uniqueKey, JSON.stringify(data));
+          if (flag.toLowerCase() === 'stern' || flag.toLowerCase() === 'ship') this.redisClient.set(uniqueKey, JSON.stringify(data), 'EX', this.expire);
           // this.redisClient.set(query, 'pikachu');
           // send set request to redis database
           console.log('3 **** api response data: ', data)

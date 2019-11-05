@@ -10,9 +10,9 @@ const TrunQStern = require('./TrunQStern');
 
 // create instance of TrunQStern
 // args: graphQl endpoint, redis client
-const trunQBack = new TrunQStern('https://graphql-pokemon.now.sh/', 600);
+const trunQBack = new TrunQStern('https://graphql-pokemon.now.sh/', null, 20); // currently hardcoded to be seconds
 
-    // ***********************************************
+// ***********************************************
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
