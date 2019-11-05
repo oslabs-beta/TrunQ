@@ -217,7 +217,7 @@ let searchTrunQ = (trunQVariables, limits) => {
   return trunQNum 
 }
 
-function innerTrunQify (output, levels, trunQSize, keysArr, i, uniques, limits, latestQuery) {debugger;
+function innerTrunQify (output, levels, trunQSize, keysArr, i, uniques, limits, latestQuery) {
   let curr = keysArr[i]
   let dummyObj = output
   for (let z = 0; z < levels.length; z += 1) {
@@ -391,7 +391,7 @@ currentKey = artist-mark-rothko
 */
 
 //this function only works with queries with limits that are smaller than what is in the cache - all primitives work
-let recursiveHelper = (skeleton, skeletonKeys, limits, uniques, futureQueries, cachedObj, size=0) => {debugger;
+let recursiveHelper = (skeleton, skeletonKeys, limits, uniques, futureQueries, cachedObj, size=0) => {
 
   size = 0
   for (let i=0; i<skeletonKeys.length; i++) {
@@ -494,7 +494,7 @@ function partialMatcher (query, cachedResult, currentKey, uniques=[], limits=[])
   console.log('string skeleton', JSON.stringify(skeleton))
   console.log(layers)
   console.log('final queries', futureQueries)
-  graphQLQueryMaker (futureQueries, layers)
+  graphQLQueryMaker (futureQueries, layers, uniques, limits)
   // return [futureQueries, skeleton]
 
 }
@@ -502,7 +502,7 @@ function partialMatcher (query, cachedResult, currentKey, uniques=[], limits=[])
 // LAYERS WILL BE AN ARRAY CONTAINING OBJECTS OF EACH GRAPHQL QUERY
 // MAKE SURE THIS IS HANDLED
 
-function graphQLQueryMaker (futureQueries, layers) {
+function graphQLQueryMaker (futureQueries, layers, uniques, limits) {debugger;
     console.log("FUTURE QUERIES", futureQueries)
     let graphQLString = 'query {';
     let q = 0
@@ -510,6 +510,7 @@ function graphQLQueryMaker (futureQueries, layers) {
         let currentLevels = Object.keys(layers[z])
         for (let i = 0; i < currentLevels.length; i += 1) {
             let currentQuery = futureQueries[q]; // going to be artist
+            
             if (currentLevels[i].includes(currentQuery)) {  
                 // if the currentQuery exists inside the current level
                 // format the current level to be part of graphQLString
@@ -518,8 +519,18 @@ function graphQLQueryMaker (futureQueries, layers) {
                 for (let j = 0; j < currentLevels[i].length; j += 1) {
                     let currentLetter = currentLevels[i][j];
                     if (currentLetter === '(' && temp === currentQuery) {
-                        graphQLString += " " + temp + currentLevels[i].slice(j) + " {"
+                        temp += currentLevels[i].slice(j)
+                        
+                        let layerLimits = Object.values(parseVariables(temp, uniques, limits)[1].limits)[0]
+                      
+                        graphQLString += " " + temp + " {"
+                        
+                        while (layerLimits > 1) {
+                            currentQuery = futureQueries[++q];
+                            layerLimits -= 1;
+                        }
                         currentQuery = futureQueries[++q];
+
                         console.log("query in (", currentQuery)
                         j = currentLevels[i].length
                         temp = '';
@@ -533,12 +544,28 @@ function graphQLQueryMaker (futureQueries, layers) {
                     else if (currentLetter === ' ' && temp !== currentQuery) {
                         temp = '';
                     }
+                    
                     else {
                         temp += currentLetter;
                     }
+                    if (j === currentLevels[i].length - 1 && temp === currentQuery) {
+                        graphQLString += " " + temp;
+                        currentQuery = futureQueries[++q];
+                        console.log("query in space match", currentQuery)
+                        temp = '';
+                    }
                 }
             }
+            else {
+                graphQLString += currentLevels[i] + " }"
+            }
         }
+        // I am very proud of this.
+        let openBrace = /\{/g, closeBrace = /\}/g
+        let braceGen = graphQLString.match(openBrace).length - graphQLString.match(closeBrace).length;
+        // console.log("STRING", graphQLString, "BRACEGEN", braceGen);
+        graphQLString += "}".repeat(braceGen);
+        console.log("Valid string?", graphQLString)
     }
 }
 
@@ -547,15 +574,16 @@ let expected = ['query', 'artist(id: "mark-rothko")', 'address', 'bullshit', 'ar
 const query = `query {
     artist(id: "mark-rothko") {
       name
-      address
-      bullshit (id: "test") {
-        final
+      shows {
+        id
       }
       artworks (size: 2) {
         id
         imageUrl
-        bullshit
       }
+    }
+    bullshit {
+        hopeitworks
     }
   }`
 
@@ -579,9 +607,9 @@ let response =
   }
 }
 
-console.log(partialMatcher(query, response, 'artist-mark-rothko', ["id"], ["size"]))
+// console.log(partialMatcher(query, response, 'artist-mark-rothko', ["id"], ["size"]))
 
-
+console.log(keyedQueries(query, ["id"], ["size"]))
 /* SKELETON - from layers
 { 'artist-mark-rothko': 
    { trunQVariables: { id: 'mark-rothko' },
