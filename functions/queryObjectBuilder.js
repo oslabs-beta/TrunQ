@@ -29,7 +29,6 @@ function innerTrunQify (output, levels, trunQSize, keysArr, i, uniques, limits, 
     let dummyObj = output
     for (let z = 0; z < levels.length; z += 1) {
         dummyObj = dummyObj[levels[z]];
-        // console.log(dummyObj, levels[z]);
     }
     for (let k = 0; k < trunQSize; k += 1) {
         let temp = ''
@@ -50,7 +49,6 @@ function innerTrunQify (output, levels, trunQSize, keysArr, i, uniques, limits, 
                     //if within trunqvariables exists a limits variable
                     //create a trunqArray of equivalent size feeding it the correct
                 innertrunQSize = searchTrunQ(trunQVars, limits);
-                // console.log("TRUNQSIZE", trunQSize)
                 j = curr.length + 1
                 levels.push(latestQuery)
                 if (innertrunQSize > 0) {
@@ -89,10 +87,8 @@ let queryObjectBuilder = (arr, uniques=[], limits = []) => {
         let dummyObj = output
   
         for (let i=0; i<keysArr.length; i++) {
-            // console.log('iteration', i)
             let curr = keysArr[i]
             dummyObj = output;
-            // console.log(curr);
             if (input[curr] === 1) {
                 let parensReg =/\(([^()]*)\)/
                 if (parensReg.test(curr)) {
@@ -102,9 +98,8 @@ let queryObjectBuilder = (arr, uniques=[], limits = []) => {
                     levels.push(uniqueKey);
                     let trunQVars = trunqifyVariables(parsedArr);
                     output[uniqueKey].trunQVariables = trunQVars
-  //right here - add trunQarray based on size
+                    //right here - add trunQarray based on size
                     trunQSize = searchTrunQ(trunQVars, limits);
-                    // console.log("TRUNQSIZE", trunQSize)
                     output[uniqueKey][parsedArr[1].query] = {};
                     levels.push(parsedArr[1].query);
                     

@@ -4,8 +4,7 @@ let recursiveHelper = (skeleton, skeletonKeys, limits, uniques, futureQueries, c
     size = 0
     for (let i=0; i<skeletonKeys.length; i++) {
       let skeletonKey = skeletonKeys[i]
-      // console.log('KEY', skeletonKey)
-  
+
     // ------- THIS SECTION DEALS WITH PARSING THE TRUNQVARIABLES OBJECT ------ //
   
     //if we run into a trunQVariables we have to parse those uniques and match them to uniques from the array
@@ -21,20 +20,19 @@ let recursiveHelper = (skeleton, skeletonKeys, limits, uniques, futureQueries, c
           //search within limits
           //when we hit a size limit we want to be wary that the next thing to parse will be an array called trunQArrays
           //we will know the size if we read the value off of the trunQVariables
-          if (limits.indexOf(curr) !== -1) {
-            // console.log('found limit:', curr)
-            size = skeleton.trunQVariables[curr]
-          }
-  
-          //then search within uniques, 
-          else if (uniques.indexOf(curr) !== -1) {
-            // console.log('found unique', curr)
-          }
+            if (limits.indexOf(curr) !== -1) {
+                size = skeleton.trunQVariables[curr]
+            }
+    
+            //then search within uniques, 
+            else if (uniques.indexOf(curr) !== -1) {
+
+            }
   
           //if we don't get a match in either we have to throw this out - continue to the next key
-          else{
-            return('invalid')
-          }
+            else {
+                return('invalid')
+            }
         } 
         continue;
       }
@@ -62,9 +60,7 @@ let recursiveHelper = (skeleton, skeletonKeys, limits, uniques, futureQueries, c
         }
         //if it's not an object you want to replace the corresponding skeleton value with that primitive
         else {
-          // console.log('its a primitive')
           skeleton[skeletonKey] = cachedObj[skeletonKey]
-          // console.log('values should be changed here for', skeletonKey, 'in', skeleton)
         }
       }
       //else put it into a query object for the future - build out new queries
@@ -95,10 +91,6 @@ let recursiveHelper = (skeleton, skeletonKeys, limits, uniques, futureQueries, c
     //loops over all of the skeleton keys to see what we can match up
     recursiveHelper(skeleton[currentKey], skeletonKeys, limits, uniques, futureQueries, cachedObj)
   
-  //   console.log('final skeleton', skeleton['artist-mark-rothko'])
-    // console.log('string skeleton', JSON.stringify(skeleton))
-    // console.log(layers)
-    // console.log('final queries', futureQueries)
     let queryToReturn = graphQLQueryMaker(futureQueries, layers, uniques, limits)
     return {
       query: queryToReturn,
@@ -146,7 +138,6 @@ let recursiveHelper = (skeleton, skeletonKeys, limits, uniques, futureQueries, c
                       else if (currentLetter === ' ' && temp === currentQuery) {
                           graphQLString += " " + temp;
                           currentQuery = futureQueries[++q];
-                          // console.log("query in space match", currentQuery)
                           temp = '';
                       }
                       else if (currentLetter === ' ' && temp !== currentQuery) {
@@ -159,7 +150,6 @@ let recursiveHelper = (skeleton, skeletonKeys, limits, uniques, futureQueries, c
                       if (j === currentLevels[i].length - 1 && temp === currentQuery) {
                           graphQLString += " " + temp;
                           currentQuery = futureQueries[++q];
-                          // console.log("query in space match", currentQuery)
                           temp = '';
                       }
                   }
@@ -171,7 +161,6 @@ let recursiveHelper = (skeleton, skeletonKeys, limits, uniques, futureQueries, c
           // I am very proud of this.
           let openBrace = /\{/g, closeBrace = /\}/g
           let braceGen = graphQLString.match(openBrace).length - graphQLString.match(closeBrace).length;
-          // console.log("STRING", graphQLString, "BRACEGEN", braceGen);
           graphQLString += "}".repeat(braceGen);
       }
       return graphQLString
