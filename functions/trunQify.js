@@ -13,7 +13,15 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
     for (let i = 0; i < keyedQueriesArray.length; i += 1) {
         let currentKey = Object.keys(keyedQueriesArray[i])
         let cachedResult = sessionStorage.getItem(currentKey)
+
+        //if the cached result exists push it into the cachedResults array for later
+        //run the partial matcher here - partial matcher should return 2 things
+            //1. an object of all the cached data that matches
+            //2. a new valid query to be sent
+
         if (cachedResult !== null) {
+            //partial matcher here ----- it takes in the query, the cachedResult, currentKey, uniques, limits
+
             cachedResults.push(JSON.parse(cachedResult))
         }
         else {
