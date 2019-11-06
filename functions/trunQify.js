@@ -65,7 +65,12 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
     return Promise.all([...fetchedPromises])
     .then(function(values) {
         return values.reduce((arr, val) => {
-            arr.push(...val);
+            if(Array.isArray(val)) {
+                arr.push(...val);
+            }
+            else {
+                arr.push(val);
+            }
             return arr;
         }, [])
     })
