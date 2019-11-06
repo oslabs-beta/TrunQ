@@ -1,3 +1,18 @@
+
+const query = `query {
+  artist(id: "mark-rothko") {
+    name
+    shows {
+      id
+    }
+    artworks (size: 2) {
+      id
+      imageUrl
+    }
+  }
+
+}`
+
 let startIndexFinder = (varStr, varsArr) => {
   //first sort the varsArr by length of string
   varsArr.sort((a,b) => b.length - a.length)
@@ -138,6 +153,8 @@ const layerQueryFields = (query, uniques = [], limits = []) => {
   }
   return globalCacheArr;
 }
+
+console.log('result from layerQueryFields',layerQueryFields(query, ['id'], ['size']))
 
 function keyedQueries(query, uniques, limits) {
   const braceStack = [];
@@ -538,19 +555,7 @@ function graphQLQueryMaker (futureQueries, layers, uniques, limits) {debugger;
 
 let expected = ['query', 'artist(id: "mark-rothko")', 'address', 'bullshit', 'artworks (size: 2)', 'bullshit', 'bullshit']
 
-const query = `query {
-    artist(id: "mark-rothko") {
-      name
-      shows {
-        id
-      }
-      artworks (size: 2) {
-        id
-        imageUrl
-      }
-    }
 
-  }`
 
 
 let response = 
@@ -572,7 +577,6 @@ let response =
   }
 }
 
-console.log(partialMatcher(query, response, 'artist-mark-rothko', ["id"], ["size"]))
 
 // console.log(keyedQueries(query, ["id"], ["size"]))
 /* SKELETON - from layers

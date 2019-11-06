@@ -1,3 +1,16 @@
+/**
+* ***********************************
+*
+* @module keyedQueries
+* @author Ben Ray, Brian Haller 
+* @date 11/5/2019
+* @params query (string), uniques (array), limits(array)
+* 
+* @description takes a graphQL query from a client and deconstructs it into multiple queries within an array.
+*
+* ***********************************
+*/
+
 import parseVariables from './parser'
 
 function keyedQueries(query, uniques, limits) {
