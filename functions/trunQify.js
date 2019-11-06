@@ -28,7 +28,7 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
 
     //array that will hold cached results to combine later
     let cachedResults = []
-    
+
     //trunQKey holds everything that needs to be fetched
     let trunQKey = {}
 
@@ -37,13 +37,13 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
 
     // get unique keys based on query, use these keys to check against local cache
     const keyedQueriesArray = keyedQueries(query, uniques, limits);
-    
+
     //loop over the unique keys
     for (let i = 0; i < keyedQueriesArray.length; i += 1) {
-        
+
         //the current key
         let currentKey = Object.keys(keyedQueriesArray[i])
-        
+
         //we search into the frontEnd cache to see if it already exists - it might now
         let cachedResult = sessionStorage.getItem(currentKey)
 
@@ -70,7 +70,7 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
         //standard fetch, other than the body, which will contain a flag for passing along the storage options selected
         //the fetch is built as a promise that we can then push into the fetchedPromises array
         //we do this so that we can combine them plus the cached results into a Promise.All to return a final array of all the responses
-        let fetchingPromise = new Promise (function (resolve, reject) {
+        let fetchingPromise = new Promise(function (resolve, reject) {
             fetch(endpointName, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -79,13 +79,13 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
                     flag: storageLocation
                 })
             })
-            .then(res => res.json())
-            .then(res => {
-                let returnDataObj = [];
-                for (let i = 0; i < Object.keys(res.trunQKey).length; i += 1) {
-                    let outputObj = { data: {} }
-                    let currentUniqueKey = Object.keys(res.trunQKey)[i];
-                    if (storageLocation === 'bow') sessionStorage.setItem(currentUniqueKey, JSON.stringify(res.trunQKey[currentUniqueKey]));
+                .then(res => res.json())
+                .then(res => {
+                    let returnDataObj = [];
+                    for (let i = 0; i < Object.keys(res.trunQKey).length; i += 1) {
+                        let outputObj = { data: {} }
+                        let currentUniqueKey = Object.keys(res.trunQKey)[i];
+                        if (storageLocation.toLowerCase() === 'bow') sessionStorage.setItem(currentUniqueKey, JSON.stringify(res.trunQKey[currentUniqueKey]));
 
                         outputObj.data = res.trunQKey[currentUniqueKey].data;
                         returnDataObj.push(outputObj);
