@@ -10,10 +10,22 @@ const query = `query {
       imageUrl
     }
   }
-
 }`
 
-let startIndexFinder = (varStr, varsArr) => {
+const query2 = `query {
+  artist {
+    name
+    shows {
+      id
+    }
+    artworks(id: 'name') {
+      id
+      imageUrl
+    }
+  }
+}`
+
+let startIndexFinder = (varStr, varsArr) => {debugger;
   //first sort the varsArr by length of string
   varsArr.sort((a,b) => b.length - a.length)
   //second find starting index of longest string
@@ -52,12 +64,13 @@ const createUniqueKey = (queryVariablesObject) => {
 //step 1 - pull a unique key out using regex from the top of the query
   //use a regex that will only match ** ('anything inside') **
   //developer inputs unique arguments that will be attached to the key
-let parseVariables = (query, uniques=[], limits=[]) => {
+let parseVariables = (query, uniques=[], limits=[]) => {debugger;
 
   //return this object full of variables and queryName
   let output = {
       uniques: {},
-      limits: {}
+      limits: {},
+      query: ''
   }
 
   //declare our regex
@@ -65,14 +78,16 @@ let parseVariables = (query, uniques=[], limits=[]) => {
   
   //run match and use the first value of the array because match acts weird
 
-  // edge case of if no variables
-  // something like if (uniques.length === 0 && limits.length === 0) don't execute variable stuff
-  
+  //if there are no variables we can keep it simple and return it as the simple query string parsed and nothing else
+  //the unique key will end up just being a single word like 'artist' or 'pikachu'
+  if (uniques.length === 0 && limits.length === 0) return 'hi'
+
   let varString = query.match(varFinder)[0]
   
   //now we have a string 'pokemon(name: "pikachu")'.
   //step 1 is to take out pokemon as the first part of the var
   let variableArray = varString.split('(') 
+
   output.query = variableArray[0]
 
   //step 2 is to parse out all the search variables included
@@ -112,6 +127,9 @@ let parseVariables = (query, uniques=[], limits=[]) => {
 
   return [createUniqueKey(output), output];
 }
+
+console.log('result from parseVariables', parseVariables(query, ['id'], []))
+
 
 const layerQueryFields = (query, uniques = [], limits = []) => {
 
@@ -154,7 +172,7 @@ const layerQueryFields = (query, uniques = [], limits = []) => {
   return globalCacheArr;
 }
 
-console.log('result from layerQueryFields',layerQueryFields(query, ['id'], ['size']))
+// console.log('result from layerQueryFields',layerQueryFields(query, ['id'], ['size']))
 
 function keyedQueries(query, uniques, limits) {
   const braceStack = [];
@@ -204,6 +222,7 @@ function keyedQueries(query, uniques, limits) {
   return arrayofQueries;
 }
 
+// console.log('result from keyedQueries', keyedQueries(query, ['id'], ['size']))
 
 
 let trunqifyVariables = (parserOutput) => {
