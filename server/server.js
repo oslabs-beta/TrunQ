@@ -11,6 +11,8 @@ const TrunQStern = require('./TrunQStern');
 // create instance of TrunQStern
 // args: graphQl endpoint, redis client
 const trunQBack = new TrunQStern('https://graphql-pokemon.now.sh/')
+// const trunQBack2 = new TrunQStern('https://metaphysics-production.artsy.net')
+
 // ***********************************************
 
 app.use(bodyParser.json());
@@ -24,6 +26,12 @@ app.use('/graphql', trunQBack.getAllData, (req, res, next) => {
     res.status(200).json(trunQBack.data);
     // res.send(res.locals.message);
 })
+
+// app.use('/artGraphQL', trunQBack2.getAllData, (req, res, next) => {
+//     console.log('5 **** that.data before response to client: ', trunQBack.data);
+//     res.status(200).json(trunQBack.data);
+//     // res.send(res.locals.message);
+// })
 
 // ***********************************************
 

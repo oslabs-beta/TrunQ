@@ -1,4 +1,3 @@
-const redis = require('redis');
 const fetch = require('node-fetch');
 const redis = require('redis'); // will the npm package grab this?
 
