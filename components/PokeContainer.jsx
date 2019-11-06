@@ -39,15 +39,16 @@ class PokeContainer extends Component {
 
         // TRUNQIFY THIS SHIT
         let info;
-        
+
         info = await trunQify(query, ["name"], [], '/graphql', 'ship')
+
         let elapsedTime = []
-        info = info.reduce((pokeResArray,pokeResInfo) => { 
+        info = info.reduce((pokeResArray, pokeResInfo) => {
             if (pokeResInfo.data.pokemon !== null) pokeResArray.push(pokeResInfo)
             return pokeResArray
-        },[])
+        }, [])
         info.forEach((res) => {
-                elapsedTime.push(Date.now() - startTime);
+            elapsedTime.push(Date.now() - startTime);
         })
         let timeArray = [...this.state.fetchTime, ...elapsedTime];
         let pokeArray = [...this.state.pokeInfo, ...info]

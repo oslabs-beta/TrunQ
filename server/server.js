@@ -1,7 +1,7 @@
 const express = require('express')
 const path = require('path')
 const app = express();
-const port = 3000
+exports.port = 3000;
 const bodyParser = require('body-parser')
 
 // EXAMPLE TRUNQ BACKEND SETUP *******************
@@ -22,12 +22,13 @@ app.use(express.static(path.resolve(__dirname, '../dist')));
 
 app.use('/graphql', trunQBack.getAllData, (req, res, next) => {
     console.log('5 **** that.data before response to client: ', trunQBack.data);
-    res.json(trunQBack.data);
+    res.status(200).json(trunQBack.data);
     // res.send(res.locals.message);
 })
 
 // ***********************************************
 
-app.listen(port, () => {
-    console.log('listening on', port)
-})
+
+// EXPORT APP FOR TESTING VS PRODUCTION/DEMO *****
+
+module.exports = app;

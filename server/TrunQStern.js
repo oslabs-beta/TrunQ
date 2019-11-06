@@ -24,6 +24,7 @@ class TrunQStern {
 
   async getAllData(req, res, next) {
     // deconstruct the req obj
+    console.log('PRE **** incoming req.body: ', req.body);
     const { trunQKey } = req.body;
     const { flag } = req.body;
     console.log('1 **** incoming graphQL query: ', trunQKey);
@@ -56,8 +57,6 @@ class TrunQStern {
         //add data to applicable objects
         // queryResponses[cacheKey] = apiResult;
       } else {
-        //add data to applicable objects
-        // queryResponses[cacheKey] = redisResult;
         return redisVal;
       }
     });
@@ -66,6 +65,7 @@ class TrunQStern {
       .then((valArr) => {
         console.log('4 **** valArr within Promise.all before for loop: ', valArr);
         for (let i = 0; i < cacheKey.length; i++) {
+          console.log(`4a **** valArr[${i}]: `, valArr[i]);
           queryResponses[cacheKey[i]] = valArr[i];
         }
         clientResObj[outerKey] = queryResponses;
@@ -74,14 +74,6 @@ class TrunQStern {
         return next();
       });
 
-    // console.log('4 **** resultArray before for loop: ', resultArray);
-    // for (let i = 0; i < cacheKey.length; i++) {
-    //   queryResponses[cacheKey[i]] = resultArray[i];
-    // }
-    // clientResObj[outerKey] = queryResponses;
-
-    // this.data = clientResObj;
-    // return next();
   }
 
   checkRedis(uniqueKeyQuery) {
@@ -106,7 +98,9 @@ class TrunQStern {
         .then(res => res.json())
         .then(data => {
           // data = JSON.stringify(data);
+
           if (flag.toLowerCase() === 'stern' || flag.toLowerCase() === 'ship') this.redisClient.set(uniqueKey, JSON.stringify(data), 'EX', this.expire);
+
           // this.redisClient.set(query, 'pikachu');
           // send set request to redis database
           console.log('3 **** api response data: ', data)

@@ -4,10 +4,11 @@
   "description": "NPM package for easy client and/or server side graphQL caching.",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=production nodemon server/server.js",
+    "start": "NODE_ENV=production nodemon server/startServer.js",
+    "redis-start": "../../redis/redis-5.0.5/src/redis-server & npm start",
     "build": "webpack",
-    "dev": "NODE_ENV=development node server/server.js & webpack-dev-server --open",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "NODE_ENV=development nodemon server/startServer.js & webpack-dev-server --open",
+    "test": "jest --verbose"
   },
   "repository": {
     "type": "git",
@@ -44,7 +45,9 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.6.3",
-    "webpack-dev-server": "^3.9.0",
-    "css-loader": "^3.2.0"
+    "css-loader": "^3.2.0",
+    "jest": "^24.9.0",
+    "supertest": "^4.0.2",
+    "webpack-dev-server": "^3.9.0"
   }
 }
