@@ -47,14 +47,11 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
         //we search into the frontEnd cache to see if it already exists - it might now
         let cachedResult = sessionStorage.getItem(currentKey)
 
-        // console.log("PARTIAL MATCHER", partialMatcher(query, cachedResult, currentKey, uniques, limits))
-        //if the cached result exists push it into the cachedResults array for later
-        //run the partial matcher here - partial matcher should return 2 things
-            //1. an object of all the cached data that matches
-            //2. a new valid query to be sent
-
         //if the cachedResult does exist then that means we matched uniqueKeys and we can push it to the cache
         if (cachedResult !== null) {
+            // console.log("PARTIAL MATCHER", partialMatcher(query, cachedResult, currentKey, uniques, limits))
+            
+
             //partial matcher here ----- it takes in the query, the cachedResult, currentKey, uniques, limits
 
             //the cached results are current stringified data objects so we do need to parse them into real objects again
@@ -70,8 +67,8 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
     // remember (trunQKey holds not found items)
     if (Object.keys(trunQKey).length > 0) {
         //declare the promise to be pushed - it returns the result of a fetch
-        //standard fetch other than the body which will contain a flag for passing along the storage options selected
-        //the fetch is built as a promise that we then push into the fetchedPromises array
+        //standard fetch, other than the body, which will contain a flag for passing along the storage options selected
+        //the fetch is built as a promise that we can then push into the fetchedPromises array
         //we do this so that we can combine them plus the cached results into a Promise.All to return a final array of all the responses
         let fetchingPromise = new Promise (function (resolve, reject) {
             fetch(endpointName, {
