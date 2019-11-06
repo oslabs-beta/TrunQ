@@ -145,41 +145,41 @@ let queryObjectBuilder = (arr, uniques=[], limits = []) => {
             
             //making sure our reference is to the top of the output object so we can move in with precision later
             dummyObj = output;
-
+  
             //input[curr] is really the depth we are withing the object. When we are at 1 we have special trimming to do based on variables
             if (input[curr] === 1) {
-
+  
                 //this reg basically sniffs out parens and anything in between them
                 let parensReg =/\(([^()]*)\)/
-
+  
                 //if the parens sniffer finds anything we want to parse it into usable data using the parseVariables
                 if (parensReg.test(curr)) {
-
+  
                     //save the parseVariables array
                     let parsedArr = parseVariables(curr, uniques, limits);
                     
                     //unique key always come as element one from parseVariables array
                     let uniqueKey = parsedArr[0];
-
+  
                     //remember we are at a depth of 1, the shallowest depth. Here we can just modify the top level and don't need the dummy object
                     output[uniqueKey] = {};
                     
                     //push into levels the string of what object that we are within, we're going to use those strings to move correctly through output
                     levels.push(uniqueKey);
-
+  
                     //when we know there are parens we know we have to have trunQVariables to store those variables. trunqify handles that object creation
                     let trunQVars = trunqifyVariables(parsedArr);
-
+  
                     //now the output at our current key will hold inside of it trunQVariables which we set here
                     output[uniqueKey].trunQVariables = trunQVars
-
+  
                     //right here we search for any sizing variables so that we know if we have to become an Array or not. If we do find any
                     //we set the trunQSize for later 
                     trunQSize = searchTrunQ(trunQVars, limits);
-
+  
                     //for now, we fill in each query with an empty object to either be moved into later or left empty
                     output[uniqueKey][parsedArr[1].query] = {};
-
+  
                     //push into levels this next empty object path incase we need to use it
                     levels.push(parsedArr[1].query);
                 }
@@ -196,49 +196,49 @@ let queryObjectBuilder = (arr, uniques=[], limits = []) => {
             else if (input[curr] > 1 && trunQSize === 0) {
                 //if prevlevel is greater than pop off a level because we've gone down a level
                 if (previousLevel > input[curr]) levels.pop();
-
+  
                 //temp will be our reader/writer as we loop through strings
                 let temp = ''
-
+  
                 //you'll see this loop over and over again, it moved our dummyObj in down the levels path outlined in the array
                 //basically taking us down the correct depth through output
                 for (let i = 0; i < levels.length; i += 1) {
                     dummyObj = dummyObj[levels[i]];
                 }
-
+  
                 //loop through the string here - remember curr is the current key we're reading
                 for (let j = 0; j < curr.length; j += 1) {
-
+  
                     //if we hit a space we know we've hit a query and give it an empty object within the skeleton
                     if (curr[j] === ' ') {
                         //give it the empty object to be possibly filled in later
                         dummyObj[temp] = {}
-
+  
                         //update the latest query which we'll need later on an opening parens
                         latestQuery = temp
-
+  
                         //reset temp because we've just set a key value pair
                         temp = ''
                     }
-
+  
                     //if we hit an opening parens we have hit a query with variables and this becomes a special case
                     else if(curr[j] === '(') {
-
+  
                         //again set the key value pair to an empty object
                         dummyObj[temp] = {}
                         latestQuery = temp
                         temp = ''
-
+  
                         //now that we have parens we have to parse this guy as usual
                         let parsedArr = parseVariables(curr, uniques, limits)
-
+  
                         //read the trunQVariables off of it for future use and set them
                         let trunQVars = trunqifyVariables(parsedArr)
                         dummyObj[latestQuery].trunQVariables = trunQVars
-
+  
                         //now test if we have any limits like last time but this time we have to set an actual array
                         trunQSize = searchTrunQ(trunQVars, limits);
-
+  
                         //the latest query has a limit meaning that it will hold the trunQLimits array
                         if (trunQSize > 0) dummyObj[latestQuery].trunQLimits = []
                         
@@ -247,22 +247,43 @@ let queryObjectBuilder = (arr, uniques=[], limits = []) => {
                         //since we're moving down a level push that level in so we can use it
                         levels.push(latestQuery)
                     }
-
+  
                     //if nothing special just keep writing
                     else {
                         temp += curr[j]
                     }
-                    //on a special case where you hit the end of a query without any parens that means you've finished
+                    //on a special case where you hit the end of a query without any parens that means you've finished or that we have a query
+                    //thats about to become a nest but shows no indication of it. We have to test for whether the next level is deeper or not here
                     if(j === curr.length-1) {
+  
+                      //find the next element's level make sure we don't go undefined
+                      let nextLevel = input[keysArr[i+1]]
+
+                      //this case where you've hit an end but the next level is greater indicating a nested query
+                      if (nextLevel !== undefined && nextLevel > input[curr]) {
+
                         //set the key value pair to an empty object
                         dummyObj[temp] = {}
+                        
                         //the previous level becomes the current level
                         previousLevel = input[curr]
+                        latestQuery = temp
+                        //since we're moving down a level push that level in so we can use it
+                        levels.push(latestQuery)
+                      }
+                      else {
+                        //set the key value pair to an empty object
+                        dummyObj[temp] = {}
+                        
+                        //the previous level becomes the current level
+                        previousLevel = input[curr]
+                      }
                     }
                 }
             }
             //this case never actually happens but might need it for later
             else if (input[curr] === 1 && trunQSize > 0) {
+              
   
             }
             else if (input[curr] > 1 && trunQSize > 0) {
@@ -273,6 +294,6 @@ let queryObjectBuilder = (arr, uniques=[], limits = []) => {
         levels=[]
     }
     return output
-}
+  }
 
 export default queryObjectBuilder  

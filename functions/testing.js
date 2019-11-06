@@ -297,7 +297,7 @@ function innerTrunQify (output, levels, trunQSize, keysArr, i, uniques, limits, 
 }
 
 //see the description for an overview of this guy. 
-let queryObjectBuilder = (arr, uniques=[], limits = []) => {debugger;
+let queryObjectBuilder = (arr, uniques=[], limits = []) => {
 
   //this is going to be our final output object, 'skeleton'
   let output = {}
@@ -437,17 +437,38 @@ let queryObjectBuilder = (arr, uniques=[], limits = []) => {debugger;
                   else {
                       temp += curr[j]
                   }
-                  //on a special case where you hit the end of a query without any parens that means you've finished
+                  //on a special case where you hit the end of a query without any parens that means you've finished or that we have a query
+                  //thats about to become a nest but shows no indication of it. We have to test for whether the next level is deeper or not here
                   if(j === curr.length-1) {
+
+                    //find the next element's level make sure we don't go undefined
+                    let nextLevel = input[keysArr[i+1]]
+
+                    //this case where you've hit an end but the next level is greater indicating a nested query
+                    if (nextLevel !== undefined && nextLevel > input[curr]) {
+
                       //set the key value pair to an empty object
                       dummyObj[temp] = {}
+                      
                       //the previous level becomes the current level
                       previousLevel = input[curr]
+                      latestQuery = temp
+                      //since we're moving down a level push that level in so we can use it
+                      levels.push(latestQuery)
+                    }
+                    else {
+                      //set the key value pair to an empty object
+                      dummyObj[temp] = {}
+                      
+                      //the previous level becomes the current level
+                      previousLevel = input[curr]
+                    }
                   }
               }
           }
           //this case never actually happens but might need it for later
           else if (input[curr] === 1 && trunQSize > 0) {
+            
 
           }
           else if (input[curr] > 1 && trunQSize > 0) {
@@ -459,7 +480,7 @@ let queryObjectBuilder = (arr, uniques=[], limits = []) => {debugger;
   }
   return output
 }
-console.log('result from queryObjectBuilder', queryObjectBuilder(layerQueryFields(query), ['id'], ['size'])['artist-mark-rothko'])
+// console.log('result from queryObjectBuilder', queryObjectBuilder(layerQueryFields(query), ['id'], ['size'])['artist-mark-rothko'])
 
 
 
@@ -469,7 +490,6 @@ let recursiveHelper = (skeleton, skeletonKeys, limits, uniques, futureQueries, c
   size = 0
   for (let i=0; i<skeletonKeys.length; i++) {
     let skeletonKey = skeletonKeys[i]
-    // console.log('KEY', skeletonKey)
 
   // ------- THIS SECTION DEALS WITH PARSING THE TRUNQVARIABLES OBJECT ------ //
 
@@ -486,20 +506,19 @@ let recursiveHelper = (skeleton, skeletonKeys, limits, uniques, futureQueries, c
         //search within limits
         //when we hit a size limit we want to be wary that the next thing to parse will be an array called trunQArrays
         //we will know the size if we read the value off of the trunQVariables
-        if (limits.indexOf(curr) !== -1) {
-          // console.log('found limit:', curr)
-          size = skeleton.trunQVariables[curr]
-        }
+          if (limits.indexOf(curr) !== -1) {
+              size = skeleton.trunQVariables[curr]
+          }
+  
+          //then search within uniques, 
+          else if (uniques.indexOf(curr) !== -1) {
 
-        //then search within uniques, 
-        else if (uniques.indexOf(curr) !== -1) {
-          // console.log('found unique', curr)
-        }
+          }
 
         //if we don't get a match in either we have to throw this out - continue to the next key
-        else{
-          return('invalid')
-        }
+          else {
+              return('invalid')
+          }
       } 
       continue;
     }
@@ -527,9 +546,7 @@ let recursiveHelper = (skeleton, skeletonKeys, limits, uniques, futureQueries, c
       }
       //if it's not an object you want to replace the corresponding skeleton value with that primitive
       else {
-        // console.log('its a primitive')
         skeleton[skeletonKey] = cachedObj[skeletonKey]
-        // console.log('values should be changed here for', skeletonKey, 'in', skeleton)
       }
     }
     //else put it into a query object for the future - build out new queries
@@ -560,10 +577,6 @@ function partialMatcher (query, cachedResult, currentKey, uniques=[], limits=[])
   //loops over all of the skeleton keys to see what we can match up
   recursiveHelper(skeleton[currentKey], skeletonKeys, limits, uniques, futureQueries, cachedObj)
 
-//   console.log('final skeleton', skeleton['artist-mark-rothko'])
-  // console.log('string skeleton', JSON.stringify(skeleton))
-  // console.log(layers)
-  // console.log('final queries', futureQueries)
   let queryToReturn = graphQLQueryMaker(futureQueries, layers, uniques, limits)
   return {
     query: queryToReturn,
@@ -576,75 +589,84 @@ function partialMatcher (query, cachedResult, currentKey, uniques=[], limits=[])
 // MAKE SURE THIS IS HANDLED
 
 function graphQLQueryMaker (futureQueries, layers, uniques, limits) {debugger;
-
-  //start the query string with the standardized query {
+  //start out the query string using standardized graphQL opening
   let graphQLString = 'query {';
 
-    //q if how we will be incremengting through the levels of futureQueries
-    let q = 0
+  //q is going to be how we are going to track our position within futureQueries  
+  let q = 0
+  
+  //this loop loops over the layers and gets the process started
+  for (let z = 0; z < layers.length; z += 1) {
 
-    //loop through the layers to identify 
-    for (let z = 0; z < layers.length; z += 1) {
-        let currentLevels = Object.keys(layers[z])
-        for (let i = 0; i < currentLevels.length; i += 1) {
-            let currentQuery = futureQueries[q]; // going to be artist
-            
+    //current levels is going to be the keys an independent query layered as an array
+    let currentLevels = Object.keys(layers[z])
+    
+    //loop over the current levels array we just got
+    for (let i = 0; i < currentLevels.length; i += 1) {
+
+      //current query is going to be our first pointer within futureQueries, will update as Q updates - currentQuery keeps track of
+      //the queries that we are missing
+        let currentQuery = futureQueries[q]; // going to be artist
+        
+        if (currentLevels[i].includes(currentQuery)) {  
             // if the currentQuery exists inside the current level
             // format the current level to be part of graphQLString
-            if (currentLevels[i].includes(currentQuery)) {  
-              
-                let temp = ''
-                for (let j = 0; j < currentLevels[i].length; j += 1) {
-                    let currentLetter = currentLevels[i][j];
-                    if (currentLetter === '(' && temp === currentQuery) {
-                        temp += currentLevels[i].slice(j)
-                        
-                        let layerLimits = Object.values(parseVariables(temp, uniques, limits)[1].limits)[0]
-                      
-                        graphQLString += " " + temp + " {"
-                        
-                        while (layerLimits > 1) {
-                            currentQuery = futureQueries[++q];
-                            layerLimits -= 1;
-                        }
-                        currentQuery = futureQueries[++q];
 
-                        // console.log("query in (", currentQuery)
-                        j = currentLevels[i].length
-                        temp = '';
-                    }
-                    else if (currentLetter === ' ' && temp === currentQuery) {
-                        graphQLString += " " + temp;
-                        currentQuery = futureQueries[++q];
-                        // console.log("query in space match", currentQuery)
-                        temp = '';
-                    }
-                    else if (currentLetter === ' ' && temp !== currentQuery) {
-                        temp = '';
-                    }
+            let temp = ''
+            for (let j = 0; j < currentLevels[i].length; j += 1) {
+                let currentLetter = currentLevels[i][j];
+                if (currentLetter === '(' && temp === currentQuery) {
+                    temp += currentLevels[i].slice(j)
                     
-                    else {
-                        temp += currentLetter;
-                    }
-                    if (j === currentLevels[i].length - 1 && temp === currentQuery) {
-                        graphQLString += " " + temp;
+                    let layerLimits = Object.values(parseVariables(temp, uniques, limits)[1].limits)[0]
+
+                    graphQLString += " " + temp + " {"
+                    
+                    
+                    while (layerLimits > 1) {
                         currentQuery = futureQueries[++q];
-                        // console.log("query in space match", currentQuery)
-                        temp = '';
+                        layerLimits -= 1;
                     }
+                    currentQuery = futureQueries[++q];
+
+                    // console.log("query in (", currentQuery)
+                    j = currentLevels[i].length
+                    temp = '';
+                }
+                else if (currentLetter === ' ' && temp === currentQuery) {
+                    graphQLString += " " + temp;
+                    currentQuery = futureQueries[++q];
+                    temp = '';
+                }
+                else if (currentLetter === ' ' && temp !== currentQuery) {
+                    temp = '';
+                }
+                
+                else {
+                    temp += currentLetter;
+                }
+                if (j === currentLevels[i].length - 1 && temp === currentQuery) {
+                    graphQLString += " " + temp;
+                    currentQuery = futureQueries[++q];
+
+                    //if the next layer is higher than this one we need to push a ' { '
+                    if (layers[z][currentLevels[i+1]]) {
+                      graphQLString += ' { '
+                    }
+                    temp = '';
                 }
             }
-            else {
-                graphQLString += currentLevels[i] + " }"
-            }
         }
-        // I am very proud of this.
-        let openBrace = /\{/g, closeBrace = /\}/g
-        let braceGen = graphQLString.match(openBrace).length - graphQLString.match(closeBrace).length;
-        // console.log("STRING", graphQLString, "BRACEGEN", braceGen);
-        graphQLString += "}".repeat(braceGen);
+        else {
+            graphQLString += currentLevels[i] + " }"
+        }
     }
-    return graphQLString
+    // I am very proud of this.
+    let openBrace = /\{/g, closeBrace = /\}/g
+    let braceGen = graphQLString.match(openBrace).length - graphQLString.match(closeBrace).length;
+    graphQLString += "}".repeat(braceGen);
+  }
+  return graphQLString
 }
 
 let response = 
@@ -671,7 +693,7 @@ query = `query {
   artist(id: "mark-rothko") {
     name
     shows {
-      id
+      test
     }
     artworks (size: 2) {
       id
@@ -680,7 +702,7 @@ query = `query {
   }
 }`
 
-// console.log('result from partialMatcher', partialMatcher(query, response, 'artist-mark-rothko', ['id'], ['size']))
+console.log('result from partialMatcher', partialMatcher(query, response, 'artist-mark-rothko', ['id'], ['size']))
 
 
 /* SKELETON - from layers

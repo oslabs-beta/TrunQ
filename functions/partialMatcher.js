@@ -139,68 +139,85 @@ function partialMatcher (query, cachedResult, currentKey, uniques=[], limits=[])
   // LAYERS WILL BE AN ARRAY CONTAINING OBJECTS OF EACH GRAPHQL QUERY
   // MAKE SURE THIS IS HANDLED
   
-  function graphQLQueryMaker (futureQueries, layers, uniques, limits) {
-  
+  function graphQLQueryMaker (futureQueries, layers, uniques, limits) {debugger;
+    //start out the query string using standardized graphQL opening
     let graphQLString = 'query {';
-      let q = 0
-      for (let z = 0; z < layers.length; z += 1) {
-          let currentLevels = Object.keys(layers[z])
-          for (let i = 0; i < currentLevels.length; i += 1) {
-              let currentQuery = futureQueries[q]; // going to be artist
-              
-              if (currentLevels[i].includes(currentQuery)) {  
-                  // if the currentQuery exists inside the current level
-                  // format the current level to be part of graphQLString
   
-                  let temp = ''
-                  for (let j = 0; j < currentLevels[i].length; j += 1) {
-                      let currentLetter = currentLevels[i][j];
-                      if (currentLetter === '(' && temp === currentQuery) {
-                          temp += currentLevels[i].slice(j)
-                          
-                          let layerLimits = Object.values(parseVariables(temp, uniques, limits)[1].limits)[0]
-                        
-                          graphQLString += " " + temp + " {"
-                          
-                          while (layerLimits > 1) {
-                              currentQuery = futureQueries[++q];
-                              layerLimits -= 1;
-                          }
-                          currentQuery = futureQueries[++q];
+    //q is going to be how we are going to track our position within futureQueries  
+    let q = 0
+    
+    //this loop loops over the layers and gets the process started
+    for (let z = 0; z < layers.length; z += 1) {
   
-                          // console.log("query in (", currentQuery)
-                          j = currentLevels[i].length
-                          temp = '';
-                      }
-                      else if (currentLetter === ' ' && temp === currentQuery) {
-                          graphQLString += " " + temp;
-                          currentQuery = futureQueries[++q];
-                          temp = '';
-                      }
-                      else if (currentLetter === ' ' && temp !== currentQuery) {
-                          temp = '';
-                      }
+      //current levels is going to be the keys an independent query layered as an array
+      let currentLevels = Object.keys(layers[z])
+      
+      //loop over the current levels array we just got
+      for (let i = 0; i < currentLevels.length; i += 1) {
+  
+        //current query is going to be our first pointer within futureQueries, will update as Q updates - currentQuery keeps track of
+        //the queries that we are missing
+          let currentQuery = futureQueries[q]; // going to be artist
+          
+          if (currentLevels[i].includes(currentQuery)) {  
+              // if the currentQuery exists inside the current level
+              // format the current level to be part of graphQLString
+  
+              let temp = ''
+              for (let j = 0; j < currentLevels[i].length; j += 1) {
+                  let currentLetter = currentLevels[i][j];
+                  if (currentLetter === '(' && temp === currentQuery) {
+                      temp += currentLevels[i].slice(j)
                       
-                      else {
-                          temp += currentLetter;
-                      }
-                      if (j === currentLevels[i].length - 1 && temp === currentQuery) {
-                          graphQLString += " " + temp;
+                      let layerLimits = Object.values(parseVariables(temp, uniques, limits)[1].limits)[0]
+  
+                      graphQLString += " " + temp + " {"
+                      
+                      
+                      while (layerLimits > 1) {
                           currentQuery = futureQueries[++q];
-                          temp = '';
+                          layerLimits -= 1;
                       }
+                      currentQuery = futureQueries[++q];
+  
+                      // console.log("query in (", currentQuery)
+                      j = currentLevels[i].length
+                      temp = '';
+                  }
+                  else if (currentLetter === ' ' && temp === currentQuery) {
+                      graphQLString += " " + temp;
+                      currentQuery = futureQueries[++q];
+                      temp = '';
+                  }
+                  else if (currentLetter === ' ' && temp !== currentQuery) {
+                      temp = '';
+                  }
+                  
+                  else {
+                      temp += currentLetter;
+                  }
+                  if (j === currentLevels[i].length - 1 && temp === currentQuery) {
+                      graphQLString += " " + temp;
+                      currentQuery = futureQueries[++q];
+  
+                      //if the next layer is higher than this one we need to push a ' { '
+                      if (layers[z][currentLevels[i+1]]) {
+                        graphQLString += ' { '
+                      }
+                      temp = '';
                   }
               }
-              else {
-                  graphQLString += currentLevels[i] + " }"
-              }
           }
-          // I am very proud of this.
-          let openBrace = /\{/g, closeBrace = /\}/g
-          let braceGen = graphQLString.match(openBrace).length - graphQLString.match(closeBrace).length;
-          graphQLString += "}".repeat(braceGen);
+          else {
+              graphQLString += currentLevels[i] + " }"
+          }
       }
-      return graphQLString
-}
+      // I am very proud of this.
+      let openBrace = /\{/g, closeBrace = /\}/g
+      let braceGen = graphQLString.match(openBrace).length - graphQLString.match(closeBrace).length;
+      graphQLString += "}".repeat(braceGen);
+    }
+    return graphQLString
+  }
 
 export default partialMatcher  
