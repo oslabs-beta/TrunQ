@@ -1,23 +1,25 @@
+const redis = require('redis');
 const fetch = require('node-fetch');
 const redis = require('redis'); // will the npm package grab this?
 
 class TrunQStern {
-  constructor(apiURL, port, expire = 30) {
+  constructor(apiURL, port, timer = 20) {
     this.apiURL = apiURL;
     this.port = port === null ? 6379 : port;
-    this.redisClient = redis.createClient();
     this.data = "check if this is correct";
     this.getAllData = this.getAllData.bind(this);
     this.getRedisData = this.getRedisData.bind(this);
     this.checkRedis = this.checkRedis.bind(this);
     this.checkApi = this.checkApi.bind(this);
-    this.expire = expire;
-    
+    this.redisClient = redis.createClient();
+    this.timer = timer;
+
     this.redisClient.on('connect', (success) => {
-        console.log('Redis connection success')
+      console.log('Redis connection success')
     })
+
     this.redisClient.on('error', (err) => {
-        console.log("Redis connection failure")
+      console.log("Redis connection failure")
     });
 
   }
@@ -40,7 +42,9 @@ class TrunQStern {
     // assign the returned result to a variable
     const redisResult = await this.checkRedis(cacheKey);
 
-    console.log('2 **** redisResult before conditional: ', redisResult);
+    let temp;
+    if (redisResult) temp = JSON.parse(redisResult[0]);
+    console.log('2 **** redisResult before conditional: ', temp);
     // save 
     const queryResponses = {};
     const clientResObj = {};
@@ -57,7 +61,7 @@ class TrunQStern {
         //add data to applicable objects
         // queryResponses[cacheKey] = apiResult;
       } else {
-        return redisVal;
+        return JSON.parse(redisVal);
       }
     });
 
@@ -98,9 +102,7 @@ class TrunQStern {
         .then(res => res.json())
         .then(data => {
           // data = JSON.stringify(data);
-
-          if (flag.toLowerCase() === 'stern' || flag.toLowerCase() === 'ship') this.redisClient.set(uniqueKey, JSON.stringify(data), 'EX', this.expire);
-
+          if (flag.toLowerCase() === 'stern' || flag.toLowerCase() === 'ship') this.redisClient.set(uniqueKey, JSON.stringify(data), 'EX', this.timer);
           // this.redisClient.set(query, 'pikachu');
           // send set request to redis database
           console.log('3 **** api response data: ', data)
