@@ -128,7 +128,7 @@ let parseVariables = (query, uniques=[], limits=[]) => {debugger;
   return [createUniqueKey(output), output];
 }
 
-console.log('result from parseVariables', parseVariables(query, ['id'], []))
+// console.log('result from parseVariables', parseVariables(query, ['id'], []))
 
 
 const layerQueryFields = (query, uniques = [], limits = []) => {
@@ -392,6 +392,10 @@ let queryObjectBuilder = (arr, uniques=[], limits = []) => {
   }
   return output
 }
+
+console.log('result from queryObjectBuilder', queryObjectBuilder(layerQueryFields(query), ['id'], ['size'])['artist-mark-rothko'].artworks)
+
+
 
 //this function only works with queries with limits that are smaller than what is in the cache - all primitives work
 let recursiveHelper = (skeleton, skeletonKeys, limits, uniques, futureQueries, cachedObj, size=0) => {

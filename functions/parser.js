@@ -22,23 +22,31 @@
 */
 
 
-//this is a helper function that will take in two parameters
+//this is a helper function that will take in two parameters:
+    //the variable string is like the parens, (id: sdfsd, size: 2), in a graphql line. 
+    //the varsArr is actually the limits and the uniques together in one array. This make it easy to loop over them
 let startIndexFinder = (varStr, varsArr) => {
-    //first sort the varsArr by length of string
+
+    //first we sort the varsArr by length of string - this helps us prevent cases where id is found before ssid and we run into matching issues
     varsArr.sort((a,b) => b.length - a.length)
-    //second find starting index of longest string
+
+    //indexArr will hold all the indexes that we want to return
     let indexArr = []
+
+    //blackList will hold the positions of indexes that we have already used so we don't use them again, aka 'id' and 'ssid' again.
     let blackList = []
+
+    //second find starting index of longest string, we want to keep track of all the starting indexes to use for trimming later on
     for (var i=0; i<varsArr.length; i++) {
         let currStr = varsArr[i]
         let startingI = varStr.indexOf(currStr)
 
-        //if the variable doesn't even exist move on to the next one
+        //if the variable doesn't exist move on to the next one
         if (startingI === -1) continue;
         //while startingI is not blackListed push it into indexArr
-        while (blackList.includes(startingI)) {
-            startingI = varStr.indexOf(currStr, startingI+1)
-        }
+        while (blackList.includes(startingI)) { startingI = varStr.indexOf(currStr, startingI+1) }
+
+        //push this starting index into indexArr to save it
         indexArr.push(startingI)
 
         //loop over and blackList the indexes that are part of the str
@@ -50,8 +58,8 @@ let startIndexFinder = (varStr, varsArr) => {
 }
 
 
-//another helper function that handles the actual creation of the unique key. Pretty straightforward but the inputs are:
-//
+//another helper function that handles the actual creation of the unique key. Pretty straightforward but the input is the special output
+//object that you see at the start of parseVariables. It will read over that objects uniques {} and the original query and spit out a unique key.
 const createUniqueKey = (queryVariablesObject) => {
     let keyString = queryVariablesObject.query;
 

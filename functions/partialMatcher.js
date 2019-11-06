@@ -1,3 +1,40 @@
+/**
+* ***********************************
+*
+* @module keyedQueries
+* @author Ben Ray, Brian Haller 
+* @date 11/5/2019
+* @params query (string), uniques (array), limits(array)
+* 
+* @description Really a massive helper function. Takes in a layered query from layerQueryFields and constructs a 'trunQified' object
+*              skeleton of a graphQL query. Basically turns a graphQL query string into a useable javascript object. The best explanation
+*              is that we have created a mold of the query that can then be recursed over and filled in (or not filled in) during
+*              partial matching against the cache. It spits out an object looking like:
+*            
+*              { 'artist-mark-rothko': 
+*                   {
+*                       trunQVariables: { id: 'mark-rothko' },
+*                       artist: { name: {}, shows: {}, id: {} },
+*                       artworks: 
+*                           { 
+*                               trunQVariables: { size: 2 } 
+*                               trunQLimits: [ { id: {}, imageUrl: {} }, { id: {}, imageUrl: {} } ]
+*                           } 
+*                   } 
+*              }
+*               
+*               Notice the special new keys trunQVariables and trunQLimits. They are key to converting the graphQL query language into an
+*               actual javascript object. 
+*                   -trunQVariables holds the variables that defined the query. Unique's that identify a unique query, and limits which define
+*                       a certain size for graphQL to return as an array
+*                   -trunQLimits holds an array that contains the inner queries as objects duplicated the correct amount of times
+*
+*               Note: For best understanding start from the bottom queryObjectBuilder and follow from there
+*
+*
+* ***********************************
+*/
+
 //this function only works with queries with limits that are smaller than what is in the cache - all primitives work
 let recursiveHelper = (skeleton, skeletonKeys, limits, uniques, futureQueries, cachedObj, size=0) => {
 

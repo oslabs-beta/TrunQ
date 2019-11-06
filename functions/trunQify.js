@@ -6,6 +6,7 @@
 * @date 11/5/2019
 * @params query (string), uniques (array), limits(array)
 *           endpoint (string), storageLocation (string)
+*
 * @description takes a graphQL query from a client and checks the query against tagged keys
 *           in sessionStorage, rebuilds a new graphQL request based on data found in sessionStorage
 *           and then performs a fetch to the route specified in parameters. If the query is tagged
@@ -24,13 +25,26 @@ import queryObjectBuilder from './queryObjectBuilder'
 import partialMatcher from './partialMatcher.js'
 
 const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
+
+    //array that will hold cached results to combine later
     let cachedResults = []
+    
+    //trunQKey holds everything that needs to be fetched
     let trunQKey = {}
+
+    //at the end this will be the objet that we are returning, the combination of cached responses and fetches
     let fetchedPromises = [];
+
     // get unique keys based on query, use these keys to check against local cache
     const keyedQueriesArray = keyedQueries(query, uniques, limits);
+    
+    //loop over the unique keys
     for (let i = 0; i < keyedQueriesArray.length; i += 1) {
+        
+        //the current key
         let currentKey = Object.keys(keyedQueriesArray[i])
+        
+        //we search into the frontEnd cache to see if it already exists - it might now
         let cachedResult = sessionStorage.getItem(currentKey)
 
         // console.log("PARTIAL MATCHER", partialMatcher(query, cachedResult, currentKey, uniques, limits))
@@ -39,19 +53,26 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
             //1. an object of all the cached data that matches
             //2. a new valid query to be sent
 
+        //if the cachedResult does exist then that means we matched uniqueKeys and we can push it to the cache
         if (cachedResult !== null) {
             //partial matcher here ----- it takes in the query, the cachedResult, currentKey, uniques, limits
 
+            //the cached results are current stringified data objects so we do need to parse them into real objects again
             cachedResults.push(JSON.parse(cachedResult))
         }
+        //if it doesn't exist in the cache we just add it trunQKey so that we know we need to look fetch it later
         else {
             trunQKey[currentKey] = keyedQueriesArray[i][currentKey];
         }
     }
 
-    //if the length is greater than 0 that means we have keys to go fetch because they weren't in cache (trunQKey holds not found items)
+    //if the length of trunQKey greater than 0 that means we have keys to go fetch because they weren't in cache 
+    // remember (trunQKey holds not found items)
     if (Object.keys(trunQKey).length > 0) {
         //declare the promise to be pushed - it returns the result of a fetch
+        //standard fetch other than the body which will contain a flag for passing along the storage options selected
+        //the fetch is built as a promise that we then push into the fetchedPromises array
+        //we do this so that we can combine them plus the cached results into a Promise.All to return a final array of all the responses
         let fetchingPromise = new Promise (function (resolve, reject) {
             fetch(endpointName, {
                 method: "POST",
@@ -63,7 +84,6 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
             })
             .then(res => res.json())
             .then(res => {
-                // console.log("\nRESPONSE FROM SERVER:", res);
                 let returnDataObj = [];
                 for (let i = 0; i < Object.keys(res.trunQKey).length; i += 1) {
                     let outputObj = { data: {} }
@@ -79,18 +99,23 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
                 console.log('ERROR FETCHING IN TRUNQIFY', error)
             })
         })
+
+        //push the promise into the fetchedPromises array
         fetchedPromises.push(fetchingPromise)
     }
+    //if all of the keys are found in the cache we can actually just return the cachedResults
     else {
         return cachedResults;
     }
 
-    console.log("CACHED RESULTS", cachedResults, "\n\nTRUNQKEY", trunQKey)
+    // console.log("CACHED RESULTS", cachedResults, "\n\nTRUNQKEY", trunQKey)
 
+    //this pushed into fetchedPromise all the cached items that we found earlier - the fetched are already in there
     for (let j = 0; j < Object.keys(cachedResults).length; j += 1) {
         fetchedPromises.push(cachedResults[Object.keys(cachedResults)[j]])
     }
 
+    //return a Promise.all array of all the resolved fetched and cached results
     return Promise.all([...fetchedPromises])
     .then(function(values) {
         return values.reduce((arr, val) => {
