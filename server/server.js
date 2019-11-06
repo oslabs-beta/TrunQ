@@ -6,27 +6,12 @@ const bodyParser = require('body-parser')
 
 // EXAMPLE TRUNQ BACKEND SETUP *******************
 
-const redis = require('redis');
-
-const redisClient = redis.createClient();
-
-redisClient.on('connect', (success) => {
-    console.log('Redis connection success')
-})
-
-redisClient.on('error', (err) => {
-    console.log("Redis connection failure")
-});
-
 const TrunQStern = require('./TrunQStern');
 
 // create instance of TrunQStern
 // args: graphQl endpoint, redis client
-const trunQBack = new TrunQStern('https://graphql-pokemon.now.sh/', redisClient);
-
+const trunQBack = new TrunQStern('https://graphql-pokemon.now.sh/')
 // ***********************************************
-
-
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
