@@ -1,20 +1,34 @@
+const redis = require('redis');
 const fetch = require('node-fetch');
+const redis = require('redis'); // will the npm package grab this?
 
 class TrunQStern {
-  constructor(apiURL, redisClient, port = 6379) {
+  constructor(apiURL, port, timer = 20) {
     this.apiURL = apiURL;
-    this.port = port;
-    this.redisClient = redisClient;
+    this.port = port === null ? 6379 : port;
     this.data = "check if this is correct";
     this.getAllData = this.getAllData.bind(this);
     this.getRedisData = this.getRedisData.bind(this);
     this.checkRedis = this.checkRedis.bind(this);
     this.checkApi = this.checkApi.bind(this);
+    this.redisClient = redis.createClient();
+    this.timer = timer;
+
+    this.redisClient.on('connect', (success) => {
+      console.log('Redis connection success')
+    })
+
+    this.redisClient.on('error', (err) => {
+      console.log("Redis connection failure")
+    });
+
   }
 
   async getAllData(req, res, next) {
     // deconstruct the req obj
+    console.log('PRE **** incoming req.body: ', req.body);
     const { trunQKey } = req.body;
+    const { flag } = req.body;
     console.log('1 **** incoming graphQL query: ', trunQKey);
     const outerKey = 'trunQKey';
 
@@ -28,7 +42,9 @@ class TrunQStern {
     // assign the returned result to a variable
     const redisResult = await this.checkRedis(cacheKey);
 
-    console.log('2 **** redisResult before conditional: ', redisResult);
+    let temp;
+    if (redisResult) temp = JSON.parse(redisResult[0]);
+    console.log('2 **** redisResult before conditional: ', temp);
     // save 
     const queryResponses = {};
     const clientResObj = {};
@@ -41,13 +57,11 @@ class TrunQStern {
         // await the returned result of querying the third party api
         // const apiResult = await this.checkApi(cacheKey[index], graphQLQuery[index], this.apiURL); // the position of redisResult => graphQLQuery position
         // console.log('4 **** returned api data: ', apiResult);
-        return this.checkApi(cacheKey[index], graphQLQuery[index], this.apiURL)
+        return this.checkApi(cacheKey[index], graphQLQuery[index], this.apiURL, flag)
         //add data to applicable objects
         // queryResponses[cacheKey] = apiResult;
       } else {
-        //add data to applicable objects
-        // queryResponses[cacheKey] = redisResult;
-        return redisVal;
+        return JSON.parse(redisVal);
       }
     });
 
@@ -55,6 +69,7 @@ class TrunQStern {
       .then((valArr) => {
         console.log('4 **** valArr within Promise.all before for loop: ', valArr);
         for (let i = 0; i < cacheKey.length; i++) {
+          console.log(`4a **** valArr[${i}]: `, valArr[i]);
           queryResponses[cacheKey[i]] = valArr[i];
         }
         clientResObj[outerKey] = queryResponses;
@@ -63,14 +78,6 @@ class TrunQStern {
         return next();
       });
 
-    // console.log('4 **** resultArray before for loop: ', resultArray);
-    // for (let i = 0; i < cacheKey.length; i++) {
-    //   queryResponses[cacheKey[i]] = resultArray[i];
-    // }
-    // clientResObj[outerKey] = queryResponses;
-
-    // this.data = clientResObj;
-    // return next();
   }
 
   checkRedis(uniqueKeyQuery) {
@@ -85,7 +92,7 @@ class TrunQStern {
     })
   }
 
-  checkApi(uniqueKey, graphQLQuery, apiURL) {
+  checkApi(uniqueKey, graphQLQuery, apiURL, flag) {
     return new Promise(resolve => {
       fetch(apiURL, {
         method: "POST",
@@ -95,7 +102,7 @@ class TrunQStern {
         .then(res => res.json())
         .then(data => {
           // data = JSON.stringify(data);
-          // this.redisClient.set(uniqueKey, JSON.stringify(data));
+          if (flag.toLowerCase() === 'stern' || flag.toLowerCase() === 'ship') this.redisClient.set(uniqueKey, JSON.stringify(data), 'EX', this.timer);
           // this.redisClient.set(query, 'pikachu');
           // send set request to redis database
           console.log('3 **** api response data: ', data)

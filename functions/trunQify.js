@@ -50,7 +50,7 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
         //if the cachedResult does exist then that means we matched uniqueKeys and we can push it to the cache
         if (cachedResult !== null) {
             // console.log("PARTIAL MATCHER", partialMatcher(query, cachedResult, currentKey, uniques, limits))
-            
+
 
             //partial matcher here ----- it takes in the query, the cachedResult, currentKey, uniques, limits
 
@@ -74,7 +74,7 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
             fetch(endpointName, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ 
+                body: JSON.stringify({
                     trunQKey: trunQKey,
                     flag: storageLocation
                 })
@@ -87,14 +87,14 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
                     let currentUniqueKey = Object.keys(res.trunQKey)[i];
                     if (storageLocation === 'bow') sessionStorage.setItem(currentUniqueKey, JSON.stringify(res.trunQKey[currentUniqueKey]));
 
-                    outputObj.data = res.trunQKey[currentUniqueKey].data;
-                    returnDataObj.push(outputObj);
-                }
-                return resolve(returnDataObj);
-            })
-            .catch(error => {
-                console.log('ERROR FETCHING IN TRUNQIFY', error)
-            })
+                        outputObj.data = res.trunQKey[currentUniqueKey].data;
+                        returnDataObj.push(outputObj);
+                    }
+                    return resolve(returnDataObj);
+                })
+                .catch(error => {
+                    console.log('ERROR FETCHING IN TRUNQIFY', error)
+                })
         })
 
         //push the promise into the fetchedPromises array
@@ -114,15 +114,19 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
 
     //return a Promise.all array of all the resolved fetched and cached results
     return Promise.all([...fetchedPromises])
-    .then(function(values) {
-        return values.reduce((arr, val) => {
-            arr.push(...val);
-            return arr;
-        }, [])
-    })
-    .catch(err => {
-        console.log("ERROR IN RESOLVING PROMISE.ALL", err);
-    })
-} 
+        .then(function (values) {
+            return values.reduce((arr, val) => {
+                if (Array.isArray(val)) {
+                    arr.push(...val);
+                } else {
+                    arr.push(val);
+                }
+                return arr;
+            }, [])
+        })
+        .catch(err => {
+            console.log("ERROR IN RESOLVING PROMISE.ALL", err);
+        })
+}
 
 export default trunQify;
