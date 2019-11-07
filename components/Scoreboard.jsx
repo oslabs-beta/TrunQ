@@ -22,7 +22,7 @@ const Scoreboard = props => {
   console.log('cacheTime obj: ', cacheTimes);
 
   return (
-    <div>
+    <div className='scoreboard'>
       <table>
         <tr>
           <th>CACHE TYPE: </th>

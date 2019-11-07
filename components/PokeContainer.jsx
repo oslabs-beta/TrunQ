@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PokeCard from './PokeCard.jsx'
 import trunQify from '../functions/trunQify'
-import BoatSelector from './BoatSelector.jsx'
+import BoatSelector from './boatSelector.jsx'
 import Scoreboard from './Scoreboard.jsx'
 
 class PokeContainer extends Component {
@@ -143,15 +143,14 @@ class PokeContainer extends Component {
 
         return (
             <div className='pokeContainer' ref={this.pokeSection}>
-                <h1>poke card</h1>
-                <form>
-                    <input id="pokeName1" className="pokeInput" onChange={this.handleNameChange} type="text" />
-                    <input id="pokeName2" className="pokeInput" onChange={this.handleNameChange} type="text" />
-                    <input id="pokeName3" className="pokeInput" onChange={this.handleNameChange} type="text" />
-                    <button onClick={(event) => this.handleClick(event)}>QUERY POKEMON NAME</button>
-                    {/* render the drop down menu component from here */}
-                    <BoatSelector />
-                    <input type='checkbox' onChange={this.handleTruth}></input>
+                <h1 className='hero-title'>POKEMON CARDS</h1>
+                <form className='pokemon-form'>
+                    <input id="pokeName1" className="pokeInput" onChange={this.handleNameChange} type="text" placeholder='POKEMON'/>
+                    <input id="pokeName2" className="pokeInput" onChange={this.handleNameChange} type="text" placeholder='POKEMON'/>
+                    <input id="pokeName3" className="pokeInput" onChange={this.handleNameChange} type="text" placeholder='POKEMON'/>
+                    <BoatSelector/>
+                    <button onClick={(event) => this.handleClick(event)} className='poke-query'>CACHE THEM ALL!!!</button>
+                    {/* <input type='checkbox' onChange={this.handleTruth}></input> */}
                 </form>
                 <Scoreboard fetchTime={this.state.fetchTime} />
                 <div className='cardContainer'>
