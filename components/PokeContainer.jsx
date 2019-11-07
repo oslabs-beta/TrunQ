@@ -22,8 +22,7 @@ class PokeContainer extends Component {
         this.handleClick = this.handleClick.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
         this.pokeQueryBuilder = this.pokeQueryBuilder.bind(this);
-        this.handleTruth = this.handleTruth.bind(this)
-
+        this.handleTruth = this.handleTruth.bind(this);
         this.pokeSection = React.createRef();
     }
 
@@ -51,7 +50,11 @@ class PokeContainer extends Component {
         let cacheSelector = document.getElementById('cacheType').value;
 
         console.log('cacheSelector before trunQify: ', cacheSelector);
-        info = await trunQify(query, ["name"], [], '/graphql', cacheSelector);
+        let translate = ''
+        if (cacheSelector === 'Client-side') translate = 'Bow'
+        else if (cacheSelector === 'Server-side') translate = 'Stern'
+        else translate = 'Ship'
+        info = await trunQify(query, ["name"], [], '/graphql', translate);
         let elapsedTime = []
         info = info.reduce((pokeResArray, pokeResInfo) => {
             if (pokeResInfo.data.pokemon !== null) pokeResArray.push(pokeResInfo)

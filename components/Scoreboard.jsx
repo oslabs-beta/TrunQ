@@ -5,13 +5,13 @@ const Scoreboard = props => {
   // store the cache times for each method
   const cacheTimes = {
     'No cache': 0,
-    'Stern': 0,
-    'Bow': 0
+    'Server-side': 0,
+    'Client-side': 0
   };
   const cacheCount = {
     'No cache': 0,
-    'Stern': 0,
-    'Bow': 0
+    'Server-side': 0,
+    'Client-side': 0
   }
   props.fetchTime.forEach(el => {
     console.log('tuple pos 0: ', el[0]);
@@ -27,14 +27,14 @@ const Scoreboard = props => {
         <tr>
           <th>CACHE TYPE: </th>
           <th>No Cache</th>
-          <th>Stern</th>
-          <th>Bow</th>
+          <th>Server-side</th>
+          <th>Client-side</th>
         </tr>
         <tr>
           <td>AVERAGE TIMES: </td>
           <td>{cacheTimes['No cache'] / cacheCount['No cache']}</td>
-          <td>{cacheTimes['Stern'] / cacheCount['Stern']}</td>
-          <td>{cacheTimes['Bow'] / cacheCount['Bow']}</td>
+          <td>{cacheTimes['Server-side'] / cacheCount['Server-side']}</td>
+          <td>{cacheTimes['Client-side'] / cacheCount['Client-side']}</td>
         </tr>
       </table>
     </div>
