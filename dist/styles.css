@@ -10,6 +10,11 @@
     border: solid;
 }
 
+.cardContainer{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
 .artContainer{
     display: flex;
     flex-direction: column;

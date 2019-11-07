@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import PokeCard from './PokeCard.jsx'
 import trunQify from '../functions/trunQify'
-import BoatSelector from './boatSelector.jsx'
+import BoatSelector from './BoatSelector.jsx'
+import Scoreboard from './Scoreboard.jsx'
 
 class PokeContainer extends Component {
     constructor(props) {
@@ -58,21 +59,26 @@ class PokeContainer extends Component {
         }, []);
 
         info.forEach((res) => {
-            elapsedTime.push(Date.now() - startTime);
+            if (this.state.fetchTime.length < 1) {
+                elapsedTime.push(['No cache', Date.now() - startTime]);
+            } else {
+                elapsedTime.push([cacheSelector, Date.now() - startTime]);
+            }
         });
         let pokeArray = [...this.state.pokeInfo, ...info]
+        let timeArray = [...this.state.fetchTime, ...elapsedTime]
+        this.setState({ pokeInfo: pokeArray, fetchTime: timeArray })
+        // let timeArray
+        // if (cacheSelector === 'Bow') {
+        //     timeArray = [...this.state.bowFetchTime, ...elapsedTime]
+        //     this.setState({ pokeInfo: pokeArray, bowFetchTime: timeArray })
+        // } else {
+        //     timeArray = [...this.state.sternFetchTime, ...elapsedTime]
+        //     this.setState({ pokeInfo: pokeArray, sternFetchTime: timeArray })
+        // }
 
-        let timeArray;
-        if (cacheSelector === 'Bow') {
-            timeArray = [...this.state.bowFetchTime, ...elapsedTime]
-            this.setState({ pokeInfo: pokeArray, bowFetchTime: timeArray })
-        } else {
-            timeArray = [...this.state.sternFetchTime, ...elapsedTime]
-            this.setState({ pokeInfo: pokeArray, sternFetchTime: timeArray })
-        }
-
-        console.log('bowFetchTime: ', this.state.bowFetchTime);
-        console.log('sternFetchTime: ', this.state.sternFetchTime);
+        // console.log('bowFetchTime: ', this.state.bowFetchTime);
+        // console.log('sternFetchTime: ', this.state.sternFetchTime);
         // let timeArray = [...this.state.fetchTime, ...elapsedTime];
     }
 
@@ -131,7 +137,7 @@ class PokeContainer extends Component {
 
         const pokeCards = []
         for (let i = 0; i < this.state.pokeInfo.length; i += 1) {
-            pokeCards.push(<PokeCard key={`pokeCard${i}`} pokeInfo={this.state.pokeInfo[i]} fetchTime={this.state.fetchTime[i]} />)
+            pokeCards.push(<PokeCard key={`pokeCard${i}`} pokeInfo={this.state.pokeInfo[i]} cacheType={this.state.fetchTime[i][0]} fetchTime={this.state.fetchTime[i][1]} />)
         }
         console.log(this.fetchTime);
 
@@ -147,7 +153,10 @@ class PokeContainer extends Component {
                     <BoatSelector />
                     <input type='checkbox' onChange={this.handleTruth}></input>
                 </form>
-                {pokeCards}
+                <Scoreboard fetchTime={this.state.fetchTime} />
+                <div className='cardContainer'>
+                    {pokeCards}
+                </div>
             </div>
         )
     }
