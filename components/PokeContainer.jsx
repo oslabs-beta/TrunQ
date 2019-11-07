@@ -139,6 +139,7 @@ class PokeContainer extends Component {
         }
 
         return (
+            
             <div className='pokeContainer' ref={this.pokeSection}>
                 <h1>poke card</h1>
                 <form>
@@ -151,6 +152,7 @@ class PokeContainer extends Component {
                 </form>
                 {pokeCards}
             </div>
+            
         )
     }
 }
