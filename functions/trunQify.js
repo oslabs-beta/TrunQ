@@ -19,8 +19,8 @@
 
 // Import parser functionalities.
 import keyedQueries from './keyedQueries'
-import parser from './parser'
-import layerQueryFields from './layerQueryFields'
+import parseVariables from './parser'
+import layerQueryFields from './layerQueryFields.js'
 import queryObjectBuilder from './queryObjectBuilder'
 import partialMatcher from './partialMatcher.js'
 
@@ -49,13 +49,18 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
 
         //if the cachedResult does exist then that means we matched uniqueKeys and we can push it to the cache
         if (cachedResult !== null) {
-            // console.log("PARTIAL MATCHER", partialMatcher(query, cachedResult, currentKey, uniques, limits))
+            const { partialQuery, filledSkeleton } = partialMatcher(query, JSON.parse(cachedResult), currentKey, uniques, limits)
 
 
             //partial matcher here ----- it takes in the query, the cachedResult, currentKey, uniques, limits
 
             //the cached results are current stringified data objects so we do need to parse them into real objects again
-            cachedResults.push(JSON.parse(cachedResult))
+            // cachedResults.push(JSON.parse(cachedResult))
+            cachedResults.push(filledSkeleton)
+            trunQKey[currentKey] = partialQuery;
+            console.log("trunqkey", trunQKey)
+            console.log("cachedResults", cachedResults)
+            
         }
         //if it doesn't exist in the cache we just add it trunQKey so that we know we need to look fetch it later
         else {

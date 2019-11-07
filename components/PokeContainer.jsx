@@ -102,10 +102,11 @@ class PokeContainer extends Component {
                     pokemon(name: "${pokeName}") {
                       name
                       image
+
                       attacks {
                         special {
-                          name
-                        }
+                            name
+                          }
                       }`
 
         if (evolutions) {

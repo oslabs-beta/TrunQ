@@ -36,7 +36,9 @@
 */
 
 
-import parser from './parser'
+import keyedQueries from './keyedQueries'
+import layerQueryFields from './layerQueryFields'
+import parseVariables from './parser'
 
 
 //turns the uniques and variables into key value pairs within a trunQVariables object

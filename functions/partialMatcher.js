@@ -35,9 +35,14 @@
 * ***********************************
 */
 
+import keyedQueries from './keyedQueries'
+import parseVariables from './parser'
+import layerQueryFields from './layerQueryFields.js'
+import queryObjectBuilder from './queryObjectBuilder'
+
 //this function only works with queries with limits that are smaller than what is in the cache - all primitives work
 let recursiveHelper = (skeleton, skeletonKeys, limits, uniques, futureQueries, cachedObj, size=0) => {
-
+  
     size = 0
     for (let i=0; i<skeletonKeys.length; i++) {
       let skeletonKey = skeletonKeys[i]
@@ -87,9 +92,12 @@ let recursiveHelper = (skeleton, skeletonKeys, limits, uniques, futureQueries, c
   
       //if we get a match, store that value - matches will be found in the cached object
       if (cachedObj[skeletonKey] !== undefined) {
+        if (Array.isArray(cachedObj[skeletonKey])) {
+          skeleton[skeletonKey] = cachedObj[skeletonKey]
+        } 
         //now find out if its a primitive or an object
           //if it is an object you'll want to recurse through
-        if (typeof cachedObj[skeletonKey] === 'object') {
+        else if (typeof cachedObj[skeletonKey] === 'object') {
           let newKeys = Object.keys(skeleton[skeletonKey])
   
           futureQueries.push(skeletonKey)
@@ -113,10 +121,9 @@ let recursiveHelper = (skeleton, skeletonKeys, limits, uniques, futureQueries, c
 function partialMatcher (query, cachedResult, currentKey, uniques=[], limits=[]) {
     let layers = layerQueryFields(query, uniques, limits)
     let skeleton = queryObjectBuilder(layers, uniques, limits);
-  
     let futureQueries = [];
     //get to layer one of the reponse object
-    cachedObj = cachedResult.data 
+    let cachedObj = cachedResult.data 
   
     //parse through the skeleton - match keys one by one - recursion will be decided later
     //if skeletonKeys here becomes undefined that means we couldn't match the key to the skeleton and the cache is bad
@@ -127,11 +134,11 @@ function partialMatcher (query, cachedResult, currentKey, uniques=[], limits=[])
   
     //loops over all of the skeleton keys to see what we can match up
     recursiveHelper(skeleton[currentKey], skeletonKeys, limits, uniques, futureQueries, cachedObj)
-  
-    let queryToReturn = graphQLQueryMaker(futureQueries, layers, uniques, limits)
+    console.log(futureQueries);
+    let queryToReturn = graphQLQueryMaker(futureQueries, skeleton, layers, uniques, limits)
     return {
-      query: queryToReturn,
-      skeleton: skeleton
+      partialQuery: queryToReturn,
+      filledSkeleton: skeleton
     }
   
   }
@@ -139,7 +146,7 @@ function partialMatcher (query, cachedResult, currentKey, uniques=[], limits=[])
   // LAYERS WILL BE AN ARRAY CONTAINING OBJECTS OF EACH GRAPHQL QUERY
   // MAKE SURE THIS IS HANDLED
   
-  function graphQLQueryMaker (futureQueries, layers, uniques, limits) {debugger;
+  function graphQLQueryMaker (futureQueries, skeleton, layers, uniques, limits) {debugger;
     //start out the query string using standardized graphQL opening
     let graphQLString = 'query {';
   
@@ -209,12 +216,20 @@ function partialMatcher (query, cachedResult, currentKey, uniques=[], limits=[])
               }
           }
           else {
-              graphQLString += currentLevels[i] + " }"
+            graphQLString += currentLevels[i]
+            if (layers[z][currentLevels[i+1]]) {
+              graphQLString += ' { '
+            }
+            else {
+              graphQLString += ' } '
+            }
           }
       }
       // I am very proud of this.
       let openBrace = /\{/g, closeBrace = /\}/g
-      let braceGen = graphQLString.match(openBrace).length - graphQLString.match(closeBrace).length;
+      let closed = 0
+      if (graphQLString.match(closeBrace)) closed = graphQLString.match(closeBrace).length;
+      let braceGen = graphQLString.match(openBrace).length - closed;
       graphQLString += "}".repeat(braceGen);
     }
     return graphQLString
