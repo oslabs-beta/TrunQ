@@ -12,7 +12,7 @@ const PokeCard = props => {
             <h1>{props.pokeInfo.data.pokemon.name}</h1>
 
             <img src={props.pokeInfo.data.pokemon.image} style={{ height: 100, width: 100 }} />
-            <p>Time to {props.cacheType}: {props.fetchTime} ms</p>
+            <p>{props.cacheType} lookup time: {props.fetchTime} ms</p>
 
 
         </div>
