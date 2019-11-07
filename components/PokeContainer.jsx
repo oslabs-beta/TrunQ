@@ -7,15 +7,9 @@ class PokeContainer extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            pokecards2: [],
             pokeInfo: [],
             fetchTime: [],
-            //fetchTime: {
-            //    Bow: [],
-            //    Stern: [],
-            //    Ship: []
-            //}
-            bowFetchTime: [],
-            sternFetchTime: [],
             evolutionBool: false
         }
         this.handleClick = this.handleClick.bind(this);
@@ -28,10 +22,33 @@ class PokeContainer extends Component {
 
     async handleClick(event) {
         event.preventDefault()
-        let pokeNames = []
+
+        // new variables
+        let newPokemonNames = [];
+        let cacheSelector;
+        let newCards = []; // hold generated cards for new search
+        // old variables
+        let elapsedTime = [];
+        let startTime = Date.now();
+        let endTime;
+        let pokeNames = [];
+        let inputArr = document.querySelectorAll('.pokeInput');
+        let info;
+
+        // if there are no cards saved the current search should not be cached
+        if (this.state.pokecards2.length > 0) {
+            cacheSelector = document.getElementById('cacheType').value;
+        } else {
+            cacheSelector = 'No Cache';
+        }
+
         //step 1: take all the inputs and push them into the pokeNames Array
-        let inputArr = document.querySelectorAll('.pokeInput')
-        inputArr.forEach(x => pokeNames.push(x.value))
+        inputArr.forEach(x => {
+            pokeNames.push(x.value);
+            if (x.value !== '') {
+                newPokemonNames.push(x.value);
+            }
+        })
 
         //step 2: build the query by concatting strings
         let query = 'query {'
@@ -41,39 +58,38 @@ class PokeContainer extends Component {
             }
         })
         query += '}'
-
-        // const query = this.pokeQueryBuilder(this.state.pokeName, this.state.evolutionBool);
-        let startTime = Date.now();
-
-        // TRUNQIFY THIS SHIT
-        let info;
-        let cacheSelector = document.getElementById('cacheType').value;
-
-        console.log('cacheSelector before trunQify: ', cacheSelector);
+        
+        
         info = await trunQify(query, ["name"], [], '/graphql', cacheSelector);
-        let elapsedTime = []
+        endTime = Date.now();
+
+        //push select API data into an array
         info = info.reduce((pokeResArray, pokeResInfo) => {
             if (pokeResInfo.data.pokemon !== null) pokeResArray.push(pokeResInfo)
             return pokeResArray
         }, []);
 
-        info.forEach((res) => {
-            elapsedTime.push(Date.now() - startTime);
-        });
-        let pokeArray = [...this.state.pokeInfo, ...info]
+        //populate array for storing delay times
+        for(let i = 0; i < info.length; i += 1) {
+            elapsedTime[i] = endTime - startTime;
+        }
+        
+        // create new pokeman card objects for searched pokemon
+        for (let i = 0; i < newPokemonNames.length; i += 1) {
+            const newPokemonCard = {};
 
-        let timeArray;
-        if (cacheSelector === 'Bow') {
-            timeArray = [...this.state.bowFetchTime, ...elapsedTime]
-            this.setState({ pokeInfo: pokeArray, bowFetchTime: timeArray })
-        } else {
-            timeArray = [...this.state.sternFetchTime, ...elapsedTime]
-            this.setState({ pokeInfo: pokeArray, sternFetchTime: timeArray })
+            newPokemonCard.name = newPokemonNames[i];
+            newPokemonCard.picture = info[i].data.pokemon.image;
+            newPokemonCard.delay = elapsedTime[i];
+            newPokemonCard.cacheType = cacheSelector
+
+            newCards.push(newPokemonCard);
         }
 
-        console.log('bowFetchTime: ', this.state.bowFetchTime);
-        console.log('sternFetchTime: ', this.state.sternFetchTime);
-        // let timeArray = [...this.state.fetchTime, ...elapsedTime];
+        //update state
+        let pokecardsArr = [...this.state.pokecards2, ...newCards];
+        this.setState({pokecards2: pokecardsArr});
+
     }
 
     handleNameChange(e) {
@@ -109,31 +125,18 @@ class PokeContainer extends Component {
         else {
             query += `}`
         }
-        console.log(query)
+
         return query
     }
 
 
-
-
-
     render() {
 
-        // let cacheDropDownSetting = document.getElementById('cacheType').value;
-
-        // let cardFetchTime;
-
-        // if (cacheDropDownSetting === 'bow') {
-        //     cardFetchTime = this.state.bowFetchTime;
-        // } else {
-        //     cardFetchTime = this.state.sternFetchTime;
-        // }
-
         const pokeCards = []
-        for (let i = 0; i < this.state.pokeInfo.length; i += 1) {
-            pokeCards.push(<PokeCard key={`pokeCard${i}`} pokeInfo={this.state.pokeInfo[i]} fetchTime={this.state.fetchTime[i]} />)
+        
+        for (let i = 0; i < this.state.pokecards2.length; i += 1) {
+            pokeCards.push(<PokeCard pokecards2Pokemon={this.state.pokecards2[i]}/>)
         }
-        console.log(this.fetchTime);
 
         return (
             <div className='pokeContainer' ref={this.pokeSection}>
@@ -143,7 +146,6 @@ class PokeContainer extends Component {
                     <input id="pokeName2" className="pokeInput" onChange={this.handleNameChange} type="text" />
                     <input id="pokeName3" className="pokeInput" onChange={this.handleNameChange} type="text" />
                     <button onClick={(event) => this.handleClick(event)}>QUERY POKEMON NAME</button>
-                    {/* render the drop down menu component from here */}
                     <BoatSelector />
                     <input type='checkbox' onChange={this.handleTruth}></input>
                 </form>
