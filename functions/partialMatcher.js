@@ -35,10 +35,9 @@
 * ***********************************
 */
 
-import keyedQueries from './keyedQueries'
-import parseVariables from './parser'
+import parseVariables from './parser.js'
 import layerQueryFields from './layerQueryFields.js'
-import queryObjectBuilder from './queryObjectBuilder'
+import queryObjectBuilder from './queryObjectBuilder.js'
 
 //this function only works with queries with limits that are smaller than what is in the cache - all primitives work
 let recursiveHelper = (skeleton, skeletonKeys, limits, uniques, futureQueries, cachedObj, size=0) => {
