@@ -48,17 +48,19 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
         //if the cachedResult does exist then that means we matched uniqueKeys and we want to run partial
         //query to scan over it
         if (cachedResult !== null) {
- 
-            const { partialQuery, filledSkeleton } = partialMatcher(query, JSON.parse(cachedResult), currentKey, uniques, limits)
-
-
+            
             //partial matcher here ----- it takes in the query, the cachedResult, currentKey, uniques, limits
+            const { partialQuery, filledSkeleton, futureQueries } = partialMatcher(query, JSON.parse(cachedResult), currentKey, uniques, limits)
+
+            // check partialQuery against stringified filledSkeleton. If every single one is truthy,
+            // we are refetching limits.
+            if (!futureQueries.every(query => cachedResult.includes(query))) {
+                trunQKey[currentKey] = partialQuery;
+            }
 
             //the cached results are current stringified data objects so we do need to parse them into real objects again
             // cachedResults.push(JSON.parse(cachedResult))
-            let dataObj = filledSkeleton
-            cachedResults.push(dataObj)
-            trunQKey[currentKey] = partialQuery;
+            cachedResults.push(filledSkeleton)
             console.log("trunqkey", trunQKey)
             console.log("cachedResults", cachedResults)
             
@@ -103,7 +105,7 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
     }
     //if all of the keys are found in the cache we can actually just return the cachedResults
     else {
-        return cachedResults;
+        return stitchResponses(cachedResults);
     }
 
     //this pushed into fetchedPromise all the cached items that we found earlier - the fetched are already in there

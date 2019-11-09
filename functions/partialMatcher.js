@@ -137,7 +137,8 @@ function partialMatcher (query, cachedResult, currentKey, uniques=[], limits=[])
     let queryToReturn = graphQLQueryMaker(futureQueries, skeleton, layers, uniques, limits)
     return {
       partialQuery: queryToReturn,
-      filledSkeleton: skeleton
+      filledSkeleton: skeleton,
+      futureQueries: futureQueries
     }
   
   }
@@ -223,6 +224,7 @@ function partialMatcher (query, cachedResult, currentKey, uniques=[], limits=[])
               graphQLString += ' } '
             }
           }
+          console.log(graphQLString, futureQueries);
       }
       // I am very proud of this.
       let openBrace = /\{/g, closeBrace = /\}/g

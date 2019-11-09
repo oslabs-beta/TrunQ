@@ -10,13 +10,10 @@ let stitcher = (obj1, obj2, uniqueKey) => {
         skeleton = obj2
         fetched = obj1.data
     }
-
-
     
     //Recursive search function that removes trunQVariables and fills empty objects
     let keySearcher = (skeleton, fetched) => {
-
-        
+   
         //get the keys off at the current level we are on
         let keys = Object.keys(skeleton)
         if (!keys.length) return
@@ -69,7 +66,8 @@ function stitchResponses (results, storageLocation) {
         let uniqueKey = Object.keys(currentQueryResponse)[0]
         //if uniqueKey is not in cache - cache it
         if (!sessionStorage.getItem(uniqueKey)) {
-            if (storageLocation.toLowerCase() === 'bow') sessionStorage.setItem(uniqueKey, JSON.stringify(currentQueryResponse[uniqueKey]));        
+            if (storageLocation.toLowerCase() === 'bow') sessionStorage.setItem(uniqueKey, JSON.stringify(currentQueryResponse[uniqueKey]));  
+            stitchedQueries.push(currentQueryResponse[uniqueKey])      
         }
         //else if it is in cache - but there is not a partial in results array
         //that means we found a full match - probably won't happen as written now 
