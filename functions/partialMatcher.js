@@ -146,7 +146,7 @@ function partialMatcher (query, cachedResult, currentKey, uniques=[], limits=[])
   // LAYERS WILL BE AN ARRAY CONTAINING OBJECTS OF EACH GRAPHQL QUERY
   // MAKE SURE THIS IS HANDLED
   
-  function graphQLQueryMaker (futureQueries, skeleton, layers, uniques, limits) {debugger;
+  function graphQLQueryMaker (futureQueries, skeleton, layers, uniques, limits) {
     //start out the query string using standardized graphQL opening
     let graphQLString = 'query {';
   
