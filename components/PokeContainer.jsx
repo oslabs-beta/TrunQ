@@ -49,7 +49,6 @@ class PokeContainer extends Component {
         let info;
         let cacheSelector = document.getElementById('cacheType').value;
 
-        console.log('cacheSelector before trunQify: ', cacheSelector);
         let translate = ''
         if (cacheSelector === 'Client-side') translate = 'Bow'
         else if (cacheSelector === 'Server-side') translate = 'Stern'
@@ -102,7 +101,7 @@ class PokeContainer extends Component {
                     pokemon(name: "${pokeName}") {
                       name
                       image
-
+                      types
                       attacks {
                         special {
                             name
@@ -143,7 +142,6 @@ class PokeContainer extends Component {
         for (let i = 0; i < this.state.pokeInfo.length; i += 1) {
             pokeCards.push(<PokeCard key={`pokeCard${i}`} pokeInfo={this.state.pokeInfo[i]} cacheType={this.state.fetchTime[i][0]} fetchTime={this.state.fetchTime[i][1]} />)
         }
-        console.log(this.fetchTime);
 
         return (
             <div className='pokeContainer' ref={this.pokeSection}>
