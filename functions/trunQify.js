@@ -45,7 +45,8 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
         //we search into the frontEnd cache to see if it already exists - it might now
         let cachedResult = sessionStorage.getItem(currentKey)
 
-        //if the cachedResult does exist then that means we matched uniqueKeys and we can push it to the cache
+        //if the cachedResult does exist then that means we matched uniqueKeys and we want to run partial
+        //query to scan over it
         if (cachedResult !== null) {
  
             const { partialQuery, filledSkeleton } = partialMatcher(query, JSON.parse(cachedResult), currentKey, uniques, limits)
@@ -55,7 +56,7 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
 
             //the cached results are current stringified data objects so we do need to parse them into real objects again
             // cachedResults.push(JSON.parse(cachedResult))
-            let dataObj = { data: filledSkeleton[currentKey] }
+            let dataObj = filledSkeleton
             cachedResults.push(dataObj)
             trunQKey[currentKey] = partialQuery;
             console.log("trunqkey", trunQKey)
@@ -88,13 +89,7 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
                 .then(res => {
                     let returnDataObj = [];
                     for (let i = 0; i < Object.keys(res.trunQKey).length; i += 1) {
-                        let outputObj = { data: {} }
-                        let currentUniqueKey = Object.keys(res.trunQKey)[i];
-                        console.log("whats being stored", JSON.stringify(res.trunQKey[currentUniqueKey]));
-                        if (storageLocation.toLowerCase() === 'bow') sessionStorage.setItem(currentUniqueKey, JSON.stringify(res.trunQKey[currentUniqueKey]));
-
-                        outputObj.data = res.trunQKey[currentUniqueKey].data;
-                        returnDataObj.push(outputObj);
+                        returnDataObj.push(res);
                     }
                     return resolve(returnDataObj);
                 })
@@ -129,7 +124,7 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
                     arr.push(val);
                 }
                 return arr;
-            }, []));
+            }, []), storageLocation);
         })
         .catch(err => {
             console.log("ERROR IN RESOLVING PROMISE.ALL", err);
@@ -137,3 +132,6 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
 }
 
 export default trunQify;
+
+//1. successfully stitch the response back togeth
+//2. correctly cache that stiched response at hte right time

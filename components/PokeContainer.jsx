@@ -55,7 +55,9 @@ class PokeContainer extends Component {
         else translate = 'Ship'
         info = await trunQify(query, ["name"], [], '/graphql', translate);
         let elapsedTime = []
+
         console.log("RETURNED OUT OF TRUNQ", info)
+        
         info = info.reduce((pokeResArray, pokeResInfo) => {
             if (pokeResInfo.data.pokemon !== null) pokeResArray.push(pokeResInfo)
             return pokeResArray
