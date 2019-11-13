@@ -22,9 +22,7 @@ app.use(express.static(path.resolve(__dirname, '../dist')));
 // TRUNQ BACKEND EXAMPLE ROUTE *******************
 
 app.use('/graphql', trunQBack.getAllData, (req, res, next) => {
-    console.log('5 **** that.data before response to client: ', trunQBack.data);
     res.status(200).json(trunQBack.data);
-    // res.send(res.locals.message);
 })
 
 // app.use('/artGraphQL', trunQBack2.getAllData, (req, res, next) => {
