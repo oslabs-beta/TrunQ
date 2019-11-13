@@ -10,11 +10,6 @@ class PokeContainer extends Component {
         this.state = {
             pokeInfo: [],
             fetchTime: [],
-            //fetchTime: {
-            //    Bow: [],
-            //    Stern: [],
-            //    Ship: []
-            //}
             bowFetchTime: [],
             sternFetchTime: [],
             evolutionBool: false
@@ -54,7 +49,7 @@ class PokeContainer extends Component {
         if (cacheSelector === 'Client-side') translate = 'Bow'
         else if (cacheSelector === 'Server-side') translate = 'Stern'
         else translate = 'Ship'
-        info = await trunQify(query, ["name"], [], '/graphql', translate);
+        info = await trunQify(query, ["name"], '/graphql', translate);
         let elapsedTime = []
 
         console.log("RETURNED OUT OF TRUNQ", info)

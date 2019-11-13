@@ -22,7 +22,7 @@ import keyedQueries from './keyedQueries'
 import stitchResponses from './stitchResponses.js'
 import partialMatcher from './partialMatcher.js'
 
-const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
+const trunQify = (query, uniques, endpointName, storageLocation, limits = ['first', 'last', 'after', 'size']) => {
 
     //array that will hold cached results to combine later
     let cachedResults = []
@@ -40,17 +40,17 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
     for (let i = 0; i < keyedQueriesArray.length; i += 1) {
 
         //the current key
-        let currentKey = Object.keys(keyedQueriesArray[i])
+        let currentKey = Object.keys(keyedQueriesArray[i]);
 
         //we search into the frontEnd cache to see if it already exists - it might now
-        let cachedResult = sessionStorage.getItem(currentKey)
+        let cachedResult = sessionStorage.getItem(currentKey);
 
         //if the cachedResult does exist then that means we matched uniqueKeys and we want to run partial
         //query to scan over it
         if (cachedResult !== null) {
             
             //partial matcher here ----- it takes in the query, the cachedResult, currentKey, uniques, limits
-            const { partialQuery, filledSkeleton, futureQueries } = partialMatcher(query, JSON.parse(cachedResult), currentKey, uniques, limits)
+            const { partialQuery, filledSkeleton, futureQueries } = partialMatcher(query, JSON.parse(cachedResult), currentKey, uniques, limits);
 
             // check partialQuery against stringified filledSkeleton. If every single one is truthy,
             // we are refetching limits.
@@ -60,10 +60,7 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
 
             //the cached results are current stringified data objects so we do need to parse them into real objects again
             // cachedResults.push(JSON.parse(cachedResult))
-            cachedResults.push(filledSkeleton)
-            console.log("trunqkey", trunQKey)
-            console.log("cachedResults", cachedResults)
-            
+            cachedResults.push(filledSkeleton);
         }
         //if it doesn't exist in the cache we just add it trunQKey so that we know we need to look fetch it later
         else {

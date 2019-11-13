@@ -6,11 +6,11 @@ const bodyParser = require('body-parser')
 
 // EXAMPLE TRUNQ BACKEND SETUP *******************
 
-const TrunQStern = require('./TrunQStern');
+const TrunQServer = require('./TrunQServer');
 
 // create instance of TrunQStern
 // args: graphQl endpoint, redis client
-const trunQBack = new TrunQStern('https://graphql-pokemon.now.sh/')
+const trunQBack = new TrunQServer('https://graphql-pokemon.now.sh/')
 // const trunQBack2 = new TrunQStern('https://metaphysics-production.artsy.net')
 
 // ***********************************************

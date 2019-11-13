@@ -113,10 +113,9 @@ let recursiveHelper = (skeleton, skeletonKeys, limits, uniques, futureQueries, c
       }
     } 
     return futureQueries
-  }
+}
   
-  
-  
+// main function
 function partialMatcher (query, cachedResult, currentKey, uniques=[], limits=[]) {
     let layers = layerQueryFields(query, uniques, limits)
     let skeleton = queryObjectBuilder(layers, uniques, limits);
@@ -140,13 +139,11 @@ function partialMatcher (query, cachedResult, currentKey, uniques=[], limits=[])
       filledSkeleton: skeleton,
       futureQueries: futureQueries
     }
-  
-  }
-  
-  // LAYERS WILL BE AN ARRAY CONTAINING OBJECTS OF EACH GRAPHQL QUERY
-  // MAKE SURE THIS IS HANDLED
-  
-  function graphQLQueryMaker (futureQueries, skeleton, layers, uniques, limits) {
+}
+
+// this function generates a valid graphQL query from the futureQueries
+// i.e. the queries that did not have a data match in cache
+function graphQLQueryMaker (futureQueries, skeleton, layers, uniques, limits) {
     //start out the query string using standardized graphQL opening
     let graphQLString = 'query {';
   
@@ -169,26 +166,25 @@ function partialMatcher (query, cachedResult, currentKey, uniques=[], limits=[])
           if (currentLevels[i].includes(currentQuery)) {  
               // if the currentQuery exists inside the current level
               // format the current level to be part of graphQLString
-  
+
+              // this is a reading loop that reads through the graphQL string
+              // and find matches with the futureQueries array.
+              // when matches occur, the reader adds the match and the nested
+              // level to the graphQL string that will be returned
               let temp = ''
               for (let j = 0; j < currentLevels[i].length; j += 1) {
                   let currentLetter = currentLevels[i][j];
                   if (currentLetter === '(' && temp === currentQuery) {
-                      temp += currentLevels[i].slice(j)
-                      
-                      let layerLimits = Object.values(parseVariables(temp, uniques, limits)[1].limits)[0]
-  
-                      graphQLString += " " + temp + " {"
-                      
+                      temp += currentLevels[i].slice(j);
+                      let layerLimits = Object.values(parseVariables(temp, uniques, limits)[1].limits)[0];
+                      graphQLString += " " + temp + " {";
                       
                       while (layerLimits > 1) {
                           currentQuery = futureQueries[++q];
                           layerLimits -= 1;
                       }
                       currentQuery = futureQueries[++q];
-  
-                      // console.log("query in (", currentQuery)
-                      j = currentLevels[i].length
+                      j = currentLevels[i].length;
                       temp = '';
                   }
                   else if (currentLetter === ' ' && temp === currentQuery) {
@@ -209,31 +205,34 @@ function partialMatcher (query, cachedResult, currentKey, uniques=[], limits=[])
   
                       //if the next layer is higher than this one we need to push a ' { '
                       if (layers[z][currentLevels[i+1]]) {
-                        graphQLString += ' { '
+                        graphQLString += ' { ';
                       }
                       temp = '';
                   }
               }
           }
           else {
+            // if there is no match in the current level with our currentQuery
+            // add the string if the levels are increasing or close off our 
+            // level if the level is decreasing
             graphQLString += currentLevels[i]
             if (layers[z][currentLevels[i+1]]) {
-              graphQLString += ' { '
+              graphQLString += ' { ';
             }
             else {
-              graphQLString += ' } '
+              graphQLString += ' } ';
             }
           }
           console.log(graphQLString, futureQueries);
       }
-      // I am very proud of this.
-      let openBrace = /\{/g, closeBrace = /\}/g
-      let closed = 0
+      // adding closing braces to finish the graphQL query
+      let openBrace = /\{/g, closeBrace = /\}/g;
+      let closed = 0;
       if (graphQLString.match(closeBrace)) closed = graphQLString.match(closeBrace).length;
       let braceGen = graphQLString.match(openBrace).length - closed;
       graphQLString += "}".repeat(braceGen);
     }
-    return graphQLString
+    return graphQLString;
   }
 
 export default partialMatcher  
