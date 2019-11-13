@@ -8,7 +8,7 @@
 * 
 * @description takes a graphQL query from a client and deconstructs it into multiple queries within an array. It will take a shape like:
 *              
-*               [ { 'artist-mark-rothko': 'query{  artist(id: "mark-rothko") { name shows { id } artworks (size: 2) { id imageUrl } } }' } ]
+*               [ { 'artist-mark-rothko': 'query{  artist(id: "mark-rothko") { name shows { id } artworks(size: 2) { id imageUrl } } }' } ]
 *               
 *               With this array you will now have the graphQL query as a stringified object as a value in an object and most importantly, it
 *               now has a unique key attached to it as the object key. This unique key is made by reading the specific parameters on 

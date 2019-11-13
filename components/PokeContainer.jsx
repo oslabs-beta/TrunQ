@@ -67,7 +67,7 @@ class PokeContainer extends Component {
                 elapsedTime.push(['No cache', Date.now() - startTime]);
             } else {
                 elapsedTime.push([cacheSelector, Date.now() - startTime]);
-            }
+            }``
         });
         let pokeArray = [...this.state.pokeInfo, ...info]
         let timeArray = [...this.state.fetchTime, ...elapsedTime]
