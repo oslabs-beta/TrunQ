@@ -22,7 +22,7 @@ import keyedQueries from './keyedQueries'
 import stitchResponses from './stitchResponses.js'
 import partialMatcher from './partialMatcher.js'
 
-const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
+const trunQify = (query, uniques, endpointName, storageLocation, limits = ['first', 'last', 'after', 'size']) => {
 
     //array that will hold cached results to combine later
     let cachedResults = []
