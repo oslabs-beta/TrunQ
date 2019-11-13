@@ -122,7 +122,7 @@ class TrunQServer {
         })
       }
       else {
-        resolve(apiURL)
+        resolve(apiURL);
       }
     })
   }

@@ -94,7 +94,7 @@ function stitchResponses (results, storageLocation) {
             
             if (obj[uniqueKey]) {
                 obj[uniqueKey] = stitcher(obj[uniqueKey], currentQueryResponse, uniqueKey);
-                if (storageLocation.toLowerCase() === 'bow') sessionStorage.setItem(uniqueKey, JSON.stringify({data: obj[uniqueKey]}));
+                if (storageLocation.toLowerCase() === 'client' || storageLocation.toLowerCase() === 'both') sessionStorage.setItem(uniqueKey, JSON.stringify({data: obj[uniqueKey]}));
             }
             else {
                 obj[uniqueKey] = currentQueryResponse[uniqueKey];
