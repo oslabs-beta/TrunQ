@@ -98,6 +98,12 @@ fetchThis(myGraphQLQuery)
 Now our results will be cached in sessionStorage!
 N.B. - if developer is querying a 3rd party API and caching only client-side, s/he does not need to configure the server side. Instead, supply the full URI of the API at the appropriate argument.
 
+### Server-side Implementation
+
+We're going to show how to implement trunQ for server side caching. 
+
+Again, make sure you require in trunQ to your application with `import trunq from 'trunq'`
+
 REDIS NOTES (to clean up later) 
 link i found that helped me with wget issue 
 https://github.com/robbyrussell/oh-my-zsh/issues/7085 
