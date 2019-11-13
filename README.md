@@ -20,8 +20,82 @@ As of now, trunQ offers:
 
 ## Basic Implementation
 
+### Setup
+
 Download trunQ from npm in your terminal with `npm i trunq`.
 
+If not on your server, install Redis
+- Mac-Homebrew: 
+  - in terminal, type `brew install redis`.
+  - after installation completes, type `redis-server`. 
+  - your server should now have a Redis database connection open.
+- Linux/Non-Homebrew - 
+  - Gordon plz help
+
+### Client-side Implementation
+
+We're going to show how to implement trunQ by rewriting an existing graphQL fetch.
+
+Sample Code: 
+
+``` 
+const myGraphQLQuery = query { 
+  artist (id: 'mark-rothko') { 
+    name artworks (id: 'chapel' size: 1) {    
+      name imgUrl  
+    } 
+  }
+} 
+
+function fetchThis (myGraphQLQuery) {
+  let results
+  fetch('/graphQL', {
+    method: "POST"
+    body: JSON.stringify(myGraphQLQuery)
+  })
+  .then(res => res.json)
+  .then(parsedRes => results = parsedRes)
+  ...(rest of code)
+}
+
+fetchThis(myGraphQLQuery)
+```
+
+Require in trunQ to your application with `import trunq from 'trunq'`
+
+On the line you are sending your request, replace the entire fetch with:
+
+`const results = await trunq.trunQify(graphQLQuery, ['allIDs'], '/graphQL', 'client')`
+
+Breakdown of the parameters developers have to supply:
+- argument[0] (string) is your graphQL query, completely unchanged from before.
+- argument[1] (array) is all your unique variable keys (eg in `artist (id: 'van-gogh')` the array would be `['id']`.
+- argument[2] (string) your graphQL server endpoint or 3rd party API URI, exactly as it would be in your fetch.
+- argument[3] (string) caching location. Valid options are: 'client', 'server', or 'both'.
+
+The function calling trunQify must be converted to an async function that awaits the resolution of promises between the cache and the fetch.
+
+That's it for the client side! 
+
+Our sample code will be rewritten as:
+
+``` 
+const myGraphQLQuery = query { 
+  artist (id: 'mark-rothko') { 
+    name artworks (id: 'chapel' size: 1) {    
+      name imgUrl  
+    } 
+  }
+} 
+
+async function fetchThis (myGraphQLQuery) {
+  let results = await trunq.trunQify(myGraphQLQUery, ['id'], '/graphQL', 'client')
+}
+
+fetchThis(myGraphQLQuery)
+```
+Now our results will be cached in sessionStorage!
+N.B. - if developer is querying a 3rd party API and caching only client-side, s/he does not need to configure the server side. Instead, supply the full URI of the API at the appropriate argument.
 
 REDIS NOTES (to clean up later) 
 link i found that helped me with wget issue 
