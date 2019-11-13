@@ -7,7 +7,7 @@
 * @params apiURL (string), port (integer), timer (integer)
 *
 * @description Middleware functions implemented through a class to allow for easy import 
-*              functionality. Developers create an instance of TrunQStern in their project 
+*              functionality. Developers create an instance of TrunQServer in their project 
 *              then invoke getAllData to (1) check if query results can be found in local 
 *              in memory Redis database running on the server (2) send fetch request to external 
 *              GraphQL API if no cached data found. Data returned from external API requests can 
@@ -19,7 +19,7 @@
 const fetch = require('node-fetch');
 const redis = require('redis'); // will the npm package grab this?
 
-class TrunQStern {
+class TrunQServer {
   constructor(apiURL, port, timer = 20) {
     this.apiURL = apiURL;
     this.port = port === null ? 6379 : port;
@@ -106,21 +106,24 @@ class TrunQStern {
   // query external GraphQL API and save results in Redis
   checkApi(uniqueKey, graphQLQuery, apiURL, flag) {
     return new Promise(resolve => {
-      fetch(apiURL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: graphQLQuery }) // incoming query is already in string form
-      })
+      if (typeof apiURL === 'string') {
+        fetch(apiURL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: graphQLQuery }) // incoming query is already in string form
+        })
         .then(res => res.json())
         .then(data => {
-          
           // if flag arguement is set to 'server' or 'both' by developer on trunQify invocation 
           // save API data to Redis as key value pair 
           // hard coded time to seconds ('EX')
           if (flag.toLowerCase() === 'server' || flag.toLowerCase() === 'both') this.redisClient.set(uniqueKey, JSON.stringify(data), 'EX', this.timer);
-          
           resolve(data);
         })
+      }
+      else {
+        resolve(apiURL)
+      }
     })
   }
 
@@ -144,4 +147,4 @@ class TrunQStern {
 };
 
 
-module.exports = TrunQStern;
+module.exports = TrunQServer;
