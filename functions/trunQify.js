@@ -19,9 +19,7 @@
 
 // Import parser functionalities.
 import keyedQueries from './keyedQueries'
-import parser from './parser'
-import layerQueryFields from './layerQueryFields'
-import queryObjectBuilder from './queryObjectBuilder'
+import stitchResponses from './stitchResponses.js'
 import partialMatcher from './partialMatcher.js'
 
 const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
@@ -47,15 +45,25 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
         //we search into the frontEnd cache to see if it already exists - it might now
         let cachedResult = sessionStorage.getItem(currentKey)
 
-        //if the cachedResult does exist then that means we matched uniqueKeys and we can push it to the cache
+        //if the cachedResult does exist then that means we matched uniqueKeys and we want to run partial
+        //query to scan over it
         if (cachedResult !== null) {
-            // console.log("PARTIAL MATCHER", partialMatcher(query, cachedResult, currentKey, uniques, limits))
-
-
+            
             //partial matcher here ----- it takes in the query, the cachedResult, currentKey, uniques, limits
+            const { partialQuery, filledSkeleton, futureQueries } = partialMatcher(query, JSON.parse(cachedResult), currentKey, uniques, limits)
+
+            // check partialQuery against stringified filledSkeleton. If every single one is truthy,
+            // we are refetching limits.
+            if (!futureQueries.every(query => cachedResult.includes(query))) {
+                trunQKey[currentKey] = partialQuery;
+            }
 
             //the cached results are current stringified data objects so we do need to parse them into real objects again
-            cachedResults.push(JSON.parse(cachedResult))
+            // cachedResults.push(JSON.parse(cachedResult))
+            cachedResults.push(filledSkeleton)
+            console.log("trunqkey", trunQKey)
+            console.log("cachedResults", cachedResults)
+            
         }
         //if it doesn't exist in the cache we just add it trunQKey so that we know we need to look fetch it later
         else {
@@ -83,12 +91,7 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
                 .then(res => {
                     let returnDataObj = [];
                     for (let i = 0; i < Object.keys(res.trunQKey).length; i += 1) {
-                        let outputObj = { data: {} }
-                        let currentUniqueKey = Object.keys(res.trunQKey)[i];
-                        if (storageLocation.toLowerCase() === 'bow') sessionStorage.setItem(currentUniqueKey, JSON.stringify(res.trunQKey[currentUniqueKey]));
-
-                        outputObj.data = res.trunQKey[currentUniqueKey].data;
-                        returnDataObj.push(outputObj);
+                        returnDataObj.push(res);
                     }
                     return resolve(returnDataObj);
                 })
@@ -102,27 +105,28 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
     }
     //if all of the keys are found in the cache we can actually just return the cachedResults
     else {
-        return cachedResults;
+        return stitchResponses(cachedResults);
     }
-
-    // console.log("CACHED RESULTS", cachedResults, "\n\nTRUNQKEY", trunQKey)
 
     //this pushed into fetchedPromise all the cached items that we found earlier - the fetched are already in there
-    for (let j = 0; j < Object.keys(cachedResults).length; j += 1) {
-        fetchedPromises.push(cachedResults[Object.keys(cachedResults)[j]])
-    }
+    // for (let j = 0; j < Object.keys(cachedResults).length; j += 1) {
+        // fetchedPromises.push(cachedResults[Object.keys(cachedResults)[j]])
+    // }
+    fetchedPromises.push(cachedResults)
+
 
     //return a Promise.all array of all the resolved fetched and cached results
     return Promise.all([...fetchedPromises])
         .then(function (values) {
-            return values.reduce((arr, val) => {
+            
+            return stitchResponses(values.reduce((arr, val) => {
                 if (Array.isArray(val)) {
                     arr.push(...val);
                 } else {
                     arr.push(val);
                 }
                 return arr;
-            }, [])
+            }, []), storageLocation);
         })
         .catch(err => {
             console.log("ERROR IN RESOLVING PROMISE.ALL", err);
@@ -130,3 +134,6 @@ const trunQify = (query, uniques, limits, endpointName, storageLocation) => {
 }
 
 export default trunQify;
+
+//1. successfully stitch the response back togeth
+//2. correctly cache that stiched response at hte right time

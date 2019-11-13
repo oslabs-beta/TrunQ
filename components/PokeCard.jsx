@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 
 const PokeCard = props => {
-    // console.log(props.pokeInfo.data.pokemon)
     let evolutions = ''
     if (props.pokeInfo.data.pokemon.evolutions) {
         evolutions = props.pokeInfo.data.pokemon.evolutions[0].name

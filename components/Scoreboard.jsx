@@ -1,7 +1,6 @@
 import React from 'react'
 
 const Scoreboard = props => {
-  console.log('props in Scoreboard: ', props.fetchTime)
   // store the cache times for each method
   const cacheTimes = {
     'No cache': 0,
@@ -14,13 +13,9 @@ const Scoreboard = props => {
     'Client-side': 0
   }
   props.fetchTime.forEach(el => {
-    console.log('tuple pos 0: ', el[0]);
-    console.log('tuple pos 1: ', typeof el[1]);
     cacheTimes[el[0]] += el[1];
     cacheCount[el[0]] += 1;
   })
-  console.log('cacheTime obj: ', cacheTimes);
-
   return (
     <div className='scoreboard'>
       <table>
