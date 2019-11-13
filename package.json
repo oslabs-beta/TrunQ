@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "NODE_ENV=production nodemon server/startServer.js",
-    "redis-start": "../redis-5.0.5/src/redis-server & npm start",
-    "redis-dev": "../redis-5.0.5/src/redis-server & npm run dev",
+    "redis-start": "TRUNQ_REDIS=process.env.TRUNQ_REDIS & npm start",
     "build": "webpack",
     "dev": "NODE_ENV=development nodemon server/startServer.js & webpack-dev-server --open",
     "test": "jest --verbose"
@@ -32,6 +31,7 @@
     "babel-runtime": "^6.26.0",
     "body-parser": "^1.19.0",
     "css-loader": "^3.2.0",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "graphql": "^14.5.8",
     "node-fetch": "^2.6.0",
