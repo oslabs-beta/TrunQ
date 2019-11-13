@@ -90,6 +90,7 @@ const myGraphQLQuery = query {
 
 async function fetchThis (myGraphQLQuery) {
   let results = await trunq.trunQify(myGraphQLQUery, ['id'], '/graphQL', 'client')
+  ...(rest of code)
 }
 
 fetchThis(myGraphQLQuery)
