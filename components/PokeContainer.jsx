@@ -46,9 +46,10 @@ class PokeContainer extends Component {
 
         console.log('cacheSelector before trunQify: ', cacheSelector);
         let translate = '';
-        if (cacheSelector === 'Client-side') translate = 'Bow'
-        else if (cacheSelector === 'Server-side') translate = 'Stern'
-        else translate = 'Ship'
+        if (cacheSelector === 'Client-side') translate = 'client'
+        else if (cacheSelector === 'Server-side') translate = 'server'
+        else translate = 'both'
+        
         info = await trunQify(query, ["name"], '/graphql', translate);
         let elapsedTime = []
 

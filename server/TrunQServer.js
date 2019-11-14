@@ -117,6 +117,7 @@ class TrunQServer {
           // if flag arguement is set to 'server' or 'both' by developer on trunQify invocation 
           // save API data to Redis as key value pair 
           // hard coded time to seconds ('EX')
+          console.log(flag);
           if (flag.toLowerCase() === 'server' || flag.toLowerCase() === 'both') this.redisClient.set(uniqueKey, JSON.stringify(data), 'EX', this.timer);
           resolve(data);
         })

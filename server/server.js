@@ -4,6 +4,7 @@ const app = express();
 exports.port = 3000;
 const bodyParser = require('body-parser')
 const TrunQServer = require('./TrunQServer');
+
 const trunQBack = new TrunQServer('https://graphql-pokemon.now.sh/')
 
 app.use(bodyParser.json());

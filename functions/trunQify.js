@@ -25,10 +25,10 @@ import partialMatcher from './partialMatcher.js'
 const trunQify = (query, uniques, endpointName, storageLocation, limits = ['first', 'last', 'after', 'size']) => {
 
     //array that will hold cached results to combine later
-    let cachedResults = []
+    let cachedResults = [];
 
     //trunQKey holds everything that needs to be fetched
-    let trunQKey = {}
+    let trunQKey = {};
 
     //at the end this will be the objet that we are returning, the combination of cached responses and fetches
     let fetchedPromises = [];
