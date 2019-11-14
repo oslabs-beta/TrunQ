@@ -5,7 +5,7 @@ Developed by Ben Ray, Brian Haller, Gordon Campbell, and Michael Evans.
 
 ## Features
 
-trunQ has been developed to give the developer the most flexible out-of-the-box caching solution.
+trunQ has been developed to give the developer the most flexible out-of-the-box caching solution for 3rd party APIs or remote servers.
 
 As of now, trunQ offers:
 - storage inside sessionStorage for easy client-side caching
@@ -17,6 +17,8 @@ As of now, trunQ offers:
 - an easy toggle to specify caching in Redis, sessionStorage, or both 
 - handling all fetching and subsequent response from graphQL endpoint with only one line of code in client
   and four lines in server
+
+N.B. trunQ will not work when implemeneted directly on a graphQL server, and only works when querying an external graphQL endpoint.
 
 ## Basic Implementation
 
@@ -96,6 +98,7 @@ async function fetchThis (myGraphQLQuery) {
 fetchThis(myGraphQLQuery)
 ```
 Now our results will be cached in sessionStorage!
+
 N.B. - if developer is querying a 3rd party API and caching only client-side, s/he does not need to configure the server side. Instead, supply the full URI of the API at the appropriate argument.
 
 ### Server-side Implementation
@@ -104,8 +107,19 @@ We're going to show how to implement trunQ for server side caching.
 
 Require in trunQ to your server file with `import trunq from 'trunq'`.
 
+Create an instance of trunQ and pass in the URI for your graphQL endpoint.
 
+`const trunQServer = new trunQ('https://graphql-pokemon.now.sh/');`
 
+Then place the trunQ middleware in your Express chain.
+
+```
+app.use('/graphql', trunQServer.getAllData, (req, res, next) => {
+    res.status(200).json(trunQServer.data);
+})
+```
+
+And that's it for server side implementation as long as your Redis database is up and running!
 
 REDIS NOTES (to clean up later) 
 link i found that helped me with wget issue 
