@@ -48,9 +48,8 @@ const trunQify = (query, uniques, endpointName, storageLocation, limits = ['firs
         //if the cachedResult does exist then that means we matched uniqueKeys and we want to run partial
         //query to scan over it
         if (cachedResult !== null) {
-            
             //partial matcher here ----- it takes in the query, the cachedResult, currentKey, uniques, limits
-            const { partialQuery, filledSkeleton, futureQueries } = partialMatcher(query, JSON.parse(cachedResult), currentKey, uniques, limits);
+            const { partialQuery, filledSkeleton, futureQueries } = partialMatcher(keyedQueriesArray[i][currentKey], JSON.parse(cachedResult), currentKey, uniques, limits);
 
             // check partialQuery against stringified filledSkeleton. If every single one is truthy,
             // we are refetching limits.
@@ -88,7 +87,9 @@ const trunQify = (query, uniques, endpointName, storageLocation, limits = ['firs
             .then(res => {
                 let returnDataObj = [];
                 Object.keys(res.trunQKey).forEach(key => { 
-                    returnDataObj.push({ key : res.trunQKey[key]});
+                    let tempObj = {};
+                    tempObj[key] = res.trunQKey[key]
+                    returnDataObj.push(tempObj);
                 })
                 return resolve(returnDataObj);
             })
@@ -107,10 +108,13 @@ const trunQify = (query, uniques, endpointName, storageLocation, limits = ['firs
 
     fetchedPromises.push(cachedResults)
 
+    
+
     //return a Promise.all array of all the resolved fetched and cached results
     return Promise.all([...fetchedPromises])
         .then(function (values) {
-            
+            let cache = {}
+            fetchedPromises = Object.keys(cache);
             return stitchResponses(values.reduce((arr, val) => {
                 if (Array.isArray(val)) {
                     arr.push(...val);
@@ -126,6 +130,3 @@ const trunQify = (query, uniques, endpointName, storageLocation, limits = ['firs
 }
 
 export default trunQify;
-
-//1. successfully stitch the response back togeth
-//2. correctly cache that stiched response at hte right time

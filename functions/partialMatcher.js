@@ -132,7 +132,6 @@ function partialMatcher (query, cachedResult, currentKey, uniques=[], limits=[])
   
     //loops over all of the skeleton keys to see what we can match up
     recursiveHelper(skeleton[currentKey], skeletonKeys, limits, uniques, futureQueries, cachedObj)
-    console.log(futureQueries);
     let queryToReturn = graphQLQueryMaker(futureQueries, skeleton, layers, uniques, limits)
     return {
       partialQuery: queryToReturn,
@@ -223,7 +222,6 @@ function graphQLQueryMaker (futureQueries, skeleton, layers, uniques, limits) {
               graphQLString += ' } ';
             }
           }
-          console.log(graphQLString, futureQueries);
       }
       // adding closing braces to finish the graphQL query
       let openBrace = /\{/g, closeBrace = /\}/g;
