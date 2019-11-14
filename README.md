@@ -41,7 +41,7 @@ Sample Code:
 ``` 
 const myGraphQLQuery = query { 
   artist (id: 'mark-rothko') { 
-    name artworks (id: 'chapel' size: 1) {    
+    name artworks (paintingId: 'chapel' size: 1) {    
       name imgUrl  
     } 
   }
@@ -82,14 +82,14 @@ Our sample code will be rewritten as:
 ``` 
 const myGraphQLQuery = query { 
   artist (id: 'mark-rothko') { 
-    name artworks (id: 'chapel' size: 1) {    
+    name artworks (paintingId: 'chapel' size: 1) {    
       name imgUrl  
     } 
   }
 } 
 
 async function fetchThis (myGraphQLQuery) {
-  let results = await trunq.trunQify(myGraphQLQUery, ['id'], '/graphQL', 'client')
+  let results = await trunq.trunQify(myGraphQLQUery, ['id', 'paintingId'], '/graphQL', 'client')
   ...(rest of code)
 }
 
@@ -102,7 +102,10 @@ N.B. - if developer is querying a 3rd party API and caching only client-side, s/
 
 We're going to show how to implement trunQ for server side caching. 
 
-Again, make sure you require in trunQ to your application with `import trunq from 'trunq'`
+Require in trunQ to your server file with `import trunq from 'trunq'`.
+
+
+
 
 REDIS NOTES (to clean up later) 
 link i found that helped me with wget issue 
