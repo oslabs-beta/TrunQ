@@ -84,17 +84,17 @@ const trunQify = (query, uniques, endpointName, storageLocation, limits = ['firs
                     flag: storageLocation
                 })
             })
-                .then(res => res.json())
-                .then(res => {
-                    let returnDataObj = [];
-                    for (let i = 0; i < Object.keys(res.trunQKey).length; i += 1) {
-                        returnDataObj.push(res);
-                    }
-                    return resolve(returnDataObj);
+            .then(res => res.json())
+            .then(res => {
+                let returnDataObj = [];
+                Object.keys(res.trunQKey).forEach(key => { 
+                    returnDataObj.push({ key : res.trunQKey[key]});
                 })
-                .catch(error => {
-                    console.log('ERROR FETCHING IN TRUNQIFY', error)
-                })
+                return resolve(returnDataObj);
+            })
+            .catch(error => {
+                console.log('ERROR FETCHING IN TRUNQIFY', error)
+            })
         })
 
         //push the promise into the fetchedPromises array
@@ -105,12 +105,7 @@ const trunQify = (query, uniques, endpointName, storageLocation, limits = ['firs
         return stitchResponses(cachedResults);
     }
 
-    //this pushed into fetchedPromise all the cached items that we found earlier - the fetched are already in there
-    // for (let j = 0; j < Object.keys(cachedResults).length; j += 1) {
-        // fetchedPromises.push(cachedResults[Object.keys(cachedResults)[j]])
-    // }
     fetchedPromises.push(cachedResults)
-
 
     //return a Promise.all array of all the resolved fetched and cached results
     return Promise.all([...fetchedPromises])
