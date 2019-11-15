@@ -35,7 +35,7 @@ const trunQify = (query, uniques, endpointName, storageLocation, limits = ['firs
 
     // get unique keys based on query, use these keys to check against local cache
     const keyedQueriesArray = keyedQueries(query, uniques, limits);
-
+    console.log(keyedQueriesArray);
     //loop over the unique keys
     for (let i = 0; i < keyedQueriesArray.length; i += 1) {
 
