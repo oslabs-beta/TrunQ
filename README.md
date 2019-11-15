@@ -31,8 +31,8 @@ If not on your server, install Redis
   - in terminal, type `brew install redis`.
   - after installation completes, type `redis-server`. 
   - your server should now have a Redis database connection open.
-- Linux/Non-Homebrew - 
-  - head-over to redis.io/download
+- Linux/Non-Homebrew:
+  - head-over to [redis.io/download] https://redis.io/download
   - follow cli installation instructions
   - be sure to locate the file path from your project directory to your redis server
 
@@ -134,7 +134,7 @@ And that's it for server side implementation as long as your Redis database is u
 N.B. - we are currently not configured to hash any data within the Redis server.
 
 #### Redis Installation Notes
-- zsh/wget command
+- [zsh/wget command issues]
 https://github.com/robbyrussell/oh-my-zsh/issues/7085 
-- invalid active developer path issue 
+- [invalid active developer path issue]
 https://apple.stackexchange.com/questions/254380/why-am-i-getting-an-invalid-active-developer-path-when-attempting-to-use-git-a
