@@ -15,7 +15,25 @@
     "url": "git+https://github.com/oslabs-beta/trunQ.git"
   },
   "author": "",
-  "license": "ISC",
+  "contributors": [
+    {
+      "name": "Ben Ray",
+      "url": "http://www.github.com/bmr5"
+    },
+    {
+      "name": "Brian Haller",
+      "url": "http://www.github.com/brianjhaller"
+    },
+    {
+      "name": "Gordon Campbell",
+      "url": "http://www.github.com/gordon-campbell13"
+    },
+    {
+      "name": "Michael Evans",
+      "url": "http://www.github.com/mchlevans"
+    }
+  ],
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/oslabs-beta/trunQ/issues"
   },
