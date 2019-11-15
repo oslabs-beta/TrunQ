@@ -48,9 +48,8 @@ const trunQify = (query, uniques, endpointName, storageLocation, limits = ['firs
         //if the cachedResult does exist then that means we matched uniqueKeys and we want to run partial
         //query to scan over it
         if (cachedResult !== null) {
-            
             //partial matcher here ----- it takes in the query, the cachedResult, currentKey, uniques, limits
-            const { partialQuery, filledSkeleton, futureQueries } = partialMatcher(query, JSON.parse(cachedResult), currentKey, uniques, limits);
+            const { partialQuery, filledSkeleton, futureQueries } = partialMatcher(keyedQueriesArray[i][currentKey], JSON.parse(cachedResult), currentKey, uniques, limits);
 
             // check partialQuery against stringified filledSkeleton. If every single one is truthy,
             // we are refetching limits.
@@ -84,17 +83,19 @@ const trunQify = (query, uniques, endpointName, storageLocation, limits = ['firs
                     flag: storageLocation
                 })
             })
-                .then(res => res.json())
-                .then(res => {
-                    let returnDataObj = [];
-                    for (let i = 0; i < Object.keys(res.trunQKey).length; i += 1) {
-                        returnDataObj.push(res);
-                    }
-                    return resolve(returnDataObj);
+            .then(res => res.json())
+            .then(res => {
+                let returnDataObj = [];
+                Object.keys(res.trunQKey).forEach(key => { 
+                    let tempObj = {};
+                    tempObj[key] = res.trunQKey[key]
+                    returnDataObj.push(tempObj);
                 })
-                .catch(error => {
-                    console.log('ERROR FETCHING IN TRUNQIFY', error)
-                })
+                return resolve(returnDataObj);
+            })
+            .catch(error => {
+                console.log('ERROR FETCHING IN TRUNQIFY', error)
+            })
         })
 
         //push the promise into the fetchedPromises array
@@ -105,17 +106,15 @@ const trunQify = (query, uniques, endpointName, storageLocation, limits = ['firs
         return stitchResponses(cachedResults);
     }
 
-    //this pushed into fetchedPromise all the cached items that we found earlier - the fetched are already in there
-    // for (let j = 0; j < Object.keys(cachedResults).length; j += 1) {
-        // fetchedPromises.push(cachedResults[Object.keys(cachedResults)[j]])
-    // }
     fetchedPromises.push(cachedResults)
 
+    
 
     //return a Promise.all array of all the resolved fetched and cached results
     return Promise.all([...fetchedPromises])
         .then(function (values) {
-            
+            let cache = {}
+            fetchedPromises = Object.keys(cache);
             return stitchResponses(values.reduce((arr, val) => {
                 if (Array.isArray(val)) {
                     arr.push(...val);
@@ -131,6 +130,3 @@ const trunQify = (query, uniques, endpointName, storageLocation, limits = ['firs
 }
 
 export default trunQify;
-
-//1. successfully stitch the response back togeth
-//2. correctly cache that stiched response at hte right time

@@ -44,7 +44,7 @@ class PokeContainer extends Component {
         let info;
         let cacheSelector = document.getElementById('cacheType').value;
 
-        console.log('cacheSelector before trunQify: ', cacheSelector);
+        // console.log('cacheSelector before trunQify: ', cacheSelector);
         let translate = '';
         if (cacheSelector === 'Client-side') translate = 'client'
         else if (cacheSelector === 'Server-side') translate = 'server'
