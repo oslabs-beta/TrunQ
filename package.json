@@ -1,6 +1,6 @@
 {
   "name": "trunq",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "NPM package for easy client and/or server side graphQL caching.",
   "main": "index.js",
   "scripts": {
