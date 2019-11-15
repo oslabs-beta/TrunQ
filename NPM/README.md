@@ -1,4 +1,4 @@
-<p align="center"><img src="./assets/trunQiconblack.png" style="margin-top: 10px; margin-bottom: -10px; height: '50'; width: '50'"></p>
+<p align="center"><img src="./assets/trunQiconblack.png" width='100' height='100' style="margin-top: 10px; margin-bottom: -10px;"></p>
 
 # trunQ
 trunQ is an open-source NPM package developed by OS-labs providing an easy and intuitive implementation for caching graphQL responses on the client and/or server side storage.
