@@ -5,7 +5,7 @@ Developed by Ben Ray, Brian Haller, Gordon Campbell, and Michael Evans.
 
 ## Features
 
-trunQ has been developed to give the developer the most flexible out-of-the-box caching solution for 3rd party APIs or remote servers.
+trunQ has been designed to give the developer the most flexible out-of-the-box caching solution for 3rd party APIs or remote servers.
 
 As of now, trunQ offers:
 - storage inside sessionStorage for easy client-side caching
