@@ -32,7 +32,11 @@ If not on your server, install Redis
   - after installation completes, type `redis-server`. 
   - your server should now have a Redis database connection open.
 - Linux/Non-Homebrew - 
-  - Gordon plz help
+  - head-over to redis.io/download
+  - follow cli installation instructions
+  - be sure to locate the file path from your project directory to your redis server
+
+N.B. at the bottom are helpful articles to trouble-shoot common installation challenges based on your computer's configuration
 
 ### Client-side Implementation
 
@@ -121,8 +125,8 @@ app.use('/graphql', trunQServer.getAllData, (req, res, next) => {
 
 And that's it for server side implementation as long as your Redis database is up and running!
 
-REDIS NOTES (to clean up later) 
-link i found that helped me with wget issue 
+#### Redis Installation Notes
+- zsh/wget command
 https://github.com/robbyrussell/oh-my-zsh/issues/7085 
-link i used to solve the invalid active developer path issue 
+- invalid active developer path issue 
 https://apple.stackexchange.com/questions/254380/why-am-i-getting-an-invalid-active-developer-path-when-attempting-to-use-git-a
