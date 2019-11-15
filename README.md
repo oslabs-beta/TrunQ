@@ -118,7 +118,7 @@ Create an instance of trunQ and pass in the URI for your graphQL endpoint.
 Breakdown of the parameters developers have to supply:
 - argument[0] (string) is your external graphQL API URL.
 - argument[1] (number) `| Optional` the default provided is configured for Redis' default port.
-- argument[2] (number) `|Optional` specify the time in `seconds` you would like redis to store cached data. The current default setting is 600 seconds.
+- argument[2] (number) `| Optional` specify the time in `seconds` you would like redis to store cached data. The current default setting is 600 seconds.
 
 Then place the trunQ middleware in your Express chain:
 - Be sure to construct your client response with trunQServer.data
