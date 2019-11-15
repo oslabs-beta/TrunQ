@@ -113,9 +113,15 @@ Require in trunQ to your server file with `import trunq from 'trunq'`.
 
 Create an instance of trunQ and pass in the URI for your graphQL endpoint.
 
-`const trunQServer = new trunQ('https://graphql-pokemon.now.sh/');`
+`const trunQServer = new trunQ(graphQL_API_URL, [redisPort], [cacheExpire]);`
 
-Then place the trunQ middleware in your Express chain.
+Breakdown of the parameters developers have to supply:
+- argument[0] (string) is your external graphQL API URL.
+- argument[1] (number) `| Optional` the default provided is configured for Redis' default port.
+- argument[2] (number) `|Optional` specify the time in #####seconds##### you would like redis to store cached data.
+
+Then place the trunQ middleware in your Express chain:
+- Be sure to construct your client response with trunQServer.data
 
 ```
 app.use('/graphql', trunQServer.getAllData, (req, res, next) => {
@@ -124,6 +130,8 @@ app.use('/graphql', trunQServer.getAllData, (req, res, next) => {
 ```
 
 And that's it for server side implementation as long as your Redis database is up and running!
+
+N.B. - we are currently not configured to hash any data within the Redis server.
 
 #### Redis Installation Notes
 - zsh/wget command
