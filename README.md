@@ -133,6 +133,25 @@ And that's it for server side implementation as long as your Redis database is u
 
 N.B. - we are currently not configured to hash any data within the Redis server.
 
+### Application Configuration
+
+We're going to show you how spin up your application with Redis now that it is configured to cache data!
+
+Add a script 'redis-start' to your Package.json:
+```
+"scripts": {
+    "start": "NODE_ENV=production node server/startServer.js",
+    "redis-start": "TRUNQ_REDIS=process.env.TRUNQ_REDIS & npm start"
+    }
+```
+
+Add a .env file to your project and declare a variable TRUNQ_REDIS:
+```
+TRUNQ_REDIS=[Redis file path]/src/redis-server
+```
+
+N.B. - don't forget to place your .env file into a .gitignore file to not expose your file directory
+
 #### Redis Installation Notes
 - [zsh/wget command issues](https://github.com/robbyrussell/oh-my-zsh/issues/7085)
 - [invalid active developer path issue](https://apple.stackexchange.com/questions/254380/why-am-i-getting-an-invalid-active-developer-path-when-attempting-to-use-git-a)
