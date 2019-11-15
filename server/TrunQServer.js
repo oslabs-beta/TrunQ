@@ -20,7 +20,7 @@ const fetch = require('node-fetch');
 const redis = require('redis'); // will the npm package grab this?
 
 class TrunQServer {
-  constructor(apiURL, port, timer = 20) {
+  constructor(apiURL, port, timer = 600) {
     this.apiURL = apiURL;
     this.port = port === null ? 6379 : port;
     this.data = {}; // holds data for response to client
@@ -54,16 +54,16 @@ class TrunQServer {
 
     // external database/API requests contingent on redisResult values
     // returns an array with query result from cache, not found returns null
-    const redisResult = await this.checkRedis(cacheKey); 
-    
+    const redisResult = await this.checkRedis(cacheKey);
+
     // check if the redis query returned a valid response
     let resultArray = redisResult.map((redisVal, index) => {
-      
+
       if (redisVal === null) {
-        
+
         // call API if data not in Redis cache
         return this.checkApi(cacheKey[index], graphQLQuery[index], this.apiURL, flag)
-        
+
       } else {
         // parse string response from Redis
         return JSON.parse(redisVal);
@@ -72,7 +72,7 @@ class TrunQServer {
 
     // resolve both Redis reponses and API reponses, resultArray -> values of strings and promise objects
     Promise.all(resultArray)
-      .then((valArr) => { 
+      .then((valArr) => {
         // once all of the promises are resolved
         // iterate through the response values to match with unique cache keys for client response
         for (let i = 0; i < cacheKey.length; i++) {
@@ -112,14 +112,14 @@ class TrunQServer {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ query: graphQLQuery }) // incoming query is already in string form
         })
-        .then(res => res.json())
-        .then(data => {
-          // if flag arguement is set to 'server' or 'both' by developer on trunQify invocation 
-          // save API data to Redis as key value pair 
-          // hard coded time to seconds ('EX')
-          if (flag.toLowerCase() === 'server' || flag.toLowerCase() === 'both') this.redisClient.set(uniqueKey, JSON.stringify(data), 'EX', this.timer);
-          resolve(data);
-        })
+          .then(res => res.json())
+          .then(data => {
+            // if flag arguement is set to 'server' or 'both' by developer on trunQify invocation 
+            // save API data to Redis as key value pair 
+            // hard coded time to seconds ('EX')
+            if (flag.toLowerCase() === 'server' || flag.toLowerCase() === 'both') this.redisClient.set(uniqueKey, JSON.stringify(data), 'EX', this.timer);
+            resolve(data);
+          })
       }
       else {
         resolve(apiURL);
