@@ -105,7 +105,7 @@ const trunQify = (query, uniques, endpointName, storageLocation, limits = ['firs
     //if all of the keys are found in the cache we can actually just return the cachedResults
     else {
         console.log('CACHED RESULTS stringified', JSON.stringify(cachedResults));
-        console.log('STICHED RESPONSES',stitchResponses(cachedResults));
+        // console.log('STICHED RESPONSES',stitchResponses(cachedResults));
         return stitchResponses(cachedResults, storageLocation);
     }
 
