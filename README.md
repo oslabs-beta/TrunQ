@@ -1,38 +1,38 @@
 <p align="center"><img src="./assets/trunQiconblack.png" width='135' height='110' style="margin-top: 10px; margin-bottom: -10px;"></p>
 
 #
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/oslabs-beta/trunQ/blob/master/LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/oslabs-beta/TrunQ/blob/master/LICENSE)
 ![AppVeyor](https://img.shields.io/badge/build-passing-brightgreen.svg)
 ![AppVeyor](https://img.shields.io/badge/version-0.0.2-blue.svg)
-[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/oslabs-beta/trunQ/issues)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/oslabs-beta/TrunQ/issues)
 
 # TrunQ
-TrunQ is an open-source NPM package developed by OS-labs providing an easy and intuitive implementation for caching graphQL responses on the client and/or server side storage.
+TrunQ is an open-source NPM package developed by OS-labs providing an easy and intuitive implementation for caching GraphQL responses on the client and/or server side storage.
 
 Developed by Ben Ray, Brian Haller, Gordon Campbell, and Michael Evans.
 
 ## Features
 
-trunQ has been designed to give the developer the most flexible out-of-the-box caching solution for 3rd party APIs or remote servers.
+TrunQ has been designed to give the developer the most flexible out-of-the-box caching solution for 3rd party APIs or remote servers.
 
-As of now, trunQ offers:
+As of now, TrunQ offers:
 - storage inside sessionStorage for easy client-side caching
 - an easily configurable Redis database with minimal setup for lightning-fast server-side caching
 - unique key generation for response data to avoid developer having to tag for cache
-- partial and exact matching for query fields in the developer's graphQL API
-- rebuilding graphQL queries based on cache to fetch only missing data, lessening data loads
-- ability to handle and seperately cache multiple queries inside one graphQL request
+- partial and exact matching for query fields in the developer's GraphQL API
+- rebuilding GraphQL queries based on cache to fetch only missing data, lessening data loads
+- ability to handle and seperately cache multiple queries inside one GraphQL request
 - an easy toggle to specify caching in Redis, sessionStorage, or both 
-- handling all fetching and subsequent response from graphQL endpoint with only one line of code in client
+- handling all fetching and subsequent response from GraphQL endpoint with only one line of code in client
   and four lines in server
 
-N.B. trunQ will not work when implemeneted directly on a graphQL server, and only works when querying an external graphQL endpoint.
+N.B. TrunQ will not work when implemeneted directly on a GraphQL server, and only works when querying an external GraphQL endpoint.
 
 ## Basic Implementation
 
 ### Setup
 
-Download trunQ from npm in your terminal with `npm i trunq`.
+Download TrunQ from npm in your terminal with `npm i trunq`.
 
 If not on your server, install Redis
 - Mac-Homebrew: 
@@ -48,7 +48,7 @@ N.B. at the bottom are helpful articles to trouble-shoot common installation cha
 
 ### Client-side Implementation
 
-We're going to show how to implement trunQ by rewriting an existing graphQL fetch.
+We're going to show how to implement TrunQ by rewriting an existing GraphQL fetch.
 
 Sample Code: 
 
@@ -75,17 +75,17 @@ function fetchThis (myGraphQLQuery) {
 fetchThis(myGraphQLQuery)
 ```
 
-Require in trunQ to your application with `import trunq from 'trunq'`
+Require in TrunQ to your application with `import trunq from 'trunq'`
 
 On the line you are sending your request, replace the entire fetch with:
 
 `const results = await trunq.trunQify(graphQLQuery, ['allIDs'], '/graphQL', 'client')`
 
 Breakdown of the parameters developers have to supply:
-- argument[0] (string) is your graphQL query, completely unchanged from before.
-- argument[1] (array) is all your unique variable keys (eg in `artist (id: 'van-gogh')` the array would be `['id']`.
-- argument[2] (string) your graphQL server endpoint or 3rd party API URI, exactly as it would be in your fetch.
-- argument[3] (string) caching location. Valid options are: 'client', 'server', or 'both'.
+- argument(0) (string) is your GraphQL query, completely unchanged from before.
+- argument(1) (array) is all your unique variable keys (eg in `artist (id: 'van-gogh')` the array would be `['id']`.
+- argument(2) (string) your GraphQL server endpoint or 3rd party API URI, exactly as it would be in your fetch.
+- argument(3) (string) caching location. Valid options are: 'client', 'server', or 'both'.
 
 The function calling trunQify must be converted to an async function that awaits the resolution of promises between the cache and the fetch.
 
@@ -115,20 +115,20 @@ N.B. - if developer is querying a 3rd party API and caching only client-side, s/
 
 ### Server-side Implementation
 
-We're going to show how to implement trunQ for server side caching. 
+We're going to show how to implement TrunQ for server side caching. 
 
-Require in trunQ to your server file with `import trunq from 'trunq'`.
+Require in TrunQ to your server file with `import trunq from 'trunq'`.
 
-Create an instance of trunQ and pass in the URI for your graphQL endpoint.
+Create an instance of TrunQ and pass in the URI for your GraphQL endpoint.
 
 `const trunQServer = new trunQ(graphQL_API_URL, [redisPort], [cacheExpire]);`
 
 Breakdown of the parameters developers have to supply:
-- argument[0] (string) is your external graphQL API URL.
-- argument[1] (number) `| Optional` the default provided is configured for Redis' default port.
-- argument[2] (number) `| Optional` specify the time in `seconds` you would like redis to store cached data. The current default setting is 600 seconds.
+- argument(0) (string) is your external GraphQL API URL.
+- argument(1) (number) `| Optional` the default provided is configured for Redis' default port.
+- argument(2) (number) `| Optional` specify the time in `seconds` you would like redis to store cached data. The current default setting is 600 seconds.
 
-Then place the trunQ middleware in your Express chain:
+Then place the TrunQ middleware in your Express chain:
 - Be sure to construct your client response with trunQServer.data
 
 ```
