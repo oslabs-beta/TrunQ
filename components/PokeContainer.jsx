@@ -49,7 +49,8 @@ class PokeContainer extends Component {
         if (cacheSelector === 'Client-side') translate = 'client'
         else if (cacheSelector === 'Server-side') translate = 'server'
         else translate = 'both'
-        info = await trunQify(query, ["name"], '/graphql', 'client');
+        
+        info = await trunQify(query, ["name"], '/graphql', translate);
         let elapsedTime = []
 
         console.log("RETURNED OUT OF TRUNQ", info)
@@ -119,10 +120,6 @@ class PokeContainer extends Component {
         console.log(query)
         return query
     }
-
-
-
-
 
     render() {
 
