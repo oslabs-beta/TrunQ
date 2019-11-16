@@ -50,8 +50,6 @@ const trunQify = (query, uniques, endpointName, storageLocation, limits = ['firs
         if (cachedResult !== null) {
             //partial matcher here ----- it takes in the query, the cachedResult, currentKey, uniques, limits
             const { partialQuery, filledSkeleton, futureQueries } = partialMatcher(keyedQueriesArray[i][currentKey], JSON.parse(cachedResult), currentKey, uniques, limits);
-            console.log('query', keyedQueriesArray[i][currentKey]);
-            console.log('currentKey', currentKey);
             
             // check partialQuery against stringified filledSkeleton. If every single one is truthy,
             // we are refetching limits.

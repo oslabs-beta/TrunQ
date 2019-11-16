@@ -1,5 +1,3 @@
-// const keyedQueries = require('../functions/keyedQueries.js');
-// const parseVariables = require('../functions/parser.js');
 
 import keyedQueries from '../functions/keyedQueries.js';
 import parseVariables from '../functions/parser.js';
@@ -13,53 +11,58 @@ import queryObjectBuilder from '../functions/queryObjectBuilder.js'
   // stitchResponses
 
 describe('keyedQueries', () => {
-  
-  let queries = {};
-  let uniques1;
-  let uniques2;
-  let limits;
 
-  // store of queries to use for tests
-  beforeEach(() => {
-    queries = {
-      oneLevelDeep1: 'query { pokemon(name: "Pikachu") {name image types attacks {special {name} } }s',
-      oneLevelDeep2: 'query { pokemons(first: 20) {name image types attacks { special {name}} maxHP } }s',
-      getAll: '',
-      getWhereOneCondition: ''
-    }
-    uniques1 = ["name"];
-    uniques2 = [];
-    limits = ['first', 'last', 'after', 'size'];
-  })
+  // store of properties of each query required for functions called within TrunQify
+  const queries2 = {
+    oneLevelDeep1: 
+      {
+        firstQueryFormat: 'query { pokemon(name: "Pikachu") {name image types attacks {special {name} } }s',
+        uniques: ['name'],
+        limits: ['first', 'last', 'after', 'size'],
+        cachedResult: {"data":{"pokemon":{"name":"Pikachu","image":"https://img.pokemondb.net/artwork/pikachu.jpg","types":["Electric"],"attacks":{"special":[{"name":"Discharge"},{"name":"Thunder"},{"name":"Thunderbolt"}]}}}},
+        currentKey: ["pokemon-pikachu"],
+        secondQueryFormat: 'query{  pokemon(name: "pikachu") { name image types attacks { special { name } }} }', 
+      },
+    oneLevelDeep2: 
+      {
+        firstQueryFormat: 'query { pokemons(first: 20) {name image types attacks { special {name}} maxHP } }s',
+        uniques: [],
+        limits: ['first', 'last', 'after', 'size'],
+      }
+  }
   
   // keyedQueries(query, uniques, limits)
-  describe('return a unique key for a query one level deep', () => {
+  describe('return a unique key for one item', () => {
     it('key for one pokemon query', () => {
-      
-      expect(keyedQueries(queries.oneLevelDeep1, uniques1, limits)).toEqual([{"pokemon-Pikachu": "query{  pokemon(name: \"Pikachu\") {name image types attacks {special {name} } } }"}])
+      expect(keyedQueries(
+        queries2.oneLevelDeep1.firstQueryFormat, 
+        queries2.oneLevelDeep1.uniques, 
+        queries2.oneLevelDeep1.limits)).toEqual([{"pokemon-Pikachu": "query{  pokemon(name: \"Pikachu\") {name image types attacks {special {name} } } }"}])
     })
   })
 
   // keyedQueries(query, uniques, limits)
-  describe('return a key for a query one level deep', () => {
+  describe('return a key for top n items', () => {
     it('key for top n number of pokemon', () => {
-      expect(keyedQueries(queries.oneLevelDeep2, uniques2, limits)).toEqual([{"pokemons": "query{  pokemons(first: 20) {name image types attacks { special {name}} maxHP } }"}])
+      expect(keyedQueries(
+        queries2.oneLevelDeep2.firstQueryFormat, 
+        queries2.oneLevelDeep2.uniques, 
+        queries2.oneLevelDeep2.limits)).toEqual([{"pokemons": "query{  pokemons(first: 20) {name image types attacks { special {name}} maxHP } }"}])
     })
   })
 
   describe('partialMatcher', () => {
 
-    let cachedResult = {"data":{"pokemon":{"name":"Pikachu","image":"https://img.pokemondb.net/artwork/pikachu.jpg","types":["Electric"],"attacks":{"special":[{"name":"Discharge"},{"name":"Thunder"},{"name":"Thunderbolt"}]}}}}
-    let currentKey = ["pokemon-pikachu"];
-    let query = 'query{  pokemon(name: "pikachu") { name image types attacks { special { name } }} }';
+    const expectResult = ''; // circle back to update
 
     // partialMatcher (query, cachedResult, currentKey, uniques=[], limits=[])
     it('check partialMatcher', () => {
-      expect(partialMatcher(query, cachedResult, currentKey, uniques1)).toEqual('')
+      expect(partialMatcher(
+        queries2.oneLevelDeep1.secondQueryFormat, 
+        queries2.oneLevelDeep1.cachedResult, 
+        queries2.oneLevelDeep1.currentKey, 
+        queries2.oneLevelDeep1.uniques,
+        queries2.oneLevelDeep1.limits)).toEqual(expectResult);
     })
-
   })
-
 })
-
-
