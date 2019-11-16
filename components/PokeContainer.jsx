@@ -121,10 +121,6 @@ class PokeContainer extends Component {
         return query
     }
 
-
-
-
-
     render() {
 
         // let cacheDropDownSetting = document.getElementById('cacheType').value;

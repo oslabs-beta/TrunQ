@@ -35,7 +35,7 @@ const trunQify = (query, uniques, endpointName, storageLocation, limits = ['firs
 
     // get unique keys based on query, use these keys to check against local cache
     const keyedQueriesArray = keyedQueries(query, uniques, limits);
-    console.log(keyedQueriesArray);
+    
     //loop over the unique keys
     for (let i = 0; i < keyedQueriesArray.length; i += 1) {
 
@@ -50,9 +50,12 @@ const trunQify = (query, uniques, endpointName, storageLocation, limits = ['firs
         if (cachedResult !== null) {
             //partial matcher here ----- it takes in the query, the cachedResult, currentKey, uniques, limits
             const { partialQuery, filledSkeleton, futureQueries } = partialMatcher(keyedQueriesArray[i][currentKey], JSON.parse(cachedResult), currentKey, uniques, limits);
-
+            console.log('query', keyedQueriesArray[i][currentKey]);
+            console.log('currentKey', currentKey);
+            
             // check partialQuery against stringified filledSkeleton. If every single one is truthy,
             // we are refetching limits.
+
             if (!futureQueries.every(query => cachedResult.includes(query))) {
                 trunQKey[currentKey] = partialQuery;
             }
