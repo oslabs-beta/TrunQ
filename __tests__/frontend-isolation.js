@@ -4,6 +4,7 @@ import parseVariables from '../functions/parser.js';
 import partialMatcher from '../functions/partialMatcher.js';
 import layerQueryFields from '../functions/layerQueryFields.js'
 import queryObjectBuilder from '../functions/queryObjectBuilder.js'
+import stitchResponses from '../functions/stitchResponses.js';
 
 // functions to test:
   // keyedQueries -> done
@@ -21,7 +22,9 @@ describe('keyedQueries', () => {
         limits: ['first', 'last', 'after', 'size'],
         cachedResult: {"data":{"pokemon":{"name":"Pikachu","image":"https://img.pokemondb.net/artwork/pikachu.jpg","types":["Electric"],"attacks":{"special":[{"name":"Discharge"},{"name":"Thunder"},{"name":"Thunderbolt"}]}}}},
         currentKey: ["pokemon-pikachu"],
-        secondQueryFormat: 'query{  pokemon(name: "pikachu") { name image types attacks { special { name } }} }', 
+        secondQueryFormat: 'query{  pokemon(name: "pikachu") { name image types attacks { special { name } }} }',
+        cachedResults2: [{"pokemon-pikachu":{"pokemon":{"name":"Pikachu","image":"https://img.pokemondb.net/artwork/pikachu.jpg","types":["Electric"],"attacks":{"special":[{"name":"Discharge"},{"name":"Thunder"},{"name":"Thunderbolt"}]}}}}],
+        storageLocation: 'client', 
       },
     oneLevelDeep2: 
       {
@@ -65,4 +68,15 @@ describe('keyedQueries', () => {
         queries2.oneLevelDeep1.limits)).toEqual(expectResult);
     })
   })
+
+  describe('stitchResponses', () => {
+
+    const expectResult = ''; // circle back to update
+
+    // stitchResponses (results, storageLocation)
+    it('check stitchResponses', () => {
+      expect(stitchResponses(queries2.oneLevelDeep1.cachedResults2, queries2.oneLevelDeep1.storageLocation)).toEqual(expectResult);
+    })
+  })
+
 })
