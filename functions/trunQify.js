@@ -104,12 +104,12 @@ const trunQify = (query, uniques, endpointName, storageLocation, limits = ['firs
     }
     //if all of the keys are found in the cache we can actually just return the cachedResults
     else {
-        return stitchResponses(cachedResults);
+        console.log('CACHED RESULTS stringified', JSON.stringify(cachedResults));
+        // console.log('STICHED RESPONSES',stitchResponses(cachedResults));
+        return stitchResponses(cachedResults, storageLocation);
     }
 
     fetchedPromises.push(cachedResults)
-
-    
 
     //return a Promise.all array of all the resolved fetched and cached results
     return Promise.all([...fetchedPromises])

@@ -4,11 +4,7 @@ import parseVariables from '../functions/parser.js';
 import partialMatcher from '../functions/partialMatcher.js';
 import layerQueryFields from '../functions/layerQueryFields.js'
 import queryObjectBuilder from '../functions/queryObjectBuilder.js'
-
-// functions to test:
-  // keyedQueries -> done
-  // partialMatcher -> partially done
-  // stitchResponses
+import stitchResponses from '../functions/stitchResponses.js';
 
 describe('keyedQueries', () => {
 
@@ -21,7 +17,9 @@ describe('keyedQueries', () => {
         limits: ['first', 'last', 'after', 'size'],
         cachedResult: {"data":{"pokemon":{"name":"Pikachu","image":"https://img.pokemondb.net/artwork/pikachu.jpg","types":["Electric"],"attacks":{"special":[{"name":"Discharge"},{"name":"Thunder"},{"name":"Thunderbolt"}]}}}},
         currentKey: ["pokemon-pikachu"],
-        secondQueryFormat: 'query{  pokemon(name: "pikachu") { name image types attacks { special { name } }} }', 
+        secondQueryFormat: 'query{  pokemon(name: "pikachu") { name image types attacks { special { name } }} }',
+        cachedResults2: [{"pokemon-pikachu":{"pokemon":{"name":"Pikachu","image":"https://img.pokemondb.net/artwork/pikachu.jpg","types":["Electric"],"attacks":{"special":[{"name":"Discharge"},{"name":"Thunder"},{"name":"Thunderbolt"}]}}}}],
+        storageLocation: 'client', 
       },
     oneLevelDeep2: 
       {
@@ -53,7 +51,7 @@ describe('keyedQueries', () => {
 
   describe('partialMatcher', () => {
 
-    const expectResult = ''; // circle back to update
+    const expectResult = {"filledSkeleton": {"pokemon-pikachu": {"pokemon": {"attacks": {"special": [{"name": "Discharge"}, {"name": "Thunder"}, {"name": "Thunderbolt"}]}, "image": "https://img.pokemondb.net/artwork/pikachu.jpg", "name": "Pikachu", "types": ["Electric"]}, "trunQVariables": {"name": "pikachu"}}}, "futureQueries": ["pokemon", "attacks"], "partialQuery": "query { pokemon(name: \"pikachu\") { attacks { special { name } }}}"}
 
     // partialMatcher (query, cachedResult, currentKey, uniques=[], limits=[])
     it('check partialMatcher', () => {
@@ -65,4 +63,16 @@ describe('keyedQueries', () => {
         queries2.oneLevelDeep1.limits)).toEqual(expectResult);
     })
   })
+
+  describe('stitchResponses', () => {
+
+    const expectResult = [{"pokemon": {"attacks": {"special": [{"name": "Discharge"}, {"name": "Thunder"}, {"name": "Thunderbolt"}]}, "image": "https://img.pokemondb.net/artwork/pikachu.jpg", "name": "Pikachu", "types": ["Electric"]}}]
+
+    // stitchResponses (results, storageLocation)
+    it('check stitchResponses', () => {
+      expect(stitchResponses(queries2.oneLevelDeep1.cachedResults2,
+        queries2.oneLevelDeep1.storageLocation)).toEqual(expectResult);
+    })
+  })
+
 })
