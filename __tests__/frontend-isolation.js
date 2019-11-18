@@ -9,7 +9,7 @@ import stitchResponses from '../functions/stitchResponses.js';
 // functions to test:
   // keyedQueries -> done
   // partialMatcher -> partially done
-  // stitchResponses
+  // stitchResponses -> paritally done
 
 describe('keyedQueries', () => {
 
@@ -28,7 +28,7 @@ describe('keyedQueries', () => {
       },
     oneLevelDeep2: 
       {
-        firstQueryFormat: 'query { pokemons(first: 20) {name image types attacks { special {name}} maxHP } }s',
+        firstQueryFormat: 'query { pokemons(first: 2) {name image types attacks { special {name}} maxHP } }s',
         uniques: [],
         limits: ['first', 'last', 'after', 'size'],
       }
@@ -56,7 +56,7 @@ describe('keyedQueries', () => {
 
   describe('partialMatcher', () => {
 
-    const expectResult = ''; // circle back to update
+    const expectResult = {"filledSkeleton": {"pokemon-pikachu": {"pokemon": {"attacks": {"special": [{"name": "Discharge"}, {"name": "Thunder"}, {"name": "Thunderbolt"}]}, "image": "https://img.pokemondb.net/artwork/pikachu.jpg", "name": "Pikachu", "types": ["Electric"]}, "trunQVariables": {"name": "pikachu"}}}, "futureQueries": ["pokemon", "attacks"], "partialQuery": "query { pokemon(name: \"pikachu\") { attacks { special { name } }}}"}
 
     // partialMatcher (query, cachedResult, currentKey, uniques=[], limits=[])
     it('check partialMatcher', () => {
@@ -71,11 +71,12 @@ describe('keyedQueries', () => {
 
   describe('stitchResponses', () => {
 
-    const expectResult = ''; // circle back to update
+    const expectResult = [{"pokemon": {"attacks": {"special": [{"name": "Discharge"}, {"name": "Thunder"}, {"name": "Thunderbolt"}]}, "image": "https://img.pokemondb.net/artwork/pikachu.jpg", "name": "Pikachu", "types": ["Electric"]}}]
 
     // stitchResponses (results, storageLocation)
     it('check stitchResponses', () => {
-      expect(stitchResponses(queries2.oneLevelDeep1.cachedResults2, queries2.oneLevelDeep1.storageLocation)).toEqual(expectResult);
+      expect(stitchResponses(queries2.oneLevelDeep1.cachedResults2,
+        queries2.oneLevelDeep1.storageLocation)).toEqual(expectResult);
     })
   })
 
