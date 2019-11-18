@@ -77,7 +77,6 @@ let stitcher = (obj1, obj2, uniqueKey) => {
 function stitchResponses (results, storageLocation) {debugger;
     let stitchedQueries = [];
     let obj = {};
-    // console.log('stitched responses arguement',JSON.stringify(arguments[0]));
     //loop over the results and pull the unique key off
     for (let i=0; i<results.length; i++) {
         let currentQueryResponse = results[i].trunQKey || results[i];
