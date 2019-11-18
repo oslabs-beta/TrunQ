@@ -6,11 +6,6 @@ import layerQueryFields from '../functions/layerQueryFields.js'
 import queryObjectBuilder from '../functions/queryObjectBuilder.js'
 import stitchResponses from '../functions/stitchResponses.js';
 
-// functions to test:
-  // keyedQueries -> done
-  // partialMatcher -> partially done
-  // stitchResponses -> paritally done
-
 describe('keyedQueries', () => {
 
   // store of properties of each query required for functions called within TrunQify
@@ -28,7 +23,7 @@ describe('keyedQueries', () => {
       },
     oneLevelDeep2: 
       {
-        firstQueryFormat: 'query { pokemons(first: 2) {name image types attacks { special {name}} maxHP } }s',
+        firstQueryFormat: 'query { pokemons(first: 20) {name image types attacks { special {name}} maxHP } }s',
         uniques: [],
         limits: ['first', 'last', 'after', 'size'],
       }
