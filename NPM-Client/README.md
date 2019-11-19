@@ -1,9 +1,9 @@
-<p align="center"><img src="./assets/trunQiconblack.png" width='135' height='110' style="margin-top: 10px; margin-bottom: -10px;"></p>
+<p align="center"><img src="https://github.com/oslabs-beta/TrunQ/blob/master/demo/assets/trunQiconblack.png" width='135' height='110' style="margin-top: 10px; margin-bottom: -10px;"></p>
 
 #
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/oslabs-beta/trunQ/blob/master/LICENSE)
 ![AppVeyor](https://img.shields.io/badge/build-passing-brightgreen.svg)
-![AppVeyor](https://img.shields.io/badge/version-1.1.2-blue.svg)
+![AppVeyor](https://img.shields.io/badge/version-1.1.4-blue.svg)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/oslabs-beta/trunQ/issues)
 
 # TrunQ
