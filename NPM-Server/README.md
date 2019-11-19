@@ -6,8 +6,8 @@
 ![AppVeyor](https://img.shields.io/badge/version-0.0.2-blue.svg)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/oslabs-beta/trunQ/issues)
 
-# TrunQ
-TrunQ is an open-source NPM package developed by OS-labs providing an easy and intuitive implementation for caching GraphQL responses on the client and/or server side storage.
+# TrunQ-Server
+TrunQ-Server is the back half of TrunQ. TrunQ is an open-source NPM package developed by OS-labs providing an easy and intuitive implementation for caching GraphQL responses on the client and/or server side storage.
 
 This package is for server-side caching ONLY. `trunq-server` will only work if `trunq` is also implemented on the client side. Download `trunq` to be able to implement Redis server-side caching 
 
