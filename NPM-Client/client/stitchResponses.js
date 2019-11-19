@@ -77,7 +77,6 @@ let stitcher = (obj1, obj2, uniqueKey) => {
 function stitchResponses (results, storageLocation) {
     let stitchedQueries = [];
     let obj = {};
-
     //loop over the results and pull the unique key off
     for (let i=0; i<results.length; i++) {
         let currentQueryResponse = results[i].trunQKey || results[i];
@@ -109,14 +108,15 @@ function stitchResponses (results, storageLocation) {
         stitchedQueries.push({ data: obj[curUniKey] })
     }
     for (let z = 0; z < stitchedQueries.length; z += 1) {
-        if (Object.keys(stitchedQueries[z].data).includes('data')) {
+        if (stitchedQueries[z].data && Object.keys(stitchedQueries[z].data).includes('data')) {
             stitchedQueries[z] = stitchedQueries[z].data
         }
-        else if (Object.keys(stitchedQueries[z].data).includes('trunQVariables')) {
+        else if (stitchedQueries[z].data && Object.keys(stitchedQueries[z].data).includes('trunQVariables')) {
             delete stitchedQueries[z].data.trunQVariables
         }
     }
     return stitchedQueries;
 }
 
-export default stitchResponses;
+
+module.exports =  stitchResponses;

@@ -18,11 +18,13 @@
 */
 
 // Import parser functionalities.
-import keyedQueries from './keyedQueries'
-import stitchResponses from './stitchResponses.js'
-import partialMatcher from './partialMatcher.js'
+const keyedQueries = require('./keyedQueries.js')
+const stitchResponses = require('./stitchResponses.js')
+const partialMatcher = require('./partialMatcher.js')
 
-const trunQify = (query, uniques, endpointName, storageLocation, limits = ['first', 'last', 'after', 'size']) => {
+let functions = {}
+
+functions.trunQify = (query, uniques, endpointName, storageLocation, limits = ['first', 'last', 'after', 'size']) => {
 
     //array that will hold cached results to combine later
     let cachedResults = []
@@ -70,6 +72,7 @@ const trunQify = (query, uniques, endpointName, storageLocation, limits = ['firs
     //if the length of trunQKey greater than 0 that means we have keys to go fetch because they weren't in cache 
     // remember (trunQKey holds not found items)
     if (Object.keys(trunQKey).length > 0) {
+
         //declare the promise to be pushed - it returns the result of a fetch
         //standard fetch, other than the body, which will contain a flag for passing along the storage options selected
         //the fetch is built as a promise that we can then push into the fetchedPromises array
@@ -129,4 +132,4 @@ const trunQify = (query, uniques, endpointName, storageLocation, limits = ['firs
         })
 }
 
-export default trunQify;
+module.exports = functions;

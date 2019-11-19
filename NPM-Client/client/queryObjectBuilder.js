@@ -36,9 +36,9 @@
 */
 
 
-import keyedQueries from './keyedQueries'
-import layerQueryFields from './layerQueryFields'
-import parseVariables from './parser'
+const keyedQueries = require('./keyedQueries.js')
+const layerQueryFields = require('./layerQueryFields.js')
+const parseVariables = require('./parser.js')
 
 
 //turns the uniques and variables into key value pairs within a trunQVariables object
@@ -298,4 +298,4 @@ let queryObjectBuilder = (arr, uniques=[], limits = []) => {
     return output
   }
 
-export default queryObjectBuilder  
+  module.exports =  queryObjectBuilder  

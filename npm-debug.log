@@ -1,0 +1,136 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/bin/node', '/usr/bin/npm', 'publish' ]
+2 info using npm@3.5.2
+3 info using node@v8.10.0
+4 verbose publish [ '.' ]
+5 silly cache add args [ '.', null ]
+6 verbose cache add spec .
+7 silly cache add parsed spec Result {
+7 silly cache add   raw: '.',
+7 silly cache add   scope: null,
+7 silly cache add   name: null,
+7 silly cache add   rawSpec: '.',
+7 silly cache add   spec: '/home/ben/Desktop/trunQ',
+7 silly cache add   type: 'directory' }
+8 verbose addLocalDirectory /home/ben/.npm/trunq/1.0.2/package.tgz not in flight; packing
+9 info lifecycle trunq@1.0.2~prepublish: trunq@1.0.2
+10 silly lifecycle trunq@1.0.2~prepublish: no script for prepublish, continuing
+11 verbose tar pack [ '/home/ben/.npm/trunq/1.0.2/package.tgz',
+11 verbose tar pack   '/home/ben/Desktop/trunQ' ]
+12 verbose tarball /home/ben/.npm/trunq/1.0.2/package.tgz
+13 verbose folder /home/ben/Desktop/trunQ
+14 verbose addLocalTarball adding from inside cache /home/ben/.npm/trunq/1.0.2/package.tgz
+15 silly cache afterAdd trunq@1.0.2
+16 verbose afterAdd /home/ben/.npm/trunq/1.0.2/package/package.json not in flight; writing
+17 verbose afterAdd /home/ben/.npm/trunq/1.0.2/package/package.json written
+18 silly publish { name: 'trunq',
+18 silly publish   version: '1.0.2',
+18 silly publish   description: 'NPM package for easy client and/or server side graphQL caching.',
+18 silly publish   main: 'index.js',
+18 silly publish   scripts:
+18 silly publish    { start: 'NODE_ENV=production nodemon server/startServer.js',
+18 silly publish      'redis-start': 'TRUNQ_REDIS=process.env.TRUNQ_REDIS & npm start',
+18 silly publish      build: 'webpack',
+18 silly publish      dev: 'NODE_ENV=development nodemon server/startServer.js & webpack-dev-server --open',
+18 silly publish      test: 'jest --verbose' },
+18 silly publish   repository:
+18 silly publish    { type: 'git',
+18 silly publish      url: 'git+https://github.com/oslabs-beta/trunQ.git' },
+18 silly publish   author: '',
+18 silly publish   contributors:
+18 silly publish    [ { name: 'Ben Ray', url: 'http://www.github.com/bmr5' },
+18 silly publish      { name: 'Brian Haller',
+18 silly publish        url: 'http://www.github.com/brianjhaller' },
+18 silly publish      { name: 'Gordon Campbell',
+18 silly publish        url: 'http://www.github.com/gordon-campbell13' },
+18 silly publish      { name: 'Michael Evans',
+18 silly publish        url: 'http://www.github.com/mchlevans' } ],
+18 silly publish   license: 'MIT',
+18 silly publish   bugs: { url: 'https://github.com/oslabs-beta/trunQ/issues' },
+18 silly publish   homepage: 'https://github.com/oslabs-beta/trunQ#readme',
+18 silly publish   dependencies:
+18 silly publish    { '@babel/cli': '^7.6.4',
+18 silly publish      '@babel/core': '^7.6.4',
+18 silly publish      '@babel/plugin-transform-runtime': '^7.6.2',
+18 silly publish      '@babel/preset-react': '^7.6.3',
+18 silly publish      '@babel/runtime': '^7.6.3',
+18 silly publish      babel: '^6.23.0',
+18 silly publish      'babel-loader': '^8.0.6',
+18 silly publish      'babel-runtime': '^6.26.0',
+18 silly publish      'body-parser': '^1.19.0',
+18 silly publish      'css-loader': '^3.2.0',
+18 silly publish      dotenv: '^8.2.0',
+18 silly publish      express: '^4.17.1',
+18 silly publish      graphql: '^14.5.8',
+18 silly publish      'node-fetch': '^2.6.0',
+18 silly publish      nodemon: '^1.19.4',
+18 silly publish      path: '^0.12.7',
+18 silly publish      react: '^16.11.0',
+18 silly publish      'react-dom': '^16.11.0',
+18 silly publish      redis: '^2.8.0',
+18 silly publish      'style-loader': '^1.0.0',
+18 silly publish      webpack: '^4.41.2',
+18 silly publish      'webpack-cli': '^3.3.9' },
+18 silly publish   devDependencies:
+18 silly publish    { '@babel/preset-env': '^7.6.3',
+18 silly publish      'babel-jest': '^24.9.0',
+18 silly publish      'css-loader': '^3.2.0',
+18 silly publish      jest: '^24.9.0',
+18 silly publish      supertest: '^4.0.2',
+18 silly publish      'webpack-dev-server': '^3.9.0' },
+18 silly publish   readme: '<p align="center"><img src="./assets/trunQiconblack.png" width=\'135\' height=\'110\' style="margin-top: 10px; margin-bottom: -10px;"></p>\n\n#\n[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/oslabs-beta/TrunQ/blob/master/LICENSE)\n![AppVeyor](https://img.shields.io/badge/build-passing-brightgreen.svg)\n![AppVeyor](https://img.shields.io/badge/version-0.0.2-blue.svg)\n[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/oslabs-beta/TrunQ/issues)\n\n# TrunQ\nTrunQ is an open-source NPM package developed by OS-labs providing an easy and intuitive implementation for caching GraphQL responses on the client and/or server side storage.\n\nDeveloped by Ben Ray, Brian Haller, Gordon Campbell, and Michael Evans.\n\n## Features\n\nTrunQ has been designed to give the developer the most flexible out-of-the-box caching solution for 3rd party APIs or remote servers.\n\nAs of now, TrunQ offers:\n- storage inside sessionStorage for easy client-side caching\n- an easily configurable Redis database with minimal setup for lightning-fast server-side caching\n- unique key generation for response data to avoid developer having to tag for cache\n- partial and exact matching for query fields in the developer\'s GraphQL API\n- rebuilding GraphQL queries based on cache to fetch only missing data, lessening data loads\n- ability to handle and seperately cache multiple queries inside one GraphQL request\n- an easy toggle to specify caching in Redis, sessionStorage, or both \n- handling all fetching and subsequent response from GraphQL endpoint with only one line of code in client\n  and four lines in server\n\nN.B. TrunQ will not work when implemeneted directly on a GraphQL server, and only works when querying an external GraphQL endpoint.\n\n## Basic Implementation\n\n### Setup\n\nDownload TrunQ from npm in your terminal with `npm i trunq`.\n\nIf not on your server, install Redis\n- Mac-Homebrew: \n  - in terminal, type `brew install redis`.\n  - after installation completes, type `redis-server`. \n  - your server should now have a Redis database connection open.\n- Linux/Non-Homebrew:\n  - head-over to [redis.io/download](https://redis.io/download)\n  - follow cli installation instructions\n  - be sure to locate the file path from your project directory to your redis server\n\nN.B. at the bottom are helpful articles to trouble-shoot common installation challenges based on your computer\'s configuration\n\n### Client-side Implementation\n\nWe\'re going to show how to implement TrunQ by rewriting an existing GraphQL fetch.\n\nSample Code: \n\n``` \nconst myGraphQLQuery = query { \n  artist (id: \'mark-rothko\') { \n    name artworks (paintingId: \'chapel\' size: 1) {    \n      name imgUrl  \n    } \n  }\n} \n\nfunction fetchThis (myGraphQLQuery) {\n  let results\n  fetch(\'/graphQL\', {\n    method: "POST"\n    body: JSON.stringify(myGraphQLQuery)\n  })\n  .then(res => res.json)\n  .then(parsedRes => results = parsedRes)\n  ...(rest of code)\n}\n\nfetchThis(myGraphQLQuery)\n```\n\nRequire in TrunQ to your application with `import trunq from \'trunq\'`\n\nOn the line you are sending your request, replace the entire fetch with:\n\n`const results = await trunq.trunQify(graphQLQuery, [\'allIDs\'], \'/graphQL\', \'client\')`\n\nBreakdown of the parameters developers have to supply:\n- argument(0) (string) is your GraphQL query, completely unchanged from before.\n- argument(1) (array) is all your unique variable keys (eg in `artist (id: \'van-gogh\')` the array would be `[\'id\']`.\n- argument(2) (string) your GraphQL server endpoint or 3rd party API URI, exactly as it would be in your fetch.\n- argument(3) (string) caching location. Valid options are: \'client\', \'server\', or \'both\'.\n\nThe function calling trunQify must be converted to an async function that awaits the resolution of promises between the cache and the fetch.\n\nThat\'s it for the client side! \n\nOur sample code will be rewritten as:\n\n``` \nconst myGraphQLQuery = query { \n  artist (id: \'mark-rothko\') { \n    name artworks (paintingId: \'chapel\' size: 1) {    \n      name imgUrl  \n    } \n  }\n} \n\nasync function fetchThis (myGraphQLQuery) {\n  let results = await trunq.trunQify(myGraphQLQUery, [\'id\', \'paintingId\'], \'/graphQL\', \'client\')\n  ...(rest of code)\n}\n\nfetchThis(myGraphQLQuery)\n```\nNow our results will be cached in sessionStorage!\n\nN.B. - if developer is querying a 3rd party API and caching only client-side, s/he does not need to configure the server side. Instead, supply the full URI of the API at the appropriate argument.\n\n### Server-side Implementation\n\nWe\'re going to show how to implement TrunQ for server side caching. \n\nRequire in TrunQ to your server file with `import trunq from \'trunq\'`.\n\nCreate an instance of TrunQ and pass in the URI for your GraphQL endpoint.\n\n`const trunQServer = new trunQ(graphQL_API_URL, [redisPort], [cacheExpire]);`\n\nBreakdown of the parameters developers have to supply:\n- argument(0) (string) is your external GraphQL API URL.\n- argument(1) (number) `| Optional` the default provided is configured for Redis\' default port.\n- argument(2) (number) `| Optional` specify the time in `seconds` you would like redis to store cached data. The current default setting is 600 seconds.\n\nThen place the TrunQ middleware in your Express chain:\n- Be sure to construct your client response with trunQServer.data\n\n```\napp.use(\'/graphql\', trunQServer.getAllData, (req, res, next) => {\n    res.status(200).json(trunQServer.data);\n})\n```\n\nAnd that\'s it for server side implementation as long as your Redis database is up and running!\n\nN.B. - we are currently not configured to hash any data within the Redis server.\n\n### Application Configuration\n\nWe\'re going to show you how spin up your application with Redis now that it is configured to cache data!\n\nAdd a script \'redis-start\' to your Package.json:\n```\n"scripts": {\n    "start": "NODE_ENV=production node server/startServer.js",\n    "redis-start": "TRUNQ_REDIS=process.env.TRUNQ_REDIS & npm start"\n    }\n```\n\nAdd a .env file to your project and declare a variable TRUNQ_REDIS:\n```\nTRUNQ_REDIS=[Redis file path]/src/redis-server\n```\n\nN.B. - don\'t forget to place your .env file into a .gitignore file to not expose your file directory\n\n#### Redis Installation Notes\n- [zsh/wget command issues](https://github.com/robbyrussell/oh-my-zsh/issues/7085)\n- [invalid active developer path issue](https://apple.stackexchange.com/questions/254380/why-am-i-getting-an-invalid-active-developer-path-when-attempting-to-use-git-a)\n',
+18 silly publish   readmeFilename: 'README.md',
+18 silly publish   gitHead: '189b49f892fb944775a32aba7972d3c492108436',
+18 silly publish   _id: 'trunq@1.0.2',
+18 silly publish   _shasum: '6701274c9f13049b7f8e14094f413410684b1956',
+18 silly publish   _from: '.' }
+19 verbose getPublishConfig undefined
+20 silly mapToRegistry name trunq
+21 silly mapToRegistry using default registry
+22 silly mapToRegistry registry https://registry.npmjs.org/
+23 silly mapToRegistry uri https://registry.npmjs.org/trunq
+24 verbose publish registryBase https://registry.npmjs.org/
+25 silly publish uploading /home/ben/.npm/trunq/1.0.2/package.tgz
+26 verbose request uri https://registry.npmjs.org/trunq
+27 verbose request sending authorization for write operation
+28 info attempt registry request try #1 at 11:51:53 AM
+29 verbose request using bearer token for auth
+30 verbose request id 9ca2eb3580bbfd0c
+31 http request PUT https://registry.npmjs.org/trunq
+32 http 403 https://registry.npmjs.org/trunq
+33 verbose headers { date: 'Mon, 18 Nov 2019 19:51:54 GMT',
+33 verbose headers   'content-type': 'application/json',
+33 verbose headers   'transfer-encoding': 'chunked',
+33 verbose headers   connection: 'keep-alive',
+33 verbose headers   'set-cookie':
+33 verbose headers    [ '__cfduid=d298b876f2aa9f5b0f2c8ae9d9d326ebb1574106713; expires=Tue, 17-Nov-20 19:51:53 GMT; path=/; domain=.npmjs.org; HttpOnly' ],
+33 verbose headers   'cf-cache-status': 'DYNAMIC',
+33 verbose headers   'cf-ray': '537c7b4d5af5e6f8-EWR',
+33 verbose headers   'expect-ct': 'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
+33 verbose headers   vary: 'Accept-Encoding',
+33 verbose headers   server: 'cloudflare',
+33 verbose headers   'content-encoding': 'gzip' }
+34 verbose request invalidating /home/ben/.npm/registry.npmjs.org/trunq on PUT
+35 error publish Failed PUT 403
+36 verbose stack Error: You cannot publish over the previously published versions: 1.0.2. : trunq
+36 verbose stack     at makeError (/usr/share/npm/node_modules/npm-registry-client/lib/request.js:264:12)
+36 verbose stack     at CachingRegistryClient.<anonymous> (/usr/share/npm/node_modules/npm-registry-client/lib/request.js:252:14)
+36 verbose stack     at /usr/share/npm/node_modules/npm-registry-client/lib/request.js:178:7
+36 verbose stack     at Gunzip.onEnd (zlib.js:131:5)
+36 verbose stack     at emitNone (events.js:111:20)
+36 verbose stack     at Gunzip.emit (events.js:208:7)
+36 verbose stack     at endReadableNT (_stream_readable.js:1064:12)
+36 verbose stack     at _combinedTickCallback (internal/process/next_tick.js:138:11)
+36 verbose stack     at process._tickCallback (internal/process/next_tick.js:180:9)
+37 verbose statusCode 403
+38 verbose pkgid trunq
+39 verbose cwd /home/ben/Desktop/trunQ
+40 error Linux 5.0.0-36-generic
+41 error argv "/usr/bin/node" "/usr/bin/npm" "publish"
+42 error node v8.10.0
+43 error npm  v3.5.2
+44 error code E403
+45 error You cannot publish over the previously published versions: 1.0.2. : trunq
+46 error If you need help, you may report this error at:
+46 error     <https://github.com/npm/npm/issues>
+47 verbose exit [ 1, true ]

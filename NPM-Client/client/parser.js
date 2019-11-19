@@ -21,10 +21,9 @@
 * ***********************************
 */
 
-
 //this is a helper function that will take in two parameters:
-    //the variable string is like the parens, (id: sdfsd, size: 2), in a graphql line. 
-    //the varsArr is actually the limits and the uniques together in one array. This make it easy to loop over them
+//the variable string is like the parens, (id: sdfsd, size: 2), in a graphql line. 
+//the varsArr is actually the limits and the uniques together in one array. This make it easy to loop over them
 let startIndexFinder = (varStr, varsArr) => {
 
     //first we sort the varsArr by length of string - this helps us prevent cases where id is found before ssid and we run into matching issues
@@ -69,8 +68,10 @@ const createUniqueKey = (queryVariablesObject) => {
     return keyString.replace(/[\s]/g, '')
 }
 
+
+
 //this is the main function
-let parseVariables = (query, uniques=[], limits=[]) => {
+function parseVariables (query, uniques=[], limits=[]) {
 
     //we will return this object full of variables and queryName later on as part of an array
     let output = {
@@ -142,7 +143,7 @@ let parseVariables = (query, uniques=[], limits=[]) => {
     return [createUniqueKey(output), output];
 }
 
-export default parseVariables  
+module.exports = parseVariables  
 
 
 

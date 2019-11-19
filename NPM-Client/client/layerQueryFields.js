@@ -106,7 +106,7 @@ const layerQueryFields = (query, uniques = [], limits = []) => {
     return globalCacheArr;
   }
 
-export default layerQueryFields  
+  module.exports =  layerQueryFields  
 
 
 

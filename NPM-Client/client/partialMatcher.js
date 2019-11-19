@@ -35,9 +35,9 @@
 * ***********************************
 */
 
-import parseVariables from './parser.js'
-import layerQueryFields from './layerQueryFields.js'
-import queryObjectBuilder from './queryObjectBuilder.js'
+const parseVariables = require('./parser.js')
+const layerQueryFields = require('./layerQueryFields.js')
+const queryObjectBuilder = require('./queryObjectBuilder.js')
 
 //this function only works with queries with limits that are smaller than what is in the cache - all primitives work
 let recursiveHelper = (skeleton, skeletonKeys, limits, uniques, futureQueries, cachedObj, size=0) => {
@@ -161,7 +161,6 @@ function graphQLQueryMaker (futureQueries, skeleton, layers, uniques, limits) {
         //current query is going to be our first pointer within futureQueries, will update as Q updates - currentQuery keeps track of
         //the queries that we are missing
           let currentQuery = futureQueries[q]; // going to be artist
-          
           if (currentLevels[i].includes(currentQuery)) {  
               // if the currentQuery exists inside the current level
               // format the current level to be part of graphQLString
@@ -185,6 +184,20 @@ function graphQLQueryMaker (futureQueries, skeleton, layers, uniques, limits) {
                       currentQuery = futureQueries[++q];
                       j = currentLevels[i].length;
                       temp = '';
+                  }
+                  else if (currentLetter === ':' && temp !== currentQuery) {
+                    //if the stuff in between the parens contains a limit we write the parens scenario
+                    let limitsRegex = /\(((size)*(first)*(last)*(after)*)/
+                    if (limitsRegex.test(temp)) {
+                      //run temp to the end of the line by incrementing j
+                      while(j< currentLevels[i].length) {
+                        temp += currentLetter
+                        j++
+                        currentLetter = currentLevels[i][j]
+                      }
+                      graphQLString += " " + temp + " {";
+                      temp =''
+                    }
                   }
                   else if (currentLetter === ' ' && temp === currentQuery) {
                       graphQLString += " " + temp;
@@ -230,7 +243,8 @@ function graphQLQueryMaker (futureQueries, skeleton, layers, uniques, limits) {
       let braceGen = graphQLString.match(openBrace).length - closed;
       graphQLString += "}".repeat(braceGen);
     }
+    
     return graphQLString;
   }
 
-export default partialMatcher  
+  module.exports =  partialMatcher  

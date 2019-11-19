@@ -26,7 +26,7 @@
 * ***********************************
 */
 
-import parseVariables from './parser'
+const parseVariables = require ('./parser.js')
 
 function keyedQueries(query, uniques, limits) {
 
@@ -117,4 +117,4 @@ function keyedQueries(query, uniques, limits) {
     return arrayofQueries;
 }
 
-export default keyedQueries
+module.exports = keyedQueries
