@@ -1,6 +1,7 @@
 const functions = require('./server/TrunQServer');
 
 let trunQServer = {}
-trunQServer.trunQServer = functions.
+
+trunQServer.TrunQServer = functions.TrunQServer
 
 module.exports = trunQServer;

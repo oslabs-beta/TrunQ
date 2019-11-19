@@ -19,6 +19,8 @@
 const fetch = require('node-fetch');
 const redis = require('redis'); // will the npm package grab this?
 
+const functions = {};
+
 class TrunQServer {
   constructor(apiURL, port, timer = 600) {
     this.apiURL = apiURL;
@@ -146,5 +148,5 @@ class TrunQServer {
   };
 };
 
-
-module.exports = TrunQServer;
+functions.TrunQServer = TrunQServer;
+module.exports = functions;
