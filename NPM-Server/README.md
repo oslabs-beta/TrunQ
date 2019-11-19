@@ -9,6 +9,8 @@
 # TrunQ
 TrunQ is an open-source NPM package developed by OS-labs providing an easy and intuitive implementation for caching GraphQL responses on the client and/or server side storage.
 
+This package is for server-side caching ONLY. `trunq-server` will only work if `trunq` is also implemented on the client side. Download `trunq` to be able to implement Redis server-side caching 
+
 Developed by Ben Ray, Brian Haller, Gordon Campbell, and Michael Evans.
 
 ## Features
@@ -25,13 +27,13 @@ rebuilding GraphQL queries based on cache to fetch only missing data, lessening 
 ability to handle and seperately cache multiple queries inside one GraphQL request
 an easy toggle to specify caching in Redis, sessionStorage, or both
 handling all fetching and subsequent response from GraphQL endpoint with only one line of code in client and four lines in server
-N.B. TrunQ will not work when implemented directly on a GraphQL server, and only works when querying an external GraphQL endpoint.
+Note: TrunQ will not work when implemented directly on a GraphQL server, and only works when querying an external GraphQL endpoint.
 
 ## Basic Implementation
 
 ### Setup
 
-Download trunQ from npm in your terminal with `npm i trunq`.
+Download TrunQ-server from npm in your terminal with `npm i trunq-server`.
 
 If not on your server, install Redis
 - Mac-Homebrew: 
@@ -43,84 +45,17 @@ If not on your server, install Redis
   - follow cli installation instructions
   - be sure to locate the file path from your project directory to your redis server
 
-N.B. at the bottom are helpful articles to trouble-shoot common installation challenges based on your computer's configuration
-
-### Client-side Implementation
-
-We're going to show how to implement TrunQ by rewriting an existing graphQL fetch.
-
-Sample Code: 
-
-``` 
-const myGraphQLQuery = query { 
-  artist (id: 'mark-rothko') { 
-    name artworks (paintingId: 'chapel' size: 1) {    
-      name imgUrl  
-    } 
-  }
-} 
-
-function fetchThis (myGraphQLQuery) {
-  let results
-  fetch('/graphQL', {
-    method: "POST"
-    body: JSON.stringify(myGraphQLQuery)
-  })
-  .then(res => res.json)
-  .then(parsedRes => results = parsedRes)
-  ...(rest of code)
-}
-
-fetchThis(myGraphQLQuery)
-```
-
-Require in TrunQ to your application with `import trunq from 'trunq'`
-
-On the line you are sending your request, replace the entire fetch with:
-
-`const results = await trunq.trunQify(graphQLQuery, ['allIDs'], '/graphQL', 'client')`
-
-Breakdown of the parameters developers have to supply:
-- argument[0] (string) is your graphQL query, completely unchanged from before.
-- argument[1] (array) is all your unique variable keys (eg in `artist (id: 'van-gogh')` the array would be `['id']`.
-- argument[2] (string) your graphQL server endpoint or 3rd party API URI, exactly as it would be in your fetch.
-- argument[3] (string) caching location. Valid options are: 'client', 'server', or 'both'.
-
-The function calling trunQify must be converted to an async function that awaits the resolution of promises between the cache and the fetch.
-
-That's it for the client side! 
-
-Our sample code will be rewritten as:
-
-``` 
-const myGraphQLQuery = query { 
-  artist (id: 'mark-rothko') { 
-    name artworks (paintingId: 'chapel' size: 1) {    
-      name imgUrl  
-    } 
-  }
-} 
-
-async function fetchThis (myGraphQLQuery) {
-  let results = await trunq.trunQify(myGraphQLQUery, ['id', 'paintingId'], '/graphQL', 'client')
-  ...(rest of code)
-}
-
-fetchThis(myGraphQLQuery)
-```
-Now our results will be cached in sessionStorage!
-
-N.B. - if developer is querying a 3rd party API and caching only client-side, s/he does not need to configure the server side. Instead, supply the full URI of the API at the appropriate argument.
+Note: at the bottom are helpful articles to trouble-shoot common installation challenges based on your computer's configuration
 
 ### Server-side Implementation
 
 We're going to show how to implement TrunQ for server side caching. 
 
-Require in TrunQ to your server file with `import trunq from 'trunq'`.
+Require in trunq-server NPM package to your server file with `import { TrunQServer } from 'trunq-server'`.
 
-Create an instance of TrunQ and pass in the URI for your graphQL endpoint.
+Create an instance of trunq-server and pass in the URI for your graphQL endpoint.
 
-`const trunQServer = new trunQ(graphQL_API_URL, [redisPort], [cacheExpire]);`
+`const trunQ = new TrunQServer(graphQL_API_URL, [redisPort], [cacheExpire]);`
 
 Breakdown of the parameters developers have to supply:
 - argument[0] (string) is your external graphQL API URL.
@@ -128,17 +63,17 @@ Breakdown of the parameters developers have to supply:
 - argument[2] (number) `| Optional` specify the time in `seconds` you would like redis to store cached data. The current default setting is 600 seconds.
 
 Then place the TrunQ middleware in your Express chain:
-- Be sure to construct your client response with trunQServer.data
+- Be sure to construct your client response with trunQ.data
 
 ```
-app.use('/graphql', trunQServer.getAllData, (req, res, next) => {
-    res.status(200).json(trunQServer.data);
+app.use('/graphql', trunQ.getAllData, (req, res, next) => {
+    res.status(200).json(trunQ.data);
 })
 ```
 
 And that's it for server side implementation as long as your Redis database is up and running!
 
-N.B. - we are currently not configured to hash any data within the Redis server.
+Note: we are currently not configured to hash any data within the Redis server.
 
 ### Application Configuration
 
@@ -157,8 +92,12 @@ Add a .env file to your project and declare a variable TRUNQ_REDIS:
 TRUNQ_REDIS=[Redis file path]/src/redis-server
 ```
 
-N.B. - don't forget to place your .env file into a .gitignore file to not expose your file directory
+Note: don't forget to place your .env file into a .gitignore file to not expose your file directory
 
 #### Redis Installation Notes
 - [zsh/wget command issues](https://github.com/robbyrussell/oh-my-zsh/issues/7085)
 - [invalid active developer path issue](https://apple.stackexchange.com/questions/254380/why-am-i-getting-an-invalid-active-developer-path-when-attempting-to-use-git-a)
+
+
+
+#### This is for server-side caching implementation. For client-side caching, download trunq from NPM and follow the README.
