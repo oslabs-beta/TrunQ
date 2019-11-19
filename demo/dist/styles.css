@@ -1,0 +1,111 @@
+body{
+    background: url(http://www.fillster.com/images/backgrounds/37c.gif); 
+    background-attachment:fixed; 
+    background-repeat:repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+#root{
+    width: 60%;
+}
+
+.mainContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.hero-title {
+    color: rgb(14, 36, 163);
+    font-weight: bold;
+    font-size: 100px;
+    text-decoration: underline; 
+}
+
+.pokeContainer{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border-bottom: solid;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+    padding-bottom: 10px;
+    color: rgb(14, 36, 163);
+}
+
+.pokemon-form{
+    padding-bottom: 20px;
+
+}
+
+.pokeInput{
+    border: 2px solid red;
+    box-shadow: 0px 2px 4px 4px;
+    margin: 5px;
+    font-size: 25px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.poke-query{
+    width: 400px;
+    height: 40px;
+    font-size: 25px;
+    background-color: yellow;
+    border: 1px;
+    box-shadow: 0px 2px 4px 4px;
+
+    margin: 25px;
+}
+
+#cacheType {
+    width: 400px;
+    height: 40px;
+    font-size: 25px;
+    background-color: yellow;
+    border: 1px;
+    box-shadow: 0px 2px 4px 4px;
+}
+
+.cardContainer{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.poke-card{
+    margin: 10px;
+    background-color: lightblue;
+    border: 3px solid black;
+    height: auto;
+    width: auto;;
+    font-size: 25px;
+}
+
+.scoreboard {
+    font-size: 25px;
+    border: 1px solid black;
+    background-color: whitesmoke;
+}
+
+
+.artContainer{
+    display: flex;
+    flex-direction: column;
+    width: 49%;
+    border: solid;
+}
+
+.artImg {
+    height: 50px;
+    width: 50px;
+}
+
+.artCard {
+    border: 3px solid black;
+}
