@@ -1,10 +1,10 @@
 
-import keyedQueries from '../functions/keyedQueries.js';
-import parseVariables from '../functions/parser.js';
-import partialMatcher from '../functions/partialMatcher.js';
-import layerQueryFields from '../functions/layerQueryFields.js'
-import queryObjectBuilder from '../functions/queryObjectBuilder.js'
-import stitchResponses from '../functions/stitchResponses.js';
+import keyedQueries from '../demo/functions/keyedQueries.js';
+import parseVariables from '../demo/functions/parser.js';
+import partialMatcher from '../demo/functions/partialMatcher.js';
+import layerQueryFields from '../demo/functions/layerQueryFields.js'
+import queryObjectBuilder from '../demo/functions/queryObjectBuilder.js'
+import stitchResponses from '../demo/functions/stitchResponses.js';
 
 describe('keyedQueries', () => {
 

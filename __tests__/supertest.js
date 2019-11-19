@@ -1,5 +1,5 @@
 const supertest = require('supertest');
-const app = require('../server/server');
+const app = require('../demo/server/server');
 
 const goodData = { 
   "trunQKey": { "pokemon-pikachu": "jest" }, 
