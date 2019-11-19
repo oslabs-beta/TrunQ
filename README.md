@@ -1,4 +1,4 @@
-<p align="center"><img src="./assets/trunQiconblack.png" width='135' height='110' style="margin-top: 10px; margin-bottom: -10px;"></p>
+<p align="center"><img src=".demo/assets/trunQiconblack.png" width='135' height='110' style="margin-top: 10px; margin-bottom: -10px;"></p>
 
 #
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/oslabs-beta/TrunQ/blob/master/LICENSE)
