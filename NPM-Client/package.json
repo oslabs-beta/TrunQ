@@ -1,0 +1,48 @@
+{
+  "name": "trunq",
+  "version": "1.1.1",
+  "description": "trunQ is an open-source NPM package developed by OS-labs providing an easy and intuitive implementation for caching graphQL responses on the client and/or server side storage.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oslabs-beta/TrunQ.git"
+  },
+  "keywords": [
+    "trunq",
+    "graphQL",
+    "cache",
+    "caching",
+    "redis",
+    "client-side",
+    "server-side",
+    "apollo",
+    "sessionstorage"
+  ],
+  "contributors": [
+    {
+      "name": "Ben Ray",
+      "url": "http://www.github.com/bmr5"
+    },
+    {
+      "name": "Brian Haller",
+      "url": "http://www.github.com/brianjhaller"
+    },
+    {
+      "name": "Gordon Campbell",
+      "url": "http://www.github.com/gordon-campbell13"
+    },
+    {
+      "name": "Michael Evans",
+      "url": "http://www.github.com/mchlevans"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/oslabs-beta/trunQ/issues"
+  },
+  "homepage": "https://github.com/oslabs-beta/trunQ#readme",
+  "dependencies": { }
+}
