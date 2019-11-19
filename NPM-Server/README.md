@@ -3,13 +3,15 @@
 #
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/oslabs-beta/trunQ/blob/master/LICENSE)
 ![AppVeyor](https://img.shields.io/badge/build-passing-brightgreen.svg)
-![AppVeyor](https://img.shields.io/badge/version-0.0.2-blue.svg)
+![AppVeyor](https://img.shields.io/badge/version-1.0.2-blue.svg)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/oslabs-beta/trunQ/issues)
 
-# TrunQ-Server
+# TrunQ-Server Beta
 TrunQ-Server is the back half of TrunQ. TrunQ is an open-source NPM package developed by OS-labs providing an easy and intuitive implementation for caching GraphQL responses on the client and/or server side storage.
 
-This package is for server-side caching ONLY. `trunq-server` will only work if `trunq` is also implemented on the client side. Download `trunq` to be able to implement Redis server-side caching 
+This package is for server-side caching ONLY. `trunq-server` will only work if `trunq` is also implemented on the client side. Download both `trunq` and `trunq-server` to be able to implement Redis server-side caching.
+
+When full version is released, seperate implementations will be possible.
 
 Developed by Ben Ray, Brian Haller, Gordon Campbell, and Michael Evans.
 
@@ -33,7 +35,7 @@ Note: TrunQ will not work when implemented directly on a GraphQL server, and onl
 
 ### Setup
 
-Download TrunQ-server from npm in your terminal with `npm i trunq-server`.
+Download TrunQ-Server from NPM in your terminal with `npm i trunq-server`.
 
 If not on your server, install Redis
 - Mac-Homebrew: 
@@ -58,9 +60,9 @@ Create an instance of trunq-server and pass in the URI for your graphQL endpoint
 `const trunQ = new TrunQServer(graphQL_API_URL, [redisPort], [cacheExpire]);`
 
 Breakdown of the parameters developers have to supply:
-- argument[0] (string) is your external graphQL API URL.
-- argument[1] (number) `| Optional` the default provided is configured for Redis' default port.
-- argument[2] (number) `| Optional` specify the time in `seconds` you would like redis to store cached data. The current default setting is 600 seconds.
+- argument(0) (string) is your external graphQL API URL.
+- argument(1) (number) `| Optional` the default provided is configured for Redis' default port.
+- argument(2) (number) `| Optional` specify the time in `seconds` you would like redis to store cached data. The current default setting is 600 seconds.
 
 Then place the TrunQ middleware in your Express chain:
 - Be sure to construct your client response with trunQ.data
