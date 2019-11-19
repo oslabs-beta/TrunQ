@@ -1,5 +1,5 @@
 {
-  "name": "trunq",
+  "name": "trunqTesting",
   "version": "1.0.2",
   "description": "NPM package for easy client and/or server side graphQL caching.",
   "main": "index.js",
@@ -59,6 +59,8 @@
     "react-dom": "^16.11.0",
     "redis": "^2.8.0",
     "style-loader": "^1.0.0",
+    "trunq": "^1.1.0",
+    "trunq-server": "^1.0.0",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.9"
   },
