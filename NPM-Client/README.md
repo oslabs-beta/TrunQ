@@ -3,7 +3,7 @@
 #
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/oslabs-beta/trunQ/blob/master/LICENSE)
 ![AppVeyor](https://img.shields.io/badge/build-passing-brightgreen.svg)
-![AppVeyor](https://img.shields.io/badge/version-0.0.2-blue.svg)
+![AppVeyor](https://img.shields.io/badge/version-1.1.1-blue.svg)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/oslabs-beta/trunQ/issues)
 
 # TrunQ
@@ -24,26 +24,17 @@ partial and exact matching for query fields in the developer's GraphQL API
 rebuilding GraphQL queries based on cache to fetch only missing data, lessening data loads
 ability to handle and seperately cache multiple queries inside one GraphQL request
 an easy toggle to specify caching in Redis, sessionStorage, or both
-handling all fetching and subsequent response from GraphQL endpoint with only one line of code in client and four lines in server
-N.B. TrunQ will not work when implemented directly on a GraphQL server, and only works when querying an external GraphQL endpoint.
+handling all fetching and subsequent response from GraphQL endpoint with only one line of code in client and four lines in server.
+
+To implement the full caching ability of TrunQ, also download the server-side caching package at `trunq-server`.
+
+Note: TrunQ will not work when implemented directly on a GraphQL server, and only works when querying an external GraphQL endpoint.
 
 ## Basic Implementation
 
 ### Setup
 
 Download trunQ from npm in your terminal with `npm i trunq`.
-
-If not on your server, install Redis
-- Mac-Homebrew: 
-  - in terminal, type `brew install redis`.
-  - after installation completes, type `redis-server`. 
-  - your server should now have a Redis database connection open.
-- Linux/Non-Homebrew:
-  - head-over to [redis.io/download](https://redis.io/download)
-  - follow cli installation instructions
-  - be sure to locate the file path from your project directory to your redis server
-
-N.B. at the bottom are helpful articles to trouble-shoot common installation challenges based on your computer's configuration
 
 ### Client-side Implementation
 
@@ -81,10 +72,10 @@ On the line you are sending your request, replace the entire fetch with:
 `const results = await trunq.trunQify(graphQLQuery, ['allIDs'], '/graphQL', 'client')`
 
 Breakdown of the parameters developers have to supply:
-- argument[0] (string) is your graphQL query, completely unchanged from before.
-- argument[1] (array) is all your unique variable keys (eg in `artist (id: 'van-gogh')` the array would be `['id']`.
-- argument[2] (string) your graphQL server endpoint or 3rd party API URI, exactly as it would be in your fetch.
-- argument[3] (string) caching location. Valid options are: 'client', 'server', or 'both'.
+- argument(0) (string) is your graphQL query, completely unchanged from before.
+- argument(1) (array) is all your unique variable keys (eg in `artist (id: 'van-gogh')` the array would be `['id']`.
+- argument(2) (string) your graphQL server endpoint or 3rd party API URI, exactly as it would be in your fetch.
+- argument(3) (string) caching location. Valid options are: 'client', 'server', or 'both'.
 
 The function calling trunQify must be converted to an async function that awaits the resolution of promises between the cache and the fetch.
 
@@ -110,6 +101,6 @@ fetchThis(myGraphQLQuery)
 ```
 Now our results will be cached in sessionStorage!
 
-N.B. - if developer is querying a 3rd party API and caching only client-side, s/he does not need to configure the server side. Instead, supply the full URI of the API at the appropriate argument.
+Note: if developer is querying a 3rd party API and caching only client-side, s/he does not need to configure the server side. Instead, supply the full URI of the API at the appropriate argument.
 
 #### For Server-side caching implementation, please see our trunq-server NPM package and follow the instructions on that README
