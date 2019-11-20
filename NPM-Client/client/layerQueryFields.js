@@ -39,7 +39,8 @@ const layerQueryFields = (query, uniques = [], limits = []) => {
 
     //this regex is for format integrity and consistency in our queries. it will find any space between a character and a parens like
         // "a (". It will then replace it later on with nothing to remove the space.
-    let whiteSpaceBeforeParenRegex = /(?<=[\w]) (?=\()/;
+
+// >>>>>>>>>> let whiteSpaceBeforeParenRegex = /(?<=[\w]) (?=\()/;
   
     //this loop will do all the heavy work. Reading, Writing, and Formatting with regexes
     //temp does not start writing until the level is greater than -1. This will happen right after the first '{'
