@@ -57,7 +57,7 @@ const layerQueryFields = (query, uniques = [], limits = []) => {
             //to produce standardized lines we can work with later
             temp = temp.replace(/[\n]/g, '').trim();
             temp = temp.replace(/[\s]+/g, ' ');
-            temp = temp.replace(whiteSpaceBeforeParenRegex, '');
+            temp = temp.replace(whiteSpaceBeforeParenRegex, '(');
   
             //the temp only equals "" when it is on the very first like 'query {'
             //when it's not blank and we already know we're going to move deeper because we hit a '{' we 'push'/add to our object
@@ -77,7 +77,7 @@ const layerQueryFields = (query, uniques = [], limits = []) => {
             //trimming actions, same as above
             temp = temp.replace(/[\n]/g, '').trim();
             temp = temp.replace(/[\s]+/g, ' ');
-            temp = temp.replace(whiteSpaceBeforeParenRegex, '');
+            temp = temp.replace(whiteSpaceBeforeParenRegex, '(');
 
             //adding temp to our cacheObj
             if (temp !== "") {
