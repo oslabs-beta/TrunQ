@@ -1,6 +1,6 @@
 {
   "name": "trunq",
-  "version": "1.1.7",
+  "version": "1.1.71",
   "description": "trunQ is an open-source NPM package developed by OS-labs providing an easy and intuitive implementation for caching graphQL responses on the client and/or server side storage.",
   "main": "index.js",
   "scripts": {
