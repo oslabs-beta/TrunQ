@@ -57,7 +57,7 @@
     "path": "^0.12.7",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
-    "redis": "^2.8.0",
+    "redis": "^3.1.1",
     "style-loader": "^1.0.0",
     "trunq": "^1.1.0",
     "trunq-server": "^1.0.0",
