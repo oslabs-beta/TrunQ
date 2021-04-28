@@ -47,6 +47,6 @@
   "dependencies": {
     "dotenv": "^8.2.0",
     "node-fetch": "^2.6.0",
-    "redis": "^2.8.0"
+    "redis": "^3.1.1"
   }
 }
